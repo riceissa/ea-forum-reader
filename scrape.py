@@ -22,7 +22,28 @@ def get_userid(username):
 
 
 def get_comments_for_post(postid):
-    pass
+    query = ("""
+    {
+      comments(input: {
+        terms: {
+          view: "postCommentsTop",
+          postId: "%s",
+        }
+      }) {
+        results {
+          pageUrl
+          body
+        }
+      }
+    }
+    """ % postid)
+
+    request = send_query(query)
+    result = []
+    for comment in request.json()['data']['comments']['results']:
+        result.append(comment)
+
+    return result
 
 
 def get_comments_for_user(username):
@@ -48,5 +69,7 @@ def get_posts_for_user(username):
     """ % userid)
 
     request = send_query(query)
-
-get_userid("carl_shulman")
+    result = []
+    for post in request.json()['data']['posts']['results']:
+        result.append(post['pageUrl'])
+    return result

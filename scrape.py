@@ -47,7 +47,28 @@ def get_comments_for_post(postid):
 
 
 def get_comments_for_user(username):
-    pass
+    userid = get_userid(username)
+    query = ("""
+    {
+      comments(input: {
+        terms: {
+          view: "userComments",
+          userId: "%s",
+        }
+      }) {
+        results {
+          userId
+          body
+        }
+      }
+    }
+    """ % userid)
+
+    request = send_query(query)
+    result = []
+    for comment in request.json()['data']['comments']['results']:
+        result.append(comment)
+    return result
 
 
 def get_posts_for_user(username):

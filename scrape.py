@@ -312,7 +312,7 @@ def html_page_for_user(username):
             if content['post'] is None:
                 result += '''    <a href="./posts.php?id=%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (content['postId'], content['_id'], content['user']['username'])
             else:
-                result += '''    <a href="./posts.php?id=%s#%s">Comment</a> by <b>%s</b> on %s</b>,\n''' % (content['postId'], content['_id'], content['user']['username'], htmlescape(content['post']['title']))
+                result += '''    <a href="./posts.php?id=%s#%s">Comment</a> by <b>%s</b> on <a href="./posts.php?id=%s">%s</a></b>,\n''' % (content['postId'], content['_id'], content['user']['username'], content['postId'], htmlescape(content['post']['title']))
             result += '''    %s\n''' % content['postedAt']
             content_body = cleanHtmlBody(content['htmlBody'])
             result += '''    %s\n''' % content_body

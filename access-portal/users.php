@@ -1,5 +1,15 @@
 <?php
 
+if ($_REQUEST['userid'] ?? '') {
+  $userid = $_REQUEST['userid'];
+  $userid = preg_replace('/[^a-zA-Z0-9_-]/', '', $userid);
+  $command = "PYTHONIOENCODING=utf-8 ../userid_to_slug.py " . escapeshellarg($userid);
+  $output = shell_exec($command);
+
+  header("Location: ./users.php?id=" . $output);
+  die();
+}
+
 if ($_REQUEST['id'] ?? '') {
   if (($_REQUEST['format'] ?? '') === "rss") {
     $format = "rss";

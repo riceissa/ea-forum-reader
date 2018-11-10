@@ -12,6 +12,8 @@ def send_query(query):
 def cleanHtmlBody(htmlBody):
     """For some reason htmlBody values often have the following tags that
     really shouldn't be there."""
+    if htmlBody is None:
+        return ""
     return (htmlBody.replace("<html>", "")
                     .replace("</html>", "")
                     .replace("<body>", "")

@@ -75,7 +75,7 @@ def get_comments_for_post(postid):
           pageUrl
           body
           htmlBody
-          score
+          baseScore
           voteCount
           postedAt
         }
@@ -135,7 +135,7 @@ def print_comment(comment_node):
         print('''<div style="border: 1px solid black; padding: 5px; margin: 5px;">''')
         print("comment by <b>" + comment['user']['username'] + "</b>,")
         print("<a href=" + '"' + comment['pageUrl'] + '"' + ">" + comment['postedAt'] + "</a>,")
-        print("score: " + str(comment['score']) + " (" + str(comment['voteCount']) + " votes)")
+        print("baseScore: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes)")
         print(comment['htmlBody'])
 
     if comment_node.children:

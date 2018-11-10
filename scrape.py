@@ -22,6 +22,36 @@ def get_userid(username):
 
     return request.json()['data']['user']['result']['_id']
 
+def get_content_for_post(postid):
+    query = ("""
+    {
+      post(
+        input: {
+          selector: {
+            _id: "%s"
+          }
+        }
+      ) {
+        result {
+          _id
+          createdAt
+          postedAt
+          url
+          title
+          slug
+          body
+          commentsCount
+          htmlBody
+          user {
+            username
+          }
+        }
+      }
+    }
+    """ % postid)
+
+    request = send_query(query)
+    return request.json()['data']['post']['result']
 
 def get_comments_for_post(postid):
     query = ("""
@@ -120,6 +150,18 @@ def print_comment_thread(postid):
     root = build_comment_thread(comments)
     print_comment(root)
 
+def print_post_and_comment_thread(postid):
+
+    post = get_content_for_post(postid)
+    print("<h1>" + post['title'] + "</h1>")
+    print('post by <b>' + post['user']['username'] + '</b><br />')
+    print('''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>')
+    print(post['htmlBody'])
+
+    print('''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>')
+
+    print_comment_thread(postid)
+
 
 def get_comments_for_user(username):
     userid = get_userid(username)
@@ -170,4 +212,4 @@ def get_posts_for_user(username):
         result.append(post['pageUrl'])
     return result
 
-print_comment_thread("NDszJWMsdLCB4MNoy")
+print_post_and_comment_thread("NDszJWMsdLCB4MNoy")

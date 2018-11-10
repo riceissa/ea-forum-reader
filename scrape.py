@@ -268,6 +268,7 @@ def get_comments_for_user(username):
         terms: {
           view: "userComments",
           userId: "%s",
+          limit: 50,
         }
       }) {
         results {

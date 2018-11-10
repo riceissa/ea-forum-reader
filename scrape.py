@@ -218,6 +218,39 @@ def print_post_and_comment_thread(postid):
     return result
 
 
+def feed_for_user(username):
+    result = '''<?xml version="1.0" encoding="UTF-8"?>
+    <rss version="2.0">
+        <channel>
+            <title></title>
+            <description></description>
+            <language>en-us</language>
+    '''
+
+    comments = get_comments_for_user(username)
+    posts = get_posts_for_user(username)
+
+    all_content = []
+    all_content.extend(comments)
+    all_content.extend(posts)
+    all_content = sorted(all_content, key=lambda x: x['postedAt'], reverse=True)
+
+    for content in all_content:
+        result += "<item>"
+        result += "    <title>a</title>"
+        result += '''    <link>%s</link>''' % content['pageUrl']
+        content_body = content['htmlBody'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        result += '''    <description>%s</description>''' % content_body
+        result += '''    <author>%s</author>''' % username
+        result += '''    <guid>a</guid>'''
+        result += "</item>"
+
+    result += '''</channel>
+    </rss>'''
+
+    return result
+
+
 def get_comments_for_user(username):
     userid = get_userid(username)
     query = ("""
@@ -231,6 +264,9 @@ def get_comments_for_user(username):
         results {
           userId
           body
+          postedAt
+          pageUrl
+          htmlBody
         }
       }
     }
@@ -256,6 +292,8 @@ def get_posts_for_user(username):
       }) {
         results {
           pageUrl
+          postedAt
+          htmlBody
         }
       }
     }
@@ -264,10 +302,12 @@ def get_posts_for_user(username):
     request = send_query(query)
     result = []
     for post in request.json()['data']['posts']['results']:
-        result.append(post['pageUrl'])
+        result.append(post)
     return result
 
-if len(sys.argv) <= 1:
-    print("Please enter a post ID as argument")
-else:
-    print(print_post_and_comment_thread(sys.argv[1]))
+# if len(sys.argv) <= 1:
+#     print("Please enter a post ID as argument")
+# else:
+#     print(print_post_and_comment_thread(sys.argv[1]))
+
+print(feed_for_user("carl_shulman"))

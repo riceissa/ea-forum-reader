@@ -62,7 +62,7 @@ def show_daily_posts():
         </style>
     </head>
     <body>
-        <nav><a href=".">Home</a></nav>
+        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a></nav>
         <h1>EA Forum Reader</h1>
     """
 
@@ -269,7 +269,7 @@ def print_post_and_comment_thread(postid):
         </style>
     </head>
     <body>
-        <nav><a href=".">Home</a></nav>
+        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a></nav>
     """ % post['title'])
 
     result += ("<h1>" + post['title'] + "</h1>")
@@ -301,7 +301,7 @@ def html_page_for_user(username):
         </style>
     </head>
     <body>
-        <nav><a href=".">Home</a>, <a href="./users.php?id=%s&format=rss">Feed</a></nav>
+        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a>, <a href="./users.php?id=%s&format=rss">Feed</a></nav>
     """ % (username, username))
 
     comments = get_comments_for_user(username)

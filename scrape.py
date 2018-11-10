@@ -2,7 +2,6 @@
 
 import requests
 import json
-import sys
 
 def send_query(query):
     return requests.get('https://forum.effectivealtruism.org/graphql', params={'query': query})
@@ -322,10 +321,3 @@ def get_posts_for_user(username):
     for post in request.json()['data']['posts']['results']:
         result.append(post)
     return result
-
-# if len(sys.argv) <= 1:
-#     print("Please enter a post ID as argument")
-# else:
-#     print(print_post_and_comment_thread(sys.argv[1]))
-
-print(feed_for_user("carl_shulman"))

@@ -57,5 +57,13 @@ def print_posts(string):
 
 if len(sys.argv) > 2:
     search_string = sys.argv[2]
+    print('''
+        <ul>
+            <li><a href="#posts">Jump to post results</a></li>
+            <li><a href="#comments">Jump to comment results</a></li>
+        </ul>
+    ''')
+    print('''<h2 id="posts">Post results</h2>''')
     print_posts(search_string)
+    print('''<h2 id="comments">Comment results</h2>''')
     print_comments(search_string)

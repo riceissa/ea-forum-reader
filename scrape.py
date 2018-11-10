@@ -100,20 +100,38 @@ def show_daily_posts(offset=0):
 
     return result
 
-def get_userid(username):
+
+def userid_to_userslug(userid):
+    query = ("""
+    {
+      user(input: {selector: {documentId: "%s"}}) {
+        result {
+          _id
+          slug
+        }
+      }
+    }
+    """ % userid)
+
+    request = send_query(query)
+    return request.json()['data']['user']['result']['slug']
+
+
+def userslug_to_userid(userslug):
     query = ("""
     {
       user(input: {selector: {slug: "%s"}}) {
         result {
           _id
+          slug
         }
       }
     }
-    """ % username)
+    """ % userslug)
 
     request = send_query(query)
-
     return request.json()['data']['user']['result']['_id']
+
 
 def get_content_for_post(postid):
     query = ("""
@@ -395,7 +413,7 @@ def feed_for_user(username):
 
 
 def get_comments_for_user(username):
-    userid = get_userid(username)
+    userid = userslug_to_userid(username)
     query = ("""
     {
       comments(input: {
@@ -433,7 +451,7 @@ def get_comments_for_user(username):
 
 
 def get_posts_for_user(username):
-    userid = get_userid(username)
+    userid = userslug_to_userid(username)
     query = ("""
     {
       posts(input: {

@@ -153,8 +153,8 @@ def print_comment(comment_node):
         print(f'''<div id="{commentid}" style="border: 1px solid #B3B3B3; padding: 10px; margin: 5px; background-color: {color}">''')
         print("comment by <b>" + comment['user']['username'] + "</b>,")
         print(f'''<a href="#{commentid}">''' + comment['postedAt'] + "</a>,")
-        print("baseScore: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes),")
-        print('<a href="' + comment['pageUrl'] + '">EA</a>')
+        print("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes),")
+        print('<a title="EA Forum link" href="' + comment['pageUrl'] + '">EA</a>')
         print(cleanHtmlBody(comment['htmlBody']))
 
     if comment_node.children:

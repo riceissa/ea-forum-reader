@@ -19,6 +19,40 @@ def cleanHtmlBody(htmlBody):
                     .replace("<head>", "")
                     .replace("</head>", ""))
 
+def get_daily_posts():
+    query = """
+    {
+      posts(input: {
+        terms: {
+          view: "daily"
+          limit: 50
+        }
+      }) {
+        results {
+          _id
+          title
+          pageUrl
+          postedAt
+          baseScore
+          user {
+            username
+          }
+        }
+      }
+    }
+    """
+    request = send_query(query)
+    return request.json()['data']['posts']['results']
+
+def show_daily_posts():
+    posts = get_daily_posts()
+    for post in sorted(posts, key=lambda x: x['postedAt'], reverse=True):
+        print("<div>")
+        print(htmlescape(post['title']) + "<br />")
+        print(post['user']['username'] + ", ")
+        print("score: " + str(post['baseScore']))
+        print("</div>")
+
 def get_userid(username):
     query = ("""
     {

@@ -25,9 +25,18 @@ def search_comments(string):
 
 
 def show_comment(comment):
-    result = ('''<div style="border: 1px solid black;">Comment by <a href="./users.php?userid=%s">%s</a>
+    result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px;">comment by <a href="./users.php?userid=%s">%s</a>
         on <a href="./posts.php?id=%s">%s</a>
-        ''' % (comment['userId'], comment['authorUserName'], comment['postId'], comment['postTitle']))
+        · <a href="./posts.php?id=%s#%s">%s</a>
+        · score: %s
+        ''' % (comment['userId'],
+               comment['authorUserName'],
+               comment['postId'],
+               comment['postTitle'],
+               comment['postId'],
+               comment['_id'],
+               comment['postedAt'],
+               comment['baseScore']))
 
     result += '''<pre style="font-family: Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % comment['body']
     result += "</div>"
@@ -36,8 +45,14 @@ def show_comment(comment):
 
 
 def show_post(post, string, seen):
-    result = ('''<div style="border: 1px solid black;"><a href="./posts.php?id=%s">%s</a>
-    ''' % (post['_id'], post['title']))
+    result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px;"><a href="./posts.php?id=%s">%s</a>
+    by <a href="./users.php?userid=%s">%s</a> · %s · score: %s
+    ''' % (post['_id'],
+           post['title'],
+           post['userId'],
+           post['authorUserName'],
+           post['postedAt'],
+           post['baseScore']))
     if string.lower() in post['body'].lower():
         result += '''<pre style="font-family: Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % post['body']
     else:

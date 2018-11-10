@@ -35,11 +35,18 @@ def show_comment(comment):
     return result
 
 
-def show_post(post, string):
+def show_post(post, string, seen):
     result = ('''<div style="border: 1px solid black;"><a href="./posts.php?id=%s">%s</a>
     ''' % (post['_id'], post['title']))
     if string.lower() in post['body'].lower():
         result += '''<pre style="font-family: Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % post['body']
+    else:
+        if post['_id'] in seen:
+            # If we didn't even match inside the body and we've seen this post
+            # before, it's a garbage result, so return nothing
+            return ""
+
+    seen.add(post['_id'])
 
     result += "</div>\n"
     return result
@@ -49,8 +56,9 @@ def print_comments(string):
         print(show_comment(comment))
 
 def print_posts(string):
+    seen = set()
     for post in search_posts(string):
-        print(show_post(post, string))
+        print(show_post(post, string, seen))
 
 
 if len(sys.argv) > 2:

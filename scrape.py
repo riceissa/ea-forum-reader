@@ -96,6 +96,7 @@ class CommentTree(object):
         self.commentid = commentid
         self.data = data
         self.children = []
+        self.parity = None
 
     def __repr__(self):
         return self.commentid + "[" + str(self.children) + "]"
@@ -123,16 +124,24 @@ def build_comment_thread(comments):
         else:
             index[parent].insert(node)
 
+    update_parity(root, "even")
+
     return root
+
+def update_parity(comment_node, parity):
+    comment_node.parity = parity
+    for child in comment_node.children:
+        child_parity = "even" if parity == "odd" else "odd"
+        update_parity(child, child_parity)
 
 
 def print_comment(comment_node):
     comment = comment_node.data
-    # pdb.set_trace()
+    color = "#ECF5FF" if comment_node.parity == "odd" else "#FFFFFF"
 
     # If this is the root node, comment is {} so skip it
     if comment:
-        print('''<div style="border: 1px solid black; padding: 5px; margin: 5px;">''')
+        print(f'''<div style="border: 1px solid black; padding: 5px; margin: 5px; background-color: {color}">''')
         print("comment by <b>" + comment['user']['username'] + "</b>,")
         print("<a href=" + '"' + comment['pageUrl'] + '"' + ">" + comment['postedAt'] + "</a>,")
         print("baseScore: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes)")
@@ -151,6 +160,14 @@ def print_comment_thread(postid):
     print_comment(root)
 
 def print_post_and_comment_thread(postid):
+
+    print("""
+    <head>
+    <style type="text/css">
+        body { font-family: Helvetica, sans-serif; }
+    </style>
+    </head>
+    """)
 
     post = get_content_for_post(postid)
     print("<h1>" + post['title'] + "</h1>")

@@ -219,13 +219,13 @@ def print_post_and_comment_thread(postid):
 
 
 def feed_for_user(username):
-    result = '''<?xml version="1.0" encoding="UTF-8"?>
+    result = ('''<?xml version="1.0" encoding="UTF-8"?>
     <rss version="2.0">
         <channel>
-            <title></title>
-            <description></description>
+            <title>%s</title>
+            <description>%s</description>
             <language>en-us</language>
-    '''
+    ''' % (username + " feed - EA Forum Reader", username + "’s posts and comments on the Effective Altruism Forum"))
 
     comments = get_comments_for_user(username)
     posts = get_posts_for_user(username)
@@ -236,13 +236,21 @@ def feed_for_user(username):
     all_content = sorted(all_content, key=lambda x: x['postedAt'], reverse=True)
 
     for content in all_content:
+        content_type = "post" if "title" in content else "comment"
         result += "<item>"
-        result += "    <title>a</title>"
+        if content_type == "post":
+            result += "    <title>%s</title>" % content['title']
+        else:
+            if content['post'] is None:
+                result += "    <title>Comment by %s on [deleted post]</title>" % (content['user']['username'])
+            else:
+                result += "    <title>Comment by %s on %s</title>" % (content['user']['username'], content['post']['title'])
         result += '''    <link>%s</link>''' % content['pageUrl']
-        content_body = content['htmlBody'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        content_body = cleanHtmlBody(content['htmlBody']).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
         result += '''    <description>%s</description>''' % content_body
         result += '''    <author>%s</author>''' % username
-        result += '''    <guid>a</guid>'''
+        result += '''    <guid>%s</guid>''' % content['_id']
+        result += '''    <pubDate>%s</pubDate>''' % content['postedAt']
         result += "</item>"
 
     result += '''</channel>
@@ -262,7 +270,15 @@ def get_comments_for_user(username):
         }
       }) {
         results {
+          _id
+          post {
+            title
+          }
+          user {
+            username
+          }
           userId
+          postId
           body
           postedAt
           pageUrl
@@ -291,6 +307,8 @@ def get_posts_for_user(username):
         }
       }) {
         results {
+          _id
+          title
           pageUrl
           postedAt
           htmlBody

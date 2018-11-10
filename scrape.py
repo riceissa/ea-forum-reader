@@ -34,6 +34,7 @@ def get_daily_posts():
           pageUrl
           postedAt
           baseScore
+          commentsCount
           user {
             username
           }
@@ -46,12 +47,36 @@ def get_daily_posts():
 
 def show_daily_posts():
     posts = get_daily_posts()
+
+    result = """<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <title>EA Forum Reader</title>
+        <style type="text/css">
+            body { font-family: Helvetica, sans-serif; }
+        </style>
+    </head>
+    <body>
+        <h1>EA Forum Reader</h1>
+    """
+
     for post in sorted(posts, key=lambda x: x['postedAt'], reverse=True):
-        print('''<div style="margin-bottom: 15px;">''')
-        print(('''<a href="./posts.php?id=%s">''' % post['_id']) + htmlescape(post['title']) + "</a><br />")
-        print(post['user']['username'] + ", ")
-        print("score: " + str(post['baseScore']))
-        print("</div>")
+        post_url = "./posts.php?id=" + post['_id']
+        result += ('''<div style="margin-bottom: 15px;">\n''')
+        result += (('''    <a href="%s">''' % post_url) + htmlescape(post['title']) + "</a><br />\n")
+        result += (post['user']['username'] + ", \n")
+        result += ("score: " + str(post['baseScore']) + ", \n")
+        result += ('''    <a href="%s#comments">comments (%s)</a>\n''' % (post_url, post['commentsCount']))
+        result += ("</div>")
+
+    result += """
+        </body>
+    </html>
+    """
+
+    return result
 
 def get_userid(username):
     query = ("""

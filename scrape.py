@@ -21,13 +21,14 @@ def cleanHtmlBody(htmlBody):
                     .replace("<head>", "")
                     .replace("</head>", ""))
 
-def get_daily_posts():
-    query = """
+def get_daily_posts(offset=0):
+    query = ("""
     {
       posts(input: {
         terms: {
           view: "daily"
           limit: 50
+          %s
         }
       }) {
         results {
@@ -44,12 +45,12 @@ def get_daily_posts():
         }
       }
     }
-    """
+    """ % ("" if offset == 0 else "offset: " + str(offset)))
     request = send_query(query)
     return request.json()['data']['posts']['results']
 
-def show_daily_posts():
-    posts = get_daily_posts()
+def show_daily_posts(offset=0):
+    posts = get_daily_posts(offset)
 
     result = """<!DOCTYPE html>
     <html>
@@ -66,15 +67,30 @@ def show_daily_posts():
         <h1>EA Forum Reader</h1>
     """
 
+    if offset - 50 >= 0:
+        result += '''<a href="./index.php?offset=%s">← previous page (newer posts)</a> · ''' % (offset - 50)
+
+    result += '''<a href="./index.php?offset=%s">next page (older posts) →</a>''' % (offset + 50)
+    result += '''<br/><br/>\n'''
+
     for post in sorted(posts, key=lambda x: x['postedAt'], reverse=True):
         post_url = "./posts.php?id=" + post['_id']
         result += ('''<div style="margin-bottom: 15px;">\n''')
         result += (('''    <a href="%s">''' % post_url) + htmlescape(post['title']) + "</a><br />\n")
-        result += '''<a href="./users.php?id=%s">%s</a>,\n''' % (post['user']['slug'], post['user']['username'])
+        if post['user'] is None:
+            result += '''[deleted],\n'''
+        else:
+            result += '''<a href="./users.php?id=%s">%s</a>,\n''' % (post['user']['slug'], post['user']['username'])
         result += post['postedAt'] + ", \n"
         result += ("score: " + str(post['baseScore']) + ", \n")
         result += ('''    <a href="%s#comments">comments (%s)</a>\n''' % (post_url, post['commentsCount']))
         result += ("</div>")
+
+    if offset - 50 >= 0:
+        result += '''<a href="./index.php?offset=%s">← previous page (newer posts)</a> · ''' % (offset - 50)
+
+    result += '''<a href="./index.php?offset=%s">next page (older posts) →</a>''' % (offset + 50)
+    result += '''<br/><br/>\n'''
 
     result += """
         </body>

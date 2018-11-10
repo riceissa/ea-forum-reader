@@ -7,6 +7,14 @@ import pdb
 def send_query(query):
     return requests.get('https://forum.effectivealtruism.org/graphql', params={'query': query})
 
+def cleanHtmlBody(htmlBody):
+    return (htmlBody.replace("<html>", "")
+                    .replace("</html>", "")
+                    .replace("<body>", "")
+                    .replace("</body>", "")
+                    .replace("<head>", "")
+                    .replace("</head>", ""))
+
 def get_userid(username):
     query = ("""
     {
@@ -145,7 +153,7 @@ def print_comment(comment_node):
         print("comment by <b>" + comment['user']['username'] + "</b>,")
         print("<a href=" + '"' + comment['pageUrl'] + '"' + ">" + comment['postedAt'] + "</a>,")
         print("baseScore: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes)")
-        print(comment['htmlBody'])
+        print(cleanHtmlBody(comment['htmlBody']))
 
     if comment_node.children:
         for child in comment_node.children:
@@ -160,24 +168,34 @@ def print_comment_thread(postid):
     print_comment(root)
 
 def print_post_and_comment_thread(postid):
-
-    print("""
-    <head>
-    <style type="text/css">
-        body { font-family: Helvetica, sans-serif; }
-    </style>
-    </head>
-    """)
-
     post = get_content_for_post(postid)
+
+    print("""<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <title>%s</title>
+        <style type="text/css">
+            body { font-family: Helvetica, sans-serif; }
+        </style>
+    </head>
+    <body>
+    """ % post['title'])
+
     print("<h1>" + post['title'] + "</h1>")
     print('post by <b>' + post['user']['username'] + '</b><br />')
     print('''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>')
-    print(post['htmlBody'])
+    print(cleanHtmlBody(post['htmlBody']))
 
     print('''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>')
 
     print_comment_thread(postid)
+
+    print("""
+        </body>
+        </html>
+    """)
 
 
 def get_comments_for_user(username):

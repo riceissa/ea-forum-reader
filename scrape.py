@@ -2,6 +2,7 @@
 
 import requests
 import json
+import pdb
 
 def send_query(query):
     return requests.get('https://forum.effectivealtruism.org/graphql', params={'query': query})
@@ -32,6 +33,7 @@ def get_comments_for_post(postid):
         }
       }) {
         results {
+          _id
           user {
             _id
             username
@@ -58,15 +60,65 @@ def get_comments_for_post(postid):
 
     return result
 
-def print_comment_thread(postid):
-    comments = get_comments_for_post(postid)
 
+class CommentTree(object):
+    def __init__(self, commentid, data):
+        self.commentid = commentid
+        self.data = data
+        self.children = []
+
+    def __repr__(self):
+        return self.commentid + "[" + str(self.children) + "]"
+
+    def insert(self, child):
+        self.children.append(child)
+
+def build_comment_thread(comments):
+    # Convert comments to tree nodes
+    nodes = []
     for comment in comments:
-        print("<hr/>")
+        nodes.append(CommentTree(commentid=comment['_id'], data=comment))
+
+    # Build index to be able to find nodes by their IDs
+    index = {}
+    for node in nodes:
+        index[node.commentid] = node
+
+    root = CommentTree("root", {})
+
+    for node in nodes:
+        parent = node.data['parentCommentId']
+        if not parent:
+            root.insert(node)
+        else:
+            index[parent].insert(node)
+
+    return root
+
+
+def print_comment(comment_node):
+    comment = comment_node.data
+    # pdb.set_trace()
+
+    # If this is the root node, comment is {} so skip it
+    if comment:
+        print('''<div style="border: 1px solid black; padding: 5px; margin: 5px;">''')
         print("comment by <b>" + comment['user']['username'] + "</b>,")
         print("<a href=" + '"' + comment['pageUrl'] + '"' + ">" + comment['postedAt'] + "</a>,")
         print("score: " + str(comment['score']) + " (" + str(comment['voteCount']) + " votes)")
         print(comment['htmlBody'])
+
+    if comment_node.children:
+        for child in comment_node.children:
+            print_comment(child)
+
+    print("</div>")
+
+
+def print_comment_thread(postid):
+    comments = get_comments_for_post(postid)
+    root = build_comment_thread(comments)
+    print_comment(root)
 
 
 def get_comments_for_user(username):

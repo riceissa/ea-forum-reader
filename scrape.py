@@ -152,7 +152,7 @@ def print_comment(comment_node):
     # If this is the root node, comment is {} so skip it
     if comment:
         commentid = comment['_id']
-        print('''<div id="%s" style="border: 1px solid #B3B3B3; padding: 10px; margin: 5px; background-color: {color}">''' % commentid)
+        print('''<div id="%s" style="border: 1px solid #B3B3B3; padding: 10px; margin: 5px; background-color: %s">''' % (commentid, color))
         print("comment by <b>" + comment['user']['username'] + "</b>,")
         print(('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a>,")
         print("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes),")

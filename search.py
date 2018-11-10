@@ -35,10 +35,11 @@ def show_comment(comment):
     return result
 
 
-def show_post(post):
+def show_post(post, string):
     result = ('''<div style="border: 1px solid black;"><a href="./posts.php?id=%s">%s</a>
     ''' % (post['_id'], post['title']))
-    result += '''<pre style="font-family: Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % post['body']
+    if string.lower() in post['body'].lower():
+        result += '''<pre style="font-family: Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % post['body']
 
     result += "</div>\n"
     return result
@@ -49,10 +50,7 @@ def print_comments(string):
 
 def print_posts(string):
     for post in search_posts(string):
-        print(show_post(post))
-
-
-# print(json.dumps(search_posts("carl shulman"), indent=4))
+        print(show_post(post, string))
 
 
 if len(sys.argv) > 2:

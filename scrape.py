@@ -37,6 +37,7 @@ def get_daily_posts():
           commentsCount
           user {
             username
+            slug
           }
         }
       }
@@ -66,7 +67,7 @@ def show_daily_posts():
         post_url = "./posts.php?id=" + post['_id']
         result += ('''<div style="margin-bottom: 15px;">\n''')
         result += (('''    <a href="%s">''' % post_url) + htmlescape(post['title']) + "</a><br />\n")
-        result += (post['user']['username'] + ", \n")
+        result += '''<a href="./users.php?id=%s">%s</a>,\n''' % (post['user']['slug'], post['user']['username'])
         result += post['postedAt'] + ", \n"
         result += ("score: " + str(post['baseScore']) + ", \n")
         result += ('''    <a href="%s#comments">comments (%s)</a>\n''' % (post_url, post['commentsCount']))

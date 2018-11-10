@@ -3,13 +3,11 @@
 if ($_REQUEST['id'] ?? '') {
   $post_id = $_REQUEST['id'];
   $post_id = preg_replace('/[^a-zA-Z0-9_-]/', '', $post_id);
-  ob_start();
 
-  $output = shell_exec("../scrape.py " . escapeshellarg($post_id));
+  $command = "PYTHONIOENCODING=utf-8 ../scrape.py " . escapeshellarg($post_id);
+  $output = shell_exec($command);
 
   echo $output;
-
-  ob_end_flush();
 } else {
   echo 'Please enter a post ID as the "id" parameter in the URL.';
 }

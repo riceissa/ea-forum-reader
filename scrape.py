@@ -126,7 +126,6 @@ def get_content_for_post(postid):
       ) {
         result {
           _id
-          createdAt
           postedAt
           url
           title
@@ -134,6 +133,9 @@ def get_content_for_post(postid):
           body
           commentsCount
           htmlBody
+          baseScore
+          voteCount
+          pageUrl
           user {
             username
             slug
@@ -288,9 +290,12 @@ def print_post_and_comment_thread(postid):
         <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a></nav>
     """ % post['title'])
 
-    result += ("<h1>" + post['title'] + "</h1>")
-    result += '''post by <b><a href="./users.php?id=%s">%s</a></b><br />''' % (post['user']['slug'], post['user']['username'])
-    result += ('''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>')
+    result += ("<h1>" + post['title'] + "</h1>\n")
+    result += '''post by <b><a href="./users.php?id=%s">%s</a></b> ·\n''' % (post['user']['slug'], post['user']['username'])
+    result += '''%s ·\n''' % post['postedAt']
+    result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
+    result += '''<a href="%s" title="EA Forum link">EA</a> ·\n''' % post['pageUrl']
+    result += ('''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>\n')
     result += (cleanHtmlBody(post['htmlBody']))
 
     result += ('''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>')

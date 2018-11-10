@@ -2,12 +2,14 @@
 
 import requests
 import json
-import pdb
+import sys
 
 def send_query(query):
     return requests.get('https://forum.effectivealtruism.org/graphql', params={'query': query})
 
 def cleanHtmlBody(htmlBody):
+    """For some reason htmlBody values often have the following tags that
+    really shouldn't be there."""
     return (htmlBody.replace("<html>", "")
                     .replace("</html>", "")
                     .replace("<body>", "")
@@ -249,4 +251,7 @@ def get_posts_for_user(username):
         result.append(post['pageUrl'])
     return result
 
-print_post_and_comment_thread("NDszJWMsdLCB4MNoy")
+if len(sys.argv) <= 1:
+    print("Please enter a post ID as argument")
+else:
+    print_post_and_comment_thread(sys.argv[1])

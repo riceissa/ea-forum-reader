@@ -26,7 +26,7 @@ def get_daily_posts(offset=0):
     {
       posts(input: {
         terms: {
-          view: "daily"
+          view: "new"
           limit: 50
           %s
         }
@@ -73,7 +73,7 @@ def show_daily_posts(offset=0):
     result += '''<a href="./index.php?offset=%s">next page (older posts) →</a>''' % (offset + 50)
     result += '''<br/><br/>\n'''
 
-    for post in sorted(posts, key=lambda x: x['postedAt'], reverse=True):
+    for post in posts:
         post_url = "./posts.php?id=" + post['_id']
         result += ('''<div style="margin-bottom: 15px;">\n''')
         result += (('''    <a href="%s">''' % post_url) + htmlescape(post['title']) + "</a><br />\n")

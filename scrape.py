@@ -280,6 +280,48 @@ def print_post_and_comment_thread(postid):
     return result
 
 
+def html_page_for_user(username):
+    result = ("""<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <title>%s</title>
+        <style type="text/css">
+            body { font-family: Helvetica, sans-serif; }
+        </style>
+    </head>
+    <body>
+    """ % username)
+
+    comments = get_comments_for_user(username)
+    posts = get_posts_for_user(username)
+
+    all_content = []
+    all_content.extend(comments)
+    all_content.extend(posts)
+    all_content = sorted(all_content, key=lambda x: x['postedAt'], reverse=True)
+
+    for content in all_content:
+        content_type = "post" if "title" in content else "comment"
+        result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px;">\n'''
+        if content_type == "post":
+            result += '''    <h2><a href="./posts.php?id=%s">%s</a></h2>\n''' % (content['_id'], htmlescape(content['title']))
+            result += '''    %s\n''' % content['postedAt']
+        else:
+            if content['post'] is None:
+                result += '''    <a href="./posts.php?id=%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (content['postId'], content['_id'], content['user']['username'])
+            else:
+                result += '''    <a href="./posts.php?id=%s#%s">Comment</a> by <b>%s</b> on %s</b>,\n''' % (content['postId'], content['_id'], content['user']['username'], htmlescape(content['post']['title']))
+            result += '''    %s\n''' % content['postedAt']
+            content_body = cleanHtmlBody(content['htmlBody'])
+            result += '''    %s\n''' % content_body
+        result += "</div>\n"
+
+
+    return result
+
+
 def feed_for_user(username):
     result = ('''<?xml version="1.0" encoding="UTF-8"?>
     <rss version="2.0">

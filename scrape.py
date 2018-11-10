@@ -132,7 +132,16 @@ def build_comment_thread(comments):
         if not parent:
             root.insert(node)
         else:
-            index[parent].insert(node)
+            try:
+                index[parent].insert(node)
+            except KeyError:
+                # For some reason, comments sometimes refer to non-existent
+                # parents, e.g. on post xuQ4dCHBtRXFZG487 there is a parent
+                # called rjgZaK8uzHG3jAu2p that many comments refer to, but
+                # this parent doesn't exist (and never existed, if you look at
+                # the original post)
+                # https://web.archive.org/web/20160824012747/http://effective-altruism.com/ea/10l/june_2016_givewell_board_meeting/
+                root.insert(node)
 
     update_parity(root, "even")
 

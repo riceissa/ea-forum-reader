@@ -3,6 +3,9 @@
 import requests
 import json
 
+def htmlescape(string):
+    return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
 def send_query(query):
     return requests.get('https://forum.effectivealtruism.org/graphql', params={'query': query})
 
@@ -242,9 +245,9 @@ def feed_for_user(username):
             if content['post'] is None:
                 result += "    <title>Comment by %s on [deleted post]</title>\n" % (content['user']['username'])
             else:
-                result += "    <title>Comment by %s on %s</title>\n" % (content['user']['username'], content['post']['title'])
+                result += "    <title>Comment by %s on %s</title>\n" % (content['user']['username'], htmlescape(content['post']['title']))
         result += '''    <link>%s</link>\n''' % content['pageUrl']
-        content_body = cleanHtmlBody(content['htmlBody']).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        content_body = htmlescape(cleanHtmlBody(content['htmlBody']))
         result += '''    <description>%s</description>\n''' % content_body
         result += '''    <author>%s</author>\n''' % username
         result += '''    <guid>%s</guid>\n''' % content['_id']

@@ -119,6 +119,7 @@ def get_content_for_post(postid):
           htmlBody
           user {
             username
+            slug
           }
         }
       }
@@ -143,6 +144,7 @@ def get_comments_for_post(postid):
             _id
             username
             displayName
+            slug
           }
           userId
           author
@@ -267,7 +269,7 @@ def print_post_and_comment_thread(postid):
     """ % post['title'])
 
     result += ("<h1>" + post['title'] + "</h1>")
-    result += ('post by <b>' + post['user']['username'] + '</b><br />')
+    result += '''post by <b><a href="%s">%s</a></b><br />''' % (post['user']['slug'], post['user']['username'])
     result += ('''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>')
     result += (cleanHtmlBody(post['htmlBody']))
 
@@ -383,6 +385,7 @@ def get_comments_for_user(username):
           }
           user {
             username
+            slug
           }
           userId
           postId

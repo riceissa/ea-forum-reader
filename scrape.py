@@ -162,11 +162,11 @@ def print_comment(comment_node):
     # If this is the root node, comment is {} so skip it
     if comment:
         commentid = comment['_id']
-        result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding: 10px; margin: 5px; background-color: %s">''' % (commentid, color))
+        result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
         user = comment['user']['username'] if comment['user'] else "[deleted]"
-        result += ("comment by <b>" + user + "</b>,")
-        result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a>,")
-        result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes),")
+        result += ("comment by <b>" + user + "</b>, ")
+        result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a>, ")
+        result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes), ")
         result += ('<a title="EA Forum link" href="' + comment['pageUrl'] + '">EA</a>')
         result += (cleanHtmlBody(comment['htmlBody']))
 

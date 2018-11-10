@@ -47,8 +47,8 @@ def get_daily_posts():
 def show_daily_posts():
     posts = get_daily_posts()
     for post in sorted(posts, key=lambda x: x['postedAt'], reverse=True):
-        print("<div>")
-        print(htmlescape(post['title']) + "<br />")
+        print('''<div style="margin-bottom: 15px;">''')
+        print(('''<a href="./posts.php?id=%s">''' % post['_id']) + htmlescape(post['title']) + "</a><br />")
         print(post['user']['username'] + ", ")
         print("score: " + str(post['baseScore']))
         print("</div>")

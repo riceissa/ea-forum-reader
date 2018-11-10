@@ -236,21 +236,21 @@ def feed_for_user(username):
 
     for content in all_content:
         content_type = "post" if "title" in content else "comment"
-        result += "<item>"
+        result += "<item>\n"
         if content_type == "post":
-            result += "    <title>%s</title>" % content['title']
+            result += "    <title>%s</title>\n" % content['title']
         else:
             if content['post'] is None:
-                result += "    <title>Comment by %s on [deleted post]</title>" % (content['user']['username'])
+                result += "    <title>Comment by %s on [deleted post]</title>\n" % (content['user']['username'])
             else:
-                result += "    <title>Comment by %s on %s</title>" % (content['user']['username'], content['post']['title'])
-        result += '''    <link>%s</link>''' % content['pageUrl']
+                result += "    <title>Comment by %s on %s</title>\n" % (content['user']['username'], content['post']['title'])
+        result += '''    <link>%s</link>\n''' % content['pageUrl']
         content_body = cleanHtmlBody(content['htmlBody']).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-        result += '''    <description>%s</description>''' % content_body
-        result += '''    <author>%s</author>''' % username
-        result += '''    <guid>%s</guid>''' % content['_id']
-        result += '''    <pubDate>%s</pubDate>''' % content['postedAt']
-        result += "</item>"
+        result += '''    <description>%s</description>\n''' % content_body
+        result += '''    <author>%s</author>\n''' % username
+        result += '''    <guid>%s</guid>\n''' % content['_id']
+        result += '''    <pubDate>%s</pubDate>\n''' % content['postedAt']
+        result += "</item>\n"
 
     result += '''</channel>
     </rss>'''

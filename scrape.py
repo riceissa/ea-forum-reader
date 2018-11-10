@@ -146,35 +146,39 @@ def update_parity(comment_node, parity):
 
 
 def print_comment(comment_node):
+    result = ""
     comment = comment_node.data
     color = "#ECF5FF" if comment_node.parity == "odd" else "#FFFFFF"
 
     # If this is the root node, comment is {} so skip it
     if comment:
         commentid = comment['_id']
-        print('''<div id="%s" style="border: 1px solid #B3B3B3; padding: 10px; margin: 5px; background-color: %s">''' % (commentid, color))
-        print("comment by <b>" + comment['user']['username'] + "</b>,")
-        print(('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a>,")
-        print("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes),")
-        print('<a title="EA Forum link" href="' + comment['pageUrl'] + '">EA</a>')
-        print(cleanHtmlBody(comment['htmlBody']))
+        result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding: 10px; margin: 5px; background-color: %s">''' % (commentid, color))
+        result += ("comment by <b>" + comment['user']['username'] + "</b>,")
+        result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a>,")
+        result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes),")
+        result += ('<a title="EA Forum link" href="' + comment['pageUrl'] + '">EA</a>')
+        result += (cleanHtmlBody(comment['htmlBody']))
 
     if comment_node.children:
         for child in comment_node.children:
-            print_comment(child)
+            result += print_comment(child)
 
-    print("</div>")
+    result += ("</div>")
+
+    return result
 
 
 def print_comment_thread(postid):
     comments = get_comments_for_post(postid)
     root = build_comment_thread(comments)
-    print_comment(root)
+    return print_comment(root)
 
 def print_post_and_comment_thread(postid):
+    result = ""
     post = get_content_for_post(postid)
 
-    print("""<!DOCTYPE html>
+    result += ("""<!DOCTYPE html>
     <html>
     <head>
         <meta charset="utf-8">
@@ -187,19 +191,21 @@ def print_post_and_comment_thread(postid):
     <body>
     """ % post['title'])
 
-    print("<h1>" + post['title'] + "</h1>")
-    print('post by <b>' + post['user']['username'] + '</b><br />')
-    print('''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>')
-    print(cleanHtmlBody(post['htmlBody']))
+    result += ("<h1>" + post['title'] + "</h1>")
+    result += ('post by <b>' + post['user']['username'] + '</b><br />')
+    result += ('''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>')
+    result += (cleanHtmlBody(post['htmlBody']))
 
-    print('''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>')
+    result += ('''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>')
 
-    print_comment_thread(postid)
+    result += print_comment_thread(postid)
 
-    print("""
+    result += ("""
         </body>
         </html>
     """)
+
+    return result
 
 
 def get_comments_for_user(username):
@@ -254,4 +260,4 @@ def get_posts_for_user(username):
 if len(sys.argv) <= 1:
     print("Please enter a post ID as argument")
 else:
-    print_post_and_comment_thread(sys.argv[1])
+    print(print_post_and_comment_thread(sys.argv[1]))

@@ -223,8 +223,7 @@ def feed_for_user(username):
         <channel>
             <title>%s</title>
             <description>%s</description>
-            <language>en-us</language>
-    ''' % (username + " feed - EA Forum Reader", username + "’s posts and comments on the Effective Altruism Forum"))
+            <language>en-us</language>\n''' % (username + " feed - EA Forum Reader", username + "’s posts and comments on the Effective Altruism Forum"))
 
     comments = get_comments_for_user(username)
     posts = get_posts_for_user(username)

@@ -67,6 +67,7 @@ def show_daily_posts():
         result += ('''<div style="margin-bottom: 15px;">\n''')
         result += (('''    <a href="%s">''' % post_url) + htmlescape(post['title']) + "</a><br />\n")
         result += (post['user']['username'] + ", \n")
+        result += post['postedAt'] + ", \n"
         result += ("score: " + str(post['baseScore']) + ", \n")
         result += ('''    <a href="%s#comments">comments (%s)</a>\n''' % (post_url, post['commentsCount']))
         result += ("</div>")

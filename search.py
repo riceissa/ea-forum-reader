@@ -4,6 +4,7 @@ import sys
 import json
 import requests
 from urllib.parse import quote
+from scrape import htmlescape
 
 ALGOLIA_URL = ""
 with open(sys.argv[1], "r") as f:
@@ -78,13 +79,26 @@ def print_posts(string):
 
 if len(sys.argv) > 2:
     search_string = sys.argv[2]
-    print('''
-        <ul>
-            <li><a href="#posts">Jump to post results</a></li>
-            <li><a href="#comments">Jump to comment results</a></li>
-        </ul>
-    ''')
+    print(''' <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+            <title>Search results for %s</title>
+            <style type="text/css">
+                body { font-family: Helvetica, sans-serif; }
+            </style>
+        </head>
+        <body>
+            <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a></nav>
+            <ul>
+                <li><a href="#posts">Jump to post results</a></li>
+                <li><a href="#comments">Jump to comment results</a></li>
+            </ul>
+    ''' % htmlescape(search_string))
     print('''<h2 id="posts">Post results</h2>''')
     print_posts(search_string)
     print('''<h2 id="comments">Comment results</h2>''')
     print_comments(search_string)
+    print('''</body>
+        </html>''')

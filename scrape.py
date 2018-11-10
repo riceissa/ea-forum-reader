@@ -62,6 +62,7 @@ def show_daily_posts():
         </style>
     </head>
     <body>
+        <nav><a href=".">Home</a></nav>
         <h1>EA Forum Reader</h1>
     """
 
@@ -268,6 +269,7 @@ def print_post_and_comment_thread(postid):
         </style>
     </head>
     <body>
+        <nav><a href=".">Home</a></nav>
     """ % post['title'])
 
     result += ("<h1>" + post['title'] + "</h1>")
@@ -299,6 +301,7 @@ def html_page_for_user(username):
         </style>
     </head>
     <body>
+        <nav><a href=".">Home</a></nav>
     """ % username)
 
     comments = get_comments_for_user(username)

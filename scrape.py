@@ -301,8 +301,8 @@ def html_page_for_user(username):
         </style>
     </head>
     <body>
-        <nav><a href=".">Home</a></nav>
-    """ % username)
+        <nav><a href=".">Home</a>, <a href="./users.php?id=%s&format=rss">Feed</a></nav>
+    """ % (username, username))
 
     comments = get_comments_for_user(username)
     posts = get_posts_for_user(username)

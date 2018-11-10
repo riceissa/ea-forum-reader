@@ -6,7 +6,7 @@ import requests
 from urllib.parse import quote
 
 ALGOLIA_URL = ""
-with open("algolia_url.txt", "r") as f:
+with open(sys.argv[1], "r") as f:
     ALGOLIA_URL = next(f).strip()
 
 
@@ -55,7 +55,7 @@ def print_posts(string):
 # print(json.dumps(search_posts("carl shulman"), indent=4))
 
 
-if len(sys.argv) > 1:
-    search_string = sys.argv[1]
+if len(sys.argv) > 2:
+    search_string = sys.argv[2]
     print_posts(search_string)
     print_comments(search_string)

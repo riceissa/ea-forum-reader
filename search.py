@@ -90,7 +90,13 @@ if len(sys.argv) > 2:
             </style>
         </head>
         <body>
-            <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a></nav>
+            <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a>
+            <form action="./search.php" method="get" style="display: inline-block;">
+                    <input name="q" type="text" />
+                    <input type="submit" value="Search" />
+            </form>
+
+            </nav>
             <ul>
                 <li><a href="#posts">Jump to post results</a></li>
                 <li><a href="#comments">Jump to comment results</a></li>

@@ -64,7 +64,12 @@ def show_daily_posts(offset=0):
         </style>
     </head>
     <body>
-        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a></nav>
+        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a>
+            <form action="./search.php" method="get" style="display: inline-block;">
+                    <input name="q" type="text" />
+                    <input type="submit" value="Search" />
+            </form>
+        </nav>
         <h1>EA Forum Reader</h1>
     """
 
@@ -306,7 +311,12 @@ def print_post_and_comment_thread(postid):
         </style>
     </head>
     <body>
-        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a></nav>
+        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a>
+            <form action="./search.php" method="get" style="display: inline-block;">
+                    <input name="q" type="text" />
+                    <input type="submit" value="Search" />
+            </form>
+        </nav>
     """ % post['title'])
 
     result += ("<h1>" + post['title'] + "</h1>\n")
@@ -341,7 +351,12 @@ def html_page_for_user(username):
         </style>
     </head>
     <body>
-        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a>, <a href="./users.php?id=%s&format=rss">Feed</a></nav>
+        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a>, <a href="./users.php?id=%s&format=rss">Feed</a>
+            <form action="./search.php" method="get" style="display: inline-block;">
+                    <input name="q" type="text" />
+                    <input type="submit" value="Search" />
+            </form>
+        </nav>
     """ % (username, username))
 
     comments = get_comments_for_user(username)

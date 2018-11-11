@@ -3,7 +3,7 @@
 A fast and JavaScript-free way to browse the [Effective Altruism
 Forum](https://forum.effectivealtruism.org/).
 
-[LessWrong](https://www.lesswrong.com/) : [GreaterWrong](https://www.greaterwrong.com/) :: [EA Forum](https://forum.effectivealtruism.org/) : [EA Forum Reader](https://exp.issarice.com/ea-forum-reader/)
+[LessWrong](https://www.lesswrong.com/) : [GreaterWrong](https://www.greaterwrong.com/) :: [EA Forum](https://forum.effectivealtruism.org/) : [EA Forum Reader](https://exp.issarice.com/ea-forum-reader/) (and [ea.greaterwrong.com](https://ea.greaterwrong.com/))
 
 ## Acknowledgments
 

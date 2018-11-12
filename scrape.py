@@ -6,6 +6,9 @@ import json
 def htmlescape(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
+def ea_forum_to_gw(ea_forum_link):
+    return ea_forum_link.replace('forum.effectivealtruism.org', 'ea.greaterwrong.com', 1)
+
 def show_head(title):
     result = ("""
     <head>
@@ -338,6 +341,7 @@ def print_comment(comment_node):
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a>, ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes), ")
         result += ('<a title="EA Forum link" href="' + comment['pageUrl'] + '">EA</a>')
+        result += '<a title="GreaterWrong link" href="' + ea_forum_to_gw(comment['pageUrl']) + '">GW</a>'
         result += (cleanHtmlBody(comment['htmlBody']))
 
     if comment_node.children:
@@ -371,6 +375,7 @@ def print_post_and_comment_thread(postid):
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
     result += '''<a href="%s" title="EA Forum link">EA</a> ·\n''' % post['pageUrl']
+    result += '''<a href="%s" title="GreaterWrong link">GW</a> ·\n''' % ea_forum_to_gw(post['pageUrl'])
     result += '''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>\n'
     result += cleanHtmlBody(post['htmlBody'])
 

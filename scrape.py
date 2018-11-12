@@ -26,8 +26,13 @@ def show_head(title):
                 color: #326492;
                 text-decoration: underline;
             }
-                a:visited {
+            a:visited {
                 color: #8a8a8b;
+            }
+            blockquote {
+                border-left: 2px solid #369;
+                padding-left: 10px;
+                margin-right: 15px;
             }
             h1 {
                 color: #326492;

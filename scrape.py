@@ -335,12 +335,12 @@ def print_comment(comment_node):
         commentid = comment['_id']
         result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
         if comment['user']:
-            result += '''comment by <b><a href="./users.php?id=%s">%s</a></b>,\n''' % (comment['user']['slug'], comment['user']['username'])
+            result += '''comment by <b><a href="./users.php?id=%s">%s</a></b> ·\n''' % (comment['user']['slug'], comment['user']['username'])
         else:
-            result += '''comment by <b>[deleted]</b>,\n'''
+            result += '''comment by <b>[deleted]</b> ·\n'''
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes), ")
-        result += ('<a title="EA Forum link" href="' + comment['pageUrl'] + '">EA</a> ·')
+        result += ('<a title="EA Forum link" href="' + comment['pageUrl'] + '">EA</a> · ')
         result += '<a title="GreaterWrong link" href="' + ea_forum_to_gw(comment['pageUrl']) + '">GW</a>'
         result += (cleanHtmlBody(comment['htmlBody']))
 

@@ -46,7 +46,7 @@ def show_comment(comment):
 
 
 def show_post(post, string, seen):
-    result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px;"><a href="./posts.php?id=%s">%s</a>
+    result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: #ECF5FF;"><a href="./posts.php?id=%s">%s</a>
     by <a href="./users.php?userid=%s">%s</a> · %s · score: %s
     ''' % (post['_id'],
            htmlescape(post['title']),
@@ -55,7 +55,7 @@ def show_post(post, string, seen):
            post['postedAt'],
            post['baseScore']))
     if string.lower() in post['body'].lower():
-        result += '''<pre style="font-family: Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % htmlescape(post['body'])
+        result += '''<pre style="font-family: Lato, Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % htmlescape(post['body'])
     else:
         if post['_id'] in seen:
             # If we didn't even match inside the body and we've seen this post
@@ -84,6 +84,8 @@ if len(sys.argv) > 2:
     print(show_head(search_string))
     print("<body>")
     print(show_navbar())
+    print('''<div id="wrapper">''')
+    print('''<div id="content">''')
     print('''<ul>
                 <li><a href="#posts">Jump to post results</a></li>
                 <li><a href="#comments">Jump to comment results</a></li>
@@ -92,5 +94,7 @@ if len(sys.argv) > 2:
     print_posts(search_string)
     print('''<h2 id="comments">Comment results</h2>''')
     print_comments(search_string)
+    print("</div>")
+    print("</div>")
     print('''</body>
         </html>''')

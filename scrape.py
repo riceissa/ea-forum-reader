@@ -33,6 +33,7 @@ def show_head(title):
                 border-left: 2px solid #369;
                 padding-left: 10px;
                 margin-right: 15px;
+                margin-left: 0px;
             }
             h1 {
                 color: #326492;
@@ -421,13 +422,29 @@ def html_page_for_user(username):
         result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: #ECF5FF;">\n'''
         if content_type == "post":
             result += '''    <h2><a href="./posts.php?id=%s">%s</a></h2>\n''' % (content['_id'], htmlescape(content['title']))
-            result += '''    %s\n''' % content['postedAt']
+            result += '''    %s · score: %s (%s votes)\n''' % (content['postedAt'], content['baseScore'], content['voteCount'])
         else:
             if content['post'] is None:
                 result += '''    <a href="./posts.php?id=%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (content['postId'], content['_id'], content['user']['username'])
+                result += '''    %s\n''' % content['postedAt']
             else:
-                result += '''    <a href="./posts.php?id=%s#%s">Comment</a> by <b>%s</b> on <a href="./posts.php?id=%s">%s</a></b>,\n''' % (content['postId'], content['_id'], content['user']['username'], content['postId'], htmlescape(content['post']['title']))
-            result += '''    %s\n''' % content['postedAt']
+                result += ('''    Comment by
+                    <b>%s</b> on
+                    <a href="./posts.php?id=%s">%s</a></b> ·
+                    <a href="./posts.php?id=%s#%s">%s</a> ·
+                    score: %s (%s votes) ·
+                    <a href="%s" title="EA Forum link">EA</a> ·
+                    <a href="%s" title="GreaterWrong link">GW</a>''' % (
+                        content['user']['username'],
+                        content['postId'],
+                        htmlescape(content['post']['title']),
+                        content['postId'],
+                        content['_id'],
+                        content['postedAt'],
+                        content['baseScore'],
+                        content['voteCount'],
+                        content['pageUrl'],
+                        ea_forum_to_gw(content['pageUrl'])))
             content_body = cleanHtmlBody(content['htmlBody'])
             result += '''    %s\n''' % content_body
         result += "</div>\n"
@@ -507,6 +524,8 @@ def get_comments_for_user(username):
           postedAt
           pageUrl
           htmlBody
+          baseScore
+          voteCount
         }
       }
     }
@@ -536,6 +555,8 @@ def get_posts_for_user(username):
           pageUrl
           postedAt
           htmlBody
+          voteCount
+          baseScore
         }
       }
     }

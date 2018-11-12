@@ -13,7 +13,18 @@ def show_head(title):
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
         <title>%s</title>
         <style type="text/css">
-            body { font-family: Helvetica, sans-serif; }
+            body {
+                font-family: Lato, Helvetica, sans-serif;
+                font-size: 16px;
+                line-height: 1.4;
+            }
+            a {
+                color: #326492;
+                text-decoration: underline;
+            }
+                a:visited {
+                color: #8a8a8b;
+            }
         </style>
     </head>
     """ % htmlescape(title))

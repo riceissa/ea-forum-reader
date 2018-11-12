@@ -6,6 +6,41 @@ import json
 def htmlescape(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
+def show_head(title):
+    result = ("""
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        <title>%s</title>
+        <style type="text/css">
+            body { font-family: Helvetica, sans-serif; }
+        </style>
+    </head>
+    """ % htmlescape(title))
+
+    return result
+
+
+def show_navbar(navlinks=None):
+    if navlinks is None:
+        navlinks = []
+
+    result = """<nav><a href=".">Home</a> ·
+        <a href="https://github.com/riceissa/ea-forum-reader">About</a>"""
+
+    for link in navlinks:
+        result += " · " + link
+
+    result += """
+        <form action="./search.php" method="get" style="display: inline-block;">
+                <input name="q" type="text" />
+                <input type="submit" value="Search" />
+        </form>
+    </nav>
+    """
+
+    return result
+
 def send_query(query):
     return requests.get('https://forum.effectivealtruism.org/graphql', params={'query': query})
 
@@ -55,23 +90,11 @@ def show_daily_posts(offset=0):
 
     result = """<!DOCTYPE html>
     <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-        <title>EA Forum Reader</title>
-        <style type="text/css">
-            body { font-family: Helvetica, sans-serif; }
-        </style>
-    </head>
-    <body>
-        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a>
-            <form action="./search.php" method="get" style="display: inline-block;">
-                    <input name="q" type="text" />
-                    <input type="submit" value="Search" />
-            </form>
-        </nav>
-        <h1>EA Forum Reader</h1>
     """
+    result += show_head("EA Forum Reader")
+    result += "<body>\n"
+    result += show_navbar()
+    result += """<h1>EA Forum Reader</h1>"""
 
     if offset - 50 >= 0:
         result += '''<a href="./index.php?offset=%s">← previous page (newer posts)</a> · ''' % (offset - 50)
@@ -300,34 +323,21 @@ def print_post_and_comment_thread(postid):
     result = ""
     post = get_content_for_post(postid)
 
-    result += ("""<!DOCTYPE html>
+    result += """<!DOCTYPE html>
     <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-        <title>%s</title>
-        <style type="text/css">
-            body { font-family: Helvetica, sans-serif; }
-        </style>
-    </head>
-    <body>
-        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a>
-            <form action="./search.php" method="get" style="display: inline-block;">
-                    <input name="q" type="text" />
-                    <input type="submit" value="Search" />
-            </form>
-        </nav>
-    """ % post['title'])
-
-    result += ("<h1>" + post['title'] + "</h1>\n")
+    """
+    result += show_head(post['title'])
+    result += "<body>\n"
+    result += show_navbar()
+    result += "<h1>" + htmlescape(post['title']) + "</h1>\n"
     result += '''post by <b><a href="./users.php?id=%s">%s</a></b> ·\n''' % (post['user']['slug'], post['user']['username'])
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
     result += '''<a href="%s" title="EA Forum link">EA</a> ·\n''' % post['pageUrl']
-    result += ('''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>\n')
-    result += (cleanHtmlBody(post['htmlBody']))
+    result += '''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>\n'
+    result += cleanHtmlBody(post['htmlBody'])
 
-    result += ('''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>')
+    result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'
 
     result += print_comment_thread(postid)
 
@@ -340,25 +350,13 @@ def print_post_and_comment_thread(postid):
 
 
 def html_page_for_user(username):
-    result = ("""<!DOCTYPE html>
+    result = """<!DOCTYPE html>
     <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-        <title>%s</title>
-        <style type="text/css">
-            body { font-family: Helvetica, sans-serif; }
-        </style>
-    </head>
-    <body>
-        <nav><a href=".">Home</a>, <a href="https://github.com/riceissa/ea-forum-reader">About</a>, <a href="./users.php?id=%s&format=rss">Feed</a>
-            <form action="./search.php" method="get" style="display: inline-block;">
-                    <input name="q" type="text" />
-                    <input type="submit" value="Search" />
-            </form>
-        </nav>
-    """ % (username, username))
-
+    """
+    result += show_head(username)
+    result += "<body>"
+    feed_link = '''<a href="./users.php?id=%s&format=rss">Feed</a>''' % username
+    result += show_navbar(navlinks=[feed_link])
     comments = get_comments_for_user(username)
     posts = get_posts_for_user(username)
 

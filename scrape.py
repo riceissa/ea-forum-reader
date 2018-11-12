@@ -338,9 +338,9 @@ def print_comment(comment_node):
             result += '''comment by <b><a href="./users.php?id=%s">%s</a></b>,\n''' % (comment['user']['slug'], comment['user']['username'])
         else:
             result += '''comment by <b>[deleted]</b>,\n'''
-        result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a>, ")
+        result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes), ")
-        result += ('<a title="EA Forum link" href="' + comment['pageUrl'] + '">EA</a>')
+        result += ('<a title="EA Forum link" href="' + comment['pageUrl'] + '">EA</a> ·')
         result += '<a title="GreaterWrong link" href="' + ea_forum_to_gw(comment['pageUrl']) + '">GW</a>'
         result += (cleanHtmlBody(comment['htmlBody']))
 

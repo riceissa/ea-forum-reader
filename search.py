@@ -26,7 +26,7 @@ def search_comments(string):
 
 
 def show_comment(comment):
-    result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px;">comment by <a href="./users.php?userid=%s">%s</a>
+    result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: #ECF5FF;">comment by <a href="./users.php?userid=%s">%s</a>
         on <a href="./posts.php?id=%s">%s</a>
         · <a href="./posts.php?id=%s#%s">%s</a>
         · score: %s
@@ -39,7 +39,7 @@ def show_comment(comment):
                comment['postedAt'],
                comment['baseScore']))
 
-    result += '''<pre style="font-family: Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % htmlescape(comment['body'])
+    result += '''<pre style="font-family: Lato, Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % htmlescape(comment['body'])
     result += "</div>"
 
     return result

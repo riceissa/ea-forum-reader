@@ -17,6 +17,7 @@ def show_head(title):
                 font-family: Lato, Helvetica, sans-serif;
                 font-size: 16px;
                 line-height: 1.4;
+                background-color: whitesmoke;
             }
             a {
                 color: #326492;
@@ -24,6 +25,25 @@ def show_head(title):
             }
                 a:visited {
                 color: #8a8a8b;
+            }
+            h1 {
+                color: #326492;
+            }
+            #wrapper {
+              margin: 0 auto;
+              width: 1024px;
+              text-align: left;
+              font-size: 14px;
+              border-left: 1px solid #d2d2d2;
+              border-right: 1px solid #d2d2d2;
+              background-color: #fff;
+            }
+            #content {
+              /* float: left; */
+              padding: 30px 0 0 32px;
+              width: 710px;
+              clear: both;
+              background-color: #fff;
             }
         </style>
     </head>
@@ -105,6 +125,8 @@ def show_daily_posts(offset=0):
     result += show_head("EA Forum Reader")
     result += "<body>\n"
     result += show_navbar()
+    result += '''<div id="wrapper">'''
+    result += '''<div id="content">'''
     result += """<h1>EA Forum Reader</h1>"""
 
     if offset - 50 >= 0:
@@ -133,6 +155,8 @@ def show_daily_posts(offset=0):
     result += '''<br/><br/>\n'''
 
     result += """
+    </div>
+    </div>
         </body>
     </html>
     """
@@ -340,6 +364,8 @@ def print_post_and_comment_thread(postid):
     result += show_head(post['title'])
     result += "<body>\n"
     result += show_navbar()
+    result += '''<div id="wrapper">'''
+    result += '''<div id="content">'''
     result += "<h1>" + htmlescape(post['title']) + "</h1>\n"
     result += '''post by <b><a href="./users.php?id=%s">%s</a></b> ·\n''' % (post['user']['slug'], post['user']['username'])
     result += '''%s ·\n''' % post['postedAt']
@@ -353,6 +379,8 @@ def print_post_and_comment_thread(postid):
     result += print_comment_thread(postid)
 
     result += ("""
+    </div>
+    </div>
         </body>
         </html>
     """)
@@ -368,6 +396,8 @@ def html_page_for_user(username):
     result += "<body>"
     feed_link = '''<a href="./users.php?id=%s&format=rss">Feed</a>''' % username
     result += show_navbar(navlinks=[feed_link])
+    result += '''<div id="wrapper">'''
+    result += '''<div id="content">'''
     comments = get_comments_for_user(username)
     posts = get_posts_for_user(username)
 
@@ -378,7 +408,7 @@ def html_page_for_user(username):
 
     for content in all_content:
         content_type = "post" if "title" in content else "comment"
-        result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px;">\n'''
+        result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: #ECF5FF;">\n'''
         if content_type == "post":
             result += '''    <h2><a href="./posts.php?id=%s">%s</a></h2>\n''' % (content['_id'], htmlescape(content['title']))
             result += '''    %s\n''' % content['postedAt']
@@ -392,7 +422,12 @@ def html_page_for_user(username):
             result += '''    %s\n''' % content_body
         result += "</div>\n"
 
-
+    result += '''
+        </div>
+        </div>
+        </body>
+        </html>
+    '''
     return result
 
 

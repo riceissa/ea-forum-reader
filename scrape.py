@@ -61,7 +61,7 @@ def show_head(title):
     return result
 
 
-def show_navbar(navlinks=None):
+def show_navbar(navlinks=None, search_value=""):
     if navlinks is None:
         navlinks = []
 
@@ -71,13 +71,16 @@ def show_navbar(navlinks=None):
     for link in navlinks:
         result += " · " + link
 
-    result += """
+    if search_value:
+        search_value = 'value="%s"' % htmlescape(search_value)
+
+    result += ("""
         <form action="./search.php" method="get" style="display: inline-block;">
-                <input name="q" type="text" />
+                <input name="q" type="text" %s/>
                 <input type="submit" value="Search" />
         </form>
     </nav>
-    """
+    """ % search_value)
 
     return result
 

@@ -83,7 +83,7 @@ if len(sys.argv) > 2:
         <html>''')
     print(show_head(search_string))
     print("<body>")
-    print(show_navbar())
+    print(show_navbar(search_value=search_string))
     print('''<div id="wrapper">''')
     print('''<div id="content">''')
     print('''<ul>

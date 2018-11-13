@@ -140,8 +140,8 @@ def posts_list_query(view="new", offset=0, before="", after=""):
     request = send_query(query)
     return request.json()['data']['posts']['results']
 
-def show_daily_posts(offset=0):
-    posts = get_daily_posts(offset)
+def show_daily_posts(offset, view):
+    posts = posts_list_query(offset=offset, view=view)
 
     result = """<!DOCTYPE html>
     <html>

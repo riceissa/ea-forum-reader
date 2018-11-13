@@ -3,10 +3,7 @@
 import sys
 from scrape import *
 
-if len(sys.argv) <= 1:
-    print(show_daily_posts())
+if len(sys.argv) <= 2:
+    print("Need more args")
 else:
-    try:
-        print(show_daily_posts(offset=int(sys.argv[1])))
-    except ValueError:
-        print(show_daily_posts())
+    print(show_daily_posts(offset=int(sys.argv[1]), view=sys.argv[2]))

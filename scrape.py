@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import requests
-import json
+import datetime
 
 def htmlescape(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
@@ -133,8 +133,8 @@ def posts_list_query(view="new", offset=0, before="", after=""):
     """ % (
             view,
             "offset: " + str(offset) if offset > 0 else "",
-            "before: " + before if before else "",
-            "after: " + after if after else ""
+            ('before: "%s"' % before) if before else "",
+            ('after: "%s"' % after) if after else ""
         )
     )
     request = send_query(query)
@@ -153,10 +153,52 @@ def show_daily_posts(offset, view, before, after):
     result += '''<div id="content">'''
     result += """<h1>EA Forum Reader</h1>"""
 
-    if offset - 50 >= 0:
-        result += '''<a href="./index.php?offset=%s">← previous page (newer posts)</a> · ''' % (offset - 50)
+    result += ('''
+        Restrict date range:
+        <a href="./?view=%s&amp;after=%s">Today</a> ·
+        <a href="./?view=%s&amp;after=%s">This week</a> ·
+        <a href="./?view=%s&amp;after=%s">This month</a> ·
+        <a href="./?view=%s&amp;after=%s">Last three months</a> ·
+        <a href="./?view=%s&amp;after=%s">This year</a> ·
+        <a href="./?view=%s">All time</a>
+        <br />
+        <br />
+    ''' % (
+            # Today's posts are all posts after yesterday's date
+            view,
+            (datetime.datetime.utcnow() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"),
 
-    result += '''<a href="./index.php?offset=%s">next page (older posts) →</a>''' % (offset + 50)
+            # This week
+            view,
+            (datetime.datetime.utcnow() - datetime.timedelta(days=7)).strftime("%Y-%m-%d"),
+
+            # This month
+            view,
+            (datetime.datetime.utcnow() - datetime.timedelta(days=30)).strftime("%Y-%m-%d"),
+
+            # Last three months
+            view,
+            (datetime.datetime.utcnow() - datetime.timedelta(days=90)).strftime("%Y-%m-%d"),
+
+            # This year
+            view,
+            (datetime.datetime.utcnow() - datetime.timedelta(days=365)).strftime("%Y-%m-%d"),
+
+            # All time
+            view
+        )
+    )
+
+    date_range_params = ""
+    if before:
+        date_range_params += "&amp;before=%s" % before
+    if after:
+        date_range_params += "&amp;after=%s" % after
+
+    if offset - 50 >= 0:
+        result += '''<a href="./?view=%s&amp;offset=%s%s">← previous page (newer posts)</a> · ''' % (view, offset - 50, date_range_params)
+
+    result += '''<a href="./?view=%s&amp;offset=%s%s">next page (older posts) →</a>''' % (view, offset + 50, date_range_params)
     result += '''<br/><br/>\n'''
 
     for post in posts:
@@ -173,10 +215,9 @@ def show_daily_posts(offset, view, before, after):
         result += ("</div>")
 
     if offset - 50 >= 0:
-        result += '''<a href="./index.php?offset=%s">← previous page (newer posts)</a> · ''' % (offset - 50)
+        result += '''<a href="./?view=%s&amp;offset=%s%s">← previous page (newer posts)</a> · ''' % (view, offset - 50, date_range_params)
 
-    result += '''<a href="./index.php?offset=%s">next page (older posts) →</a>''' % (offset + 50)
-    result += '''<br/><br/>\n'''
+    result += '''<a href="./?view=%s&amp;offset=%s%s">next page (older posts) →</a>''' % (view, offset + 50, date_range_params)
 
     result += """
     </div>

@@ -17,10 +17,24 @@ if ($_REQUEST['view'] ?? '') {
   $view = "new";
 }
 
+if ($_REQUEST['before'] ?? '') {
+  $before = $_REQUEST['before'];
+  $before = preg_replace('/[^0-9a-zA-Z:-]/', '', $before);
+} else {
+  $before = "";
+}
+
+if ($_REQUEST['after'] ?? '') {
+  $after = $_REQUEST['after'];
+  $after = preg_replace('/[^0-9a-zA-Z:-]/', '', $after);
+} else {
+  $after = "";
+}
+
 // For some reason when Python is invoked through PHP, it runs into Unicode
 // encoding issues when trying to print (because it defaults to some
 // ASCII-only encoding). So we have to force it to use UTF-8 here.
-$command = "PYTHONIOENCODING=utf-8 ../daily.py " . escapeshellarg($offset) . " " . escapeshellarg($view);
+$command = "PYTHONIOENCODING=utf-8 ../daily.py " . escapeshellarg($offset) . " " . escapeshellarg($view) . " " . escapeshellarg($before) . " " . escapeshellarg($after);
 
 $output = shell_exec($command);
 

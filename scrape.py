@@ -103,13 +103,15 @@ def cleanHtmlBody(htmlBody):
                     .replace("<head>", "")
                     .replace("</head>", ""))
 
-def get_daily_posts(offset=0):
+def posts_list_query(view="new", offset=0, before="", after=""):
     query = ("""
     {
       posts(input: {
         terms: {
-          view: "new"
+          view: "%s"
           limit: 50
+          %s
+          %s
           %s
         }
       }) {
@@ -128,7 +130,13 @@ def get_daily_posts(offset=0):
         }
       }
     }
-    """ % ("" if offset == 0 else "offset: " + str(offset)))
+    """ % (
+            view,
+            "offset: " + str(offset) if offset > 0 else "",
+            "before: " + before if before else "",
+            "after: " + after if after else ""
+        )
+    )
     request = send_query(query)
     return request.json()['data']['posts']['results']
 

@@ -38,6 +38,10 @@ def show_head(title):
             h1 {
                 color: #326492;
             }
+            img {
+                max-width: 100%%;
+                height: auto;
+            }
             #wrapper {
               margin: 0 auto;
               width: 1024px;

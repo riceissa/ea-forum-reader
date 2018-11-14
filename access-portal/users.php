@@ -13,6 +13,8 @@ if ($_REQUEST['userid'] ?? '') {
 if ($_REQUEST['id'] ?? '') {
   if (($_REQUEST['format'] ?? '') === "rss") {
     $format = "rss";
+  } else if (($_REQUEST['format'] ?? '') === "queries") {
+    $format = "queries";
   } else {
     $format = "html";
   }

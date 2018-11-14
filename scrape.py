@@ -154,7 +154,7 @@ def show_daily_posts(offset, view, before, after, display_format):
 
     if display_format == "queries":
         result = "<pre>"
-        result += posts # this is just the query string
+        result += posts  # this is just the query string
         result += "</pre>\n"
 
         return result
@@ -297,7 +297,7 @@ def userid_to_userslug(userid):
     return request.json()['data']['user']['result']['slug']
 
 
-def userslug_to_userid(userslug):
+def userslug_to_userid(userslug, run_query=True):
     query = ("""
     {
       user(input: {selector: {slug: "%s"}}) {
@@ -308,6 +308,9 @@ def userslug_to_userid(userslug):
       }
     }
     """ % userslug)
+
+    if not run_query:
+        return query
 
     request = send_query(query)
     return request.json()['data']['user']['result']['_id']
@@ -507,7 +510,17 @@ def print_post_and_comment_thread(postid):
     return result
 
 
-def html_page_for_user(username):
+def html_page_for_user(username, display_format):
+    comments = get_comments_for_user(username, run_query=(False if display_format == "queries" else True))
+    posts = get_posts_for_user(username, run_query=(False if display_format == "queries" else True))
+
+    if display_format == "queries":
+        result = "<pre>"
+        result += comments + "\n"
+        result += posts + "\n"
+        result += "</pre>\n"
+        return result
+
     result = """<!DOCTYPE html>
     <html>
     """
@@ -517,8 +530,6 @@ def html_page_for_user(username):
     result += show_navbar(navlinks=[feed_link])
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
-    comments = get_comments_for_user(username)
-    posts = get_posts_for_user(username)
 
     all_content = []
     all_content.extend(comments)
@@ -606,8 +617,8 @@ def feed_for_user(username):
     return result
 
 
-def get_comments_for_user(username):
-    userid = userslug_to_userid(username)
+def get_comments_for_user(username, run_query=True):
+    userid = userslug_to_userid(username, run_query=True)
     query = ("""
     {
       comments(input: {
@@ -639,6 +650,9 @@ def get_comments_for_user(username):
     }
     """ % userid)
 
+    if not run_query:
+        return userslug_to_userid(username, run_query=False) + "\n\n" + query
+
     request = send_query(query)
     result = []
     for comment in request.json()['data']['comments']['results']:
@@ -646,8 +660,8 @@ def get_comments_for_user(username):
     return result
 
 
-def get_posts_for_user(username):
-    userid = userslug_to_userid(username)
+def get_posts_for_user(username, run_query=True):
+    userid = userslug_to_userid(username, run_query=True)
     query = ("""
     {
       posts(input: {
@@ -669,6 +683,9 @@ def get_posts_for_user(username):
       }
     }
     """ % userid)
+
+    if not run_query:
+        return userslug_to_userid(username, run_query=False) + "\n\n" + query
 
     request = send_query(query)
     result = []

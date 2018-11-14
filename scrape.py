@@ -163,20 +163,24 @@ def show_daily_posts(offset, view, before, after):
         result += "<li>\n"
         result += '''<a href="./?view=%s&amp;before=%s&amp;after=%s">%s</a>''' % (
             view,
-            year + 1,
-            year,
+            str(year) + "-12-31",
+            str(year) + "-01-01",
             year
         )
-        if str(year) == after and str(year + 1) == before:
+        if str(year) == after[:4] and str(year) == before[:4]:
             # If we are here, it means we are viewing the "archive" for this
-            # year, so show the months in the sidebar so that we can go inside
-            # the months
+            # year (or a month within this year), so show the months in the
+            # sidebar so that we can go inside the months.
             result += "<ul>"
             for month in range(1, 12 + 1):
+                if month == 12:
+                    last_day = datetime.date(year + 1, 1, 1) - datetime.timedelta(days=1)
+                else:
+                    last_day = datetime.date(year, month + 1, 1) - datetime.timedelta(days=1)
                 result += '''<li><a href="./?view=%s&amp;before=%s&amp;after=%s">%s</a></li>''' % (
                     view,
-                    str(year + 1) + "-01" if month == 12 else str(year) + "-" + str(month + 1).zfill(2),
-                    str(year) + "-" + str(month).zfill(2),
+                    last_day.strftime("%Y-%m-%d"),
+                    str(year) + "-" + str(month).zfill(2) + "-01",
                     datetime.date(2000, month, 1).strftime("%B")
                 )
             result += "</ul>"

@@ -148,13 +148,47 @@ def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
     request = send_query(query)
     return request.json()['data']['posts']['results']
 
+
+def recent_comments_query(run_query=True):
+    query = ("""
+    {
+      comments(input: {
+        terms: {
+          view: "recentComments"
+          limit: 10
+        }
+      }) {
+        results {
+          post {
+            _id
+            title
+          }
+          user {
+            _id
+            slug
+          }
+          plaintextExcerpt
+          htmlHighlight
+        }
+      }
+    }
+    """)
+
+    if not run_query:
+        return query
+
+    request = send_query(query)
+    return request.json()['data']['comments']['results']
+
 def show_daily_posts(offset, view, before, after, display_format):
     posts = posts_list_query(offset=offset, view=view, before=before, after=after,
                              run_query=(False if display_format == "queries" else True))
+    recent_comments = recent_comments_query(run_query=(False if display_format == "queries" else True))
 
     if display_format == "queries":
         result = "<pre>"
-        result += posts  # this is just the query string
+        result += posts + "\n"  # this is just the query string
+        result += recent_comments + "\n"
         result += "</pre>\n"
 
         return result
@@ -200,12 +234,27 @@ def show_daily_posts(offset, view, before, after, display_format):
                 )
             result += "</ul>"
         result += "</li>\n"
-    result += '''
-            </ul>
-        </div>
-    '''
+    result += "</ul>"
+
+    result += '''<h2>Recent comments</h2>'''
+    for comment in recent_comments:
+        result += ('''
+            <a href="./users.php?id=%s">%s</a> on <a href="./posts.php?id=%s">%s</a><br/>
+            <span style="font-size: 14px;">
+            %s
+            </span>
+        ''' % (
+                comment['user']['slug'],
+                comment['user']['slug'],
+                comment['post']['_id'],
+                htmlescape(comment['post']['title']),
+                comment['htmlHighlight']
+            )
+        )
+
+    result += "</div>"  # sidebar
     result += '''<div id="content">'''
-    result += """<h1>EA Forum Reader</h1>"""
+    result += """<h1><a href="./">EA Forum Reader</a></h1>"""
 
     result += '''
         View:

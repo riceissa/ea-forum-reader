@@ -43,20 +43,24 @@ def show_head(title):
                 height: auto;
             }
             #wrapper {
-              margin: 0 auto;
-              width: 1024px;
-              text-align: left;
-              font-size: 14px;
               border-left: 1px solid #d2d2d2;
               border-right: 1px solid #d2d2d2;
+              margin: 0 auto;
+              width: 1024px;
+              overflow: hidden;
               background-color: #fff;
             }
             #content {
-              /* float: left; */
               padding: 30px 0 0 32px;
-              width: 710px;
-              clear: both;
               background-color: #fff;
+              width: 710px;
+              float: left;
+            }
+            #sidebar {
+              padding: 30px 32px 0 0;
+              background-color: #fff;
+              width: 220px;
+              float: right;
             }
         </style>
     </head>
@@ -150,6 +154,37 @@ def show_daily_posts(offset, view, before, after):
     result += "<body>\n"
     result += show_navbar()
     result += '''<div id="wrapper">'''
+    result += '''
+        <div id="sidebar">
+            <h2>Archive</h2>
+            <ul>
+    '''
+    for year in range(2011, datetime.datetime.utcnow().year + 1):
+        result += "<li>\n"
+        result += '''<a href="./?view=%s&amp;before=%s&amp;after=%s">%s</a>''' % (
+            view,
+            year + 1,
+            year,
+            year
+        )
+        if str(year) == after and str(year + 1) == before:
+            # If we are here, it means we are viewing the "archive" for this
+            # year, so show the months in the sidebar so that we can go inside
+            # the months
+            result += "<ul>"
+            for month in range(1, 12 + 1):
+                result += '''<li><a href="./?view=%s&amp;before=%s&amp;after=%s">%s</a></li>''' % (
+                    view,
+                    str(year + 1) + "-01" if month == 12 else str(year) + "-" + str(month + 1).zfill(2),
+                    str(year) + "-" + str(month).zfill(2),
+                    datetime.date(2000, month, 1).strftime("%B")
+                )
+            result += "</ul>"
+        result += "</li>\n"
+    result += '''
+            </ul>
+        </div>
+    '''
     result += '''<div id="content">'''
     result += """<h1>EA Forum Reader</h1>"""
 

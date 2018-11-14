@@ -318,7 +318,7 @@ def userslug_to_userid(userslug, run_query=True):
     return request.json()['data']['user']['result']['_id']
 
 
-def get_content_for_post(postid):
+def get_content_for_post(postid, run_query=True):
     query = ("""
     {
       post(
@@ -349,10 +349,13 @@ def get_content_for_post(postid):
     }
     """ % postid)
 
+    if not run_query:
+        return query
+
     request = send_query(query)
     return request.json()['data']['post']['result']
 
-def get_comments_for_post(postid):
+def get_comments_for_post(postid, run_query=True):
     query = ("""
     {
       comments(input: {
@@ -382,6 +385,9 @@ def get_comments_for_post(postid):
       }
     }
     """ % postid)
+
+    if not run_query:
+        return query
 
     request = send_query(query)
     result = []
@@ -472,21 +478,25 @@ def print_comment(comment_node):
     return result
 
 
-def print_comment_thread(postid):
-    comments = get_comments_for_post(postid)
-    root = build_comment_thread(comments)
-    return print_comment(root)
+def print_post_and_comment_thread(postid, display_format):
+    post = get_content_for_post(postid, run_query=(False if display_format == "queries" else True))
+    comments = get_comments_for_post(postid, run_query=(False if display_format == "queries" else True))
 
-def print_post_and_comment_thread(postid):
-    result = ""
-    post = get_content_for_post(postid)
+    if display_format == "queries":
+        result = "<pre>"
+        result += post + "\n"
+        result += comments + "\n"
+        result += "</pre>\n"
+        return result
 
-    result += """<!DOCTYPE html>
+    result = """<!DOCTYPE html>
     <html>
     """
     result += show_head(post['title'])
     result += "<body>\n"
-    result += show_navbar()
+    result += show_navbar(navlinks=[
+            '''<a href="./posts.php?id=%s&amp;format=queries" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % htmlescape(postid)
+        ])
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
     result += "<h1>" + htmlescape(post['title']) + "</h1>\n"
@@ -500,7 +510,8 @@ def print_post_and_comment_thread(postid):
 
     result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'
 
-    result += print_comment_thread(postid)
+    root = build_comment_thread(comments)
+    result += print_comment(root)
 
     result += ("""
     </div>

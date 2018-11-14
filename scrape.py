@@ -159,6 +159,7 @@ def recent_comments_query(run_query=True):
         }
       }) {
         results {
+          _id
           post {
             _id
             title
@@ -239,7 +240,7 @@ def show_daily_posts(offset, view, before, after, display_format):
     result += '''<h2>Recent comments</h2>'''
     for comment in recent_comments:
         result += ('''
-            <a href="./users.php?id=%s">%s</a> on <a href="./posts.php?id=%s">%s</a><br/>
+            <a href="./users.php?id=%s">%s</a> on <a href="./posts.php?id=%s#%s">%s</a><br/>
             <span style="font-size: 14px;">
             %s
             </span>
@@ -247,6 +248,7 @@ def show_daily_posts(offset, view, before, after, display_format):
                 comment['user']['slug'],
                 comment['user']['slug'],
                 comment['post']['_id'],
+                comment['_id'],
                 htmlescape(comment['post']['title']),
                 comment['htmlHighlight']
             )

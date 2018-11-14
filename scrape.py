@@ -529,7 +529,10 @@ def html_page_for_user(username, display_format):
     result += show_head(username)
     result += "<body>"
     feed_link = '''<a href="./users.php?id=%s&format=rss">Feed</a>''' % username
-    result += show_navbar(navlinks=[feed_link])
+    result += show_navbar(navlinks=[
+            feed_link,
+            '''<a href="./users.php?id=%s&amp;format=queries" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % htmlescape(username)
+        ])
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
 

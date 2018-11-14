@@ -264,41 +264,30 @@ def show_daily_posts(offset, view, before, after, display_format):
         <br /><br />
     '''
 
-    result += ('''
-        Restrict date range:
-        <a href="./?view=%s&amp;after=%s">Today</a> ·
-        <a href="./?view=%s&amp;after=%s">This week</a> ·
-        <a href="./?view=%s&amp;after=%s">This month</a> ·
-        <a href="./?view=%s&amp;after=%s">Last three months</a> ·
-        <a href="./?view=%s&amp;after=%s">This year</a> ·
-        <a href="./?view=%s">All time</a>
-        <br />
-        <br />
-    ''' % (
-            # Today's posts are all posts after yesterday's date
-            view,
-            (datetime.datetime.utcnow() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"),
-
-            # This week
-            view,
-            (datetime.datetime.utcnow() - datetime.timedelta(days=7)).strftime("%Y-%m-%d"),
-
-            # This month
-            view,
-            (datetime.datetime.utcnow() - datetime.timedelta(days=30)).strftime("%Y-%m-%d"),
-
-            # Last three months
-            view,
-            (datetime.datetime.utcnow() - datetime.timedelta(days=90)).strftime("%Y-%m-%d"),
-
-            # This year
-            view,
-            (datetime.datetime.utcnow() - datetime.timedelta(days=365)).strftime("%Y-%m-%d"),
-
-            # All time
-            view
+    if view == "top":
+        result += ('''
+            Restrict date range:
+            <a href="./?view=top&amp;after=%s">Today</a> ·
+            <a href="./?view=top&amp;after=%s">This week</a> ·
+            <a href="./?view=top&amp;after=%s">This month</a> ·
+            <a href="./?view=top&amp;after=%s">Last three months</a> ·
+            <a href="./?view=top&amp;after=%s">This year</a> ·
+            <a href="./?view=top">All time</a>
+            <br />
+            <br />
+        ''' % (
+                # Today's posts are all posts after yesterday's date
+                (datetime.datetime.utcnow() - datetime.timedelta(days=1)).strftime("%Y-%m-%d"),
+                # This week
+                (datetime.datetime.utcnow() - datetime.timedelta(days=7)).strftime("%Y-%m-%d"),
+                # This month
+                (datetime.datetime.utcnow() - datetime.timedelta(days=30)).strftime("%Y-%m-%d"),
+                # Last three months
+                (datetime.datetime.utcnow() - datetime.timedelta(days=90)).strftime("%Y-%m-%d"),
+                # This year
+                (datetime.datetime.utcnow() - datetime.timedelta(days=365)).strftime("%Y-%m-%d"),
+            )
         )
-    )
 
     date_range_params = ""
     if before:

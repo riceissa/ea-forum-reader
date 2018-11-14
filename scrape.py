@@ -90,7 +90,9 @@ def show_navbar(navlinks=None, search_value=""):
         navlinks = []
 
     result = """<nav><a href=".">Home</a> ·
-        <a href="https://github.com/riceissa/ea-forum-reader">About</a>"""
+        <a href="https://github.com/riceissa/ea-forum-reader">About</a> ·
+        <a href="./userlist.php">User list</a>
+        """
 
     for link in navlinks:
         result += " · " + link

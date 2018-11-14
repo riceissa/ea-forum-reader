@@ -4,24 +4,33 @@ import sys
 from scrape import *
 
 
-def users_list_query(run_query=True):
-    query = """
+def users_list_query(sort_by="karma", run_query=True):
+    sort_line = ""
+    if sort_by == "postCount":
+        sort_line = 'sort: {postCount: -1}'
+    elif sort_by == "commentCount":
+        sort_line = 'sort: {commentCount: -1}'
+    else:
+        sort_line = 'sort: {karma: -1}'
+    query = ("""
         {
           users(input: {
             terms: {
               view: "LWUsersAdmin"
               limit: 500
-              sort: {karma: -1}
+              %s
             }
           }) {
             results {
               _id
               slug
               karma
+              postCount
+              commentCount
             }
           }
         }
-    """
+    """ % sort_line)
 
     if not run_query:
         return query
@@ -29,8 +38,8 @@ def users_list_query(run_query=True):
     return request.json()['data']['users']['results']
 
 
-def show_users_list(display_format):
-    users = users_list_query(run_query=(False if display_format == "queries" else True))
+def show_users_list(sort_by, display_format):
+    users = users_list_query(sort_by=sort_by, run_query=(False if display_format == "queries" else True))
 
     if display_format == "queries":
         result = "<pre>"
@@ -53,20 +62,26 @@ def show_users_list(display_format):
         <table>
             <tr>
                 <th>Username</th>
-                <th>Karma</th>
+                <th><a href="./userlist.php?sort=karma">Karma</a></th>
+                <th><a href="./userlist.php?sort=postCount">Post count</a></th>
+                <th><a href="./userlist.php?sort=commentCount">Comment count</a></th>
             </tr>
     '''
 
     for user in users:
         result += ('''
             <tr>
-                <td><a href="./user.php?id=%s">%s</a></td>
-                <td>%s</td>
+                <td><a href="./users.php?id=%s">%s</a></td>
+                <td style="text-align: right;">%s</td>
+                <td style="text-align: right;">%s</td>
+                <td style="text-align: right;">%s</td>
             </tr>
         ''' % (
                 user['slug'],
                 user['slug'],
-                user['karma']
+                user['karma'],
+                user['postCount'],
+                user['commentCount']
             )
         )
 
@@ -79,8 +94,8 @@ def show_users_list(display_format):
 
 
 if __name__ == "__main__":
-    arg_count = 1
+    arg_count = 2
     if len(sys.argv) != arg_count + 1:
         print("Unexpected number of arguments")
     else:
-        print(show_users_list(display_format=sys.argv[1]))
+        print(show_users_list(sort_by=sys.argv[1], display_format=sys.argv[2]))

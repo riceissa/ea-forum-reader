@@ -10,6 +10,8 @@ if ($_REQUEST['offset'] ?? '') {
 if ($_REQUEST['view'] ?? '') {
   if ($_REQUEST['view'] === "top") {
     $view = "top";
+  } else if ($_REQUEST['view'] === "old") {
+    $view = "old";
   } else {
     $view = "new";
   }

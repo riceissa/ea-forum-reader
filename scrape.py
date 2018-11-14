@@ -207,6 +207,14 @@ def show_daily_posts(offset, view, before, after, display_format):
     result += '''<div id="content">'''
     result += """<h1>EA Forum Reader</h1>"""
 
+    result += '''
+        View:
+        <a href="./?view=new">New</a> ·
+        <a href="./?view=old">Old</a> ·
+        <a href="./?view=top">Top</a>
+        <br /><br />
+    '''
+
     result += ('''
         Restrict date range:
         <a href="./?view=%s&amp;after=%s">Today</a> ·

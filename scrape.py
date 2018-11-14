@@ -107,7 +107,7 @@ def cleanHtmlBody(htmlBody):
                     .replace("<head>", "")
                     .replace("</head>", ""))
 
-def posts_list_query(view="new", offset=0, before="", after=""):
+def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
     query = ("""
     {
       posts(input: {
@@ -141,11 +141,24 @@ def posts_list_query(view="new", offset=0, before="", after=""):
             ('after: "%s"' % after) if after else ""
         )
     )
+
+    if not run_query:
+        return query
+
     request = send_query(query)
     return request.json()['data']['posts']['results']
 
-def show_daily_posts(offset, view, before, after):
-    posts = posts_list_query(offset=offset, view=view, before=before, after=after)
+def show_daily_posts(offset, view, before, after, display_format):
+    posts = posts_list_query(offset=offset, view=view, before=before, after=after,
+                             run_query=(False if display_format == "queries" else True))
+
+    if display_format == "queries":
+        result = "<pre>"
+        result += posts # this is just the query string
+        result += "</pre>\n"
+
+        return result
+
 
     result = """<!DOCTYPE html>
     <html>

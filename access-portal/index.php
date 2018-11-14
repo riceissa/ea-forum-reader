@@ -31,10 +31,20 @@ if ($_REQUEST['after'] ?? '') {
   $after = "";
 }
 
+if ($_REQUEST['format'] ?? '') {
+  if ($_REQUEST['format'] === "queries") {
+    $format = "queries";
+  } else {
+    $format = "html";
+  }
+} else {
+  $format = "html";
+}
+
 // For some reason when Python is invoked through PHP, it runs into Unicode
 // encoding issues when trying to print (because it defaults to some
 // ASCII-only encoding). So we have to force it to use UTF-8 here.
-$command = "PYTHONIOENCODING=utf-8 ../index.py " . escapeshellarg($offset) . " " . escapeshellarg($view) . " " . escapeshellarg($before) . " " . escapeshellarg($after);
+$command = "PYTHONIOENCODING=utf-8 ../index.py " . escapeshellarg($offset) . " " . escapeshellarg($view) . " " . escapeshellarg($before) . " " . escapeshellarg($after) . " " . escapeshellarg($format);
 
 $output = shell_exec($command);
 

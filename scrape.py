@@ -165,7 +165,9 @@ def show_daily_posts(offset, view, before, after, display_format):
     """
     result += show_head("EA Forum Reader")
     result += "<body>\n"
-    result += show_navbar()
+    result += show_navbar(navlinks=[
+        '''<a href="./?view=%s&amp;offset=%s&amp;before=%s&amp;after=%s&amp;format=queries">Show queries for this page</a>''' % (view, offset, before, after)
+        ])
     result += '''<div id="wrapper">'''
     result += '''
         <div id="sidebar">

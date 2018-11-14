@@ -7,7 +7,7 @@ if ($_REQUEST['id'] ?? '') {
   // For some reason when Python is invoked through PHP, it runs into Unicode
   // encoding issues when trying to print (because it defaults to some
   // ASCII-only encoding). So we have to force it to use UTF-8 here.
-  $command = "PYTHONIOENCODING=utf-8 ../comment_thread.py " . escapeshellarg($post_id);
+  $command = "PYTHONIOENCODING=utf-8 ../posts.py " . escapeshellarg($post_id);
 
   $output = shell_exec($command);
 

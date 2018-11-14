@@ -34,7 +34,7 @@ if ($_REQUEST['after'] ?? '') {
 // For some reason when Python is invoked through PHP, it runs into Unicode
 // encoding issues when trying to print (because it defaults to some
 // ASCII-only encoding). So we have to force it to use UTF-8 here.
-$command = "PYTHONIOENCODING=utf-8 ../daily.py " . escapeshellarg($offset) . " " . escapeshellarg($view) . " " . escapeshellarg($before) . " " . escapeshellarg($after);
+$command = "PYTHONIOENCODING=utf-8 ../index.py " . escapeshellarg($offset) . " " . escapeshellarg($view) . " " . escapeshellarg($before) . " " . escapeshellarg($after);
 
 $output = shell_exec($command);
 

@@ -23,8 +23,14 @@ def users(userslug, display_format="html"):
     else:
         return "/users/" + userslug + ("?format=" + display_format if display_format != "html" else "")
 
-def userlist():
+def userlist(sort="karma", display_format="html"):
     if PATH_STYLE == "localhost":
-        return "./userlist.php"
+        if display_format != "html":
+            return "./userlist.php?sort=" + sort + "&amp;format=" + display_format
+        else:
+            return "./userlist.php?sort=" + sort
     else:
-        return "/userlist"
+        if display_format != "html":
+            return "/userlist?sort=" + sort + "&amp;format=" + display_format
+        else:
+            return "/userlist?sort=" + sort

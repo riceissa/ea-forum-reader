@@ -3,6 +3,7 @@
 import sys
 from scrape import *
 
+import linkpath
 
 def users_list_query(sort_by="karma", run_query=True):
     sort_line = ""
@@ -53,31 +54,36 @@ def show_users_list(sort_by, display_format):
     result += show_head("Users list")
     result += "<body>\n"
     result += show_navbar(navlinks=[
-            '''<a href="./userlist.php?format=queries" title="Show all the GraphQL queries used to generate this page">Queries</a>'''
+            '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.userlist(display_format="queries")
         ])
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
 
-    result += '''
+    result += ('''
         <table>
             <tr>
                 <th>Username</th>
-                <th><a href="./userlist.php?sort=karma">Karma</a></th>
-                <th><a href="./userlist.php?sort=postCount">Post count</a></th>
-                <th><a href="./userlist.php?sort=commentCount">Comment count</a></th>
+                <th><a href="%s">Karma</a></th>
+                <th><a href="%s">Post count</a></th>
+                <th><a href="%s">Comment count</a></th>
             </tr>
-    '''
+    ''' % (
+            linkpath.userlist(sort="karma"),
+            linkpath.userlist(sort="postCount"),
+            linkpath.userlist(sort="commentCount")
+        )
+    )
 
     for user in users:
         result += ('''
             <tr>
-                <td><a href="./users.php?id=%s">%s</a></td>
+                <td><a href="%s">%s</a></td>
                 <td style="text-align: right;">%s</td>
                 <td style="text-align: right;">%s</td>
                 <td style="text-align: right;">%s</td>
             </tr>
         ''' % (
-                user['slug'],
+                linkpath.users(userslug=user['slug']),
                 user['slug'],
                 user['karma'],
                 user['postCount'],

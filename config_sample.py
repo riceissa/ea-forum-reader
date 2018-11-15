@@ -12,3 +12,6 @@ LINK_COLOR = "#326492"
 
 COMMENT_COLOR = "#ECF5FF"
 # COMMENT_COLOR = "#F7F7F8"
+
+TITLE = "EA Forum Reader"
+# TITLE = "LessWrong 2.0 Reader"

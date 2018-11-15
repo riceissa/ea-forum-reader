@@ -338,7 +338,7 @@ def show_daily_posts(offset, view, before, after, display_format):
         post_url = linkpath.posts(postid=post['_id'], postslug=post['slug'])
         result += ('''<div style="margin-bottom: 15px;">\n''')
         result += (('''    <a href="%s">''' % post_url) + htmlescape(post['title']) + "</a><br />\n")
-        if post['user'] is None:
+        if post['user'] is None or post['user']['slug'] is None:
             result += '''[deleted] ·\n'''
         else:
             result += '''<a href="%s">%s</a> ·\n''' % (linkpath.users(userslug=post['user']['slug']), post['user']['username'])

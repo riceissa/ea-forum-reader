@@ -3,6 +3,8 @@
 import requests
 import datetime
 
+import linkpath
+
 def htmlescape(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
@@ -89,10 +91,10 @@ def show_navbar(navlinks=None, search_value=""):
     if navlinks is None:
         navlinks = []
 
-    result = """<nav><a href=".">Home</a> ·
+    result = ("""<nav><a href=".">Home</a> ·
         <a href="https://github.com/riceissa/ea-forum-reader">About</a> ·
-        <a href="./userlist.php">User list</a>
-        """
+        <a href="%s">User list</a>
+        """ % linkpath.userlist())
 
     for link in navlinks:
         result += " · " + link
@@ -219,7 +221,7 @@ def show_daily_posts(offset, view, before, after, display_format):
     result += show_head("EA Forum Reader")
     result += "<body>\n"
     result += show_navbar(navlinks=[
-        '''<a href="./?view=%s&amp;offset=%s&amp;before=%s&amp;after=%s&amp;format=queries" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % (view, offset, before, after)
+        '''<a href="/?view=%s&amp;offset=%s&amp;before=%s&amp;after=%s&amp;format=queries" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % (view, offset, before, after)
         ])
     result += '''<div id="wrapper">'''
     result += '''
@@ -229,7 +231,7 @@ def show_daily_posts(offset, view, before, after, display_format):
     '''
     for year in range(2011, datetime.datetime.utcnow().year + 1):
         result += "<li>\n"
-        result += '''<a href="./?view=%s&amp;before=%s&amp;after=%s">%s</a>''' % (
+        result += '''<a href="/?view=%s&amp;before=%s&amp;after=%s">%s</a>''' % (
             view,
             str(year) + "-12-31",
             str(year) + "-01-01",
@@ -245,7 +247,7 @@ def show_daily_posts(offset, view, before, after, display_format):
                     last_day = datetime.date(year + 1, 1, 1) - datetime.timedelta(days=1)
                 else:
                     last_day = datetime.date(year, month + 1, 1) - datetime.timedelta(days=1)
-                result += '''<li><a href="./?view=%s&amp;before=%s&amp;after=%s">%s</a></li>''' % (
+                result += '''<li><a href="/?view=%s&amp;before=%s&amp;after=%s">%s</a></li>''' % (
                     view,
                     last_day.strftime("%Y-%m-%d"),
                     str(year) + "-" + str(month).zfill(2) + "-01",
@@ -258,14 +260,14 @@ def show_daily_posts(offset, view, before, after, display_format):
     result += '''<h2>Recent comments</h2>'''
     for comment in recent_comments:
         result += ('''
-            <a href="./users.php?id=%s">%s</a> on <a href="./posts.php?id=%s#%s">%s</a><br/>
+            <a href="%s">%s</a> on <a href="%s#%s">%s</a><br/>
             <span style="font-size: 14px;">
             %s
             </span>
         ''' % (
+                linkpath.users(userslug=comment['user']['slug']),
                 comment['user']['slug'],
-                comment['user']['slug'],
-                comment['post']['_id'],
+                linkpath.posts(postid=comment['post']['_id']),
                 comment['_id'],
                 htmlescape(comment['post']['title']),
                 comment['htmlHighlight']
@@ -278,21 +280,21 @@ def show_daily_posts(offset, view, before, after, display_format):
 
     result += '''
         View:
-        <a href="./?view=new">New</a> ·
-        <a href="./?view=old">Old</a> ·
-        <a href="./?view=top">Top</a>
+        <a href="/?view=new">New</a> ·
+        <a href="/?view=old">Old</a> ·
+        <a href="/?view=top">Top</a>
         <br /><br />
     '''
 
     if view == "top":
         result += ('''
             Restrict date range:
-            <a href="./?view=top&amp;after=%s">Today</a> ·
-            <a href="./?view=top&amp;after=%s">This week</a> ·
-            <a href="./?view=top&amp;after=%s">This month</a> ·
-            <a href="./?view=top&amp;after=%s">Last three months</a> ·
-            <a href="./?view=top&amp;after=%s">This year</a> ·
-            <a href="./?view=top">All time</a>
+            <a href="/?view=top&amp;after=%s">Today</a> ·
+            <a href="/?view=top&amp;after=%s">This week</a> ·
+            <a href="/?view=top&amp;after=%s">This month</a> ·
+            <a href="/?view=top&amp;after=%s">Last three months</a> ·
+            <a href="/?view=top&amp;after=%s">This year</a> ·
+            <a href="/?view=top">All time</a>
             <br />
             <br />
         ''' % (
@@ -316,28 +318,28 @@ def show_daily_posts(offset, view, before, after, display_format):
         date_range_params += "&amp;after=%s" % after
 
     if offset - 50 >= 0:
-        result += '''<a href="./?view=%s&amp;offset=%s%s">← previous page (newer posts)</a> · ''' % (view, offset - 50, date_range_params)
+        result += '''<a href="/?view=%s&amp;offset=%s%s">← previous page (newer posts)</a> · ''' % (view, offset - 50, date_range_params)
 
-    result += '''<a href="./?view=%s&amp;offset=%s%s">next page (older posts) →</a>''' % (view, offset + 50, date_range_params)
+    result += '''<a href="/?view=%s&amp;offset=%s%s">next page (older posts) →</a>''' % (view, offset + 50, date_range_params)
     result += '''<br/><br/>\n'''
 
     for post in posts:
-        post_url = "./posts.php?id=" + post['_id']
+        post_url = linkpath.posts(postid=post['_id'])
         result += ('''<div style="margin-bottom: 15px;">\n''')
         result += (('''    <a href="%s">''' % post_url) + htmlescape(post['title']) + "</a><br />\n")
         if post['user'] is None:
             result += '''[deleted] ·\n'''
         else:
-            result += '''<a href="./users.php?id=%s">%s</a> ·\n''' % (post['user']['slug'], post['user']['username'])
+            result += '''<a href="%s">%s</a> ·\n''' % (linkpath.users(userslug=post['user']['slug']), post['user']['username'])
         result += post['postedAt'] + " ·\n"
         result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
         result += ('''    <a href="%s#comments">comments (%s)</a>\n''' % (post_url, post['commentsCount']))
         result += ("</div>")
 
     if offset - 50 >= 0:
-        result += '''<a href="./?view=%s&amp;offset=%s%s">← previous page (newer posts)</a> · ''' % (view, offset - 50, date_range_params)
+        result += '''<a href="/?view=%s&amp;offset=%s%s">← previous page (newer posts)</a> · ''' % (view, offset - 50, date_range_params)
 
-    result += '''<a href="./?view=%s&amp;offset=%s%s">next page (older posts) →</a>''' % (view, offset + 50, date_range_params)
+    result += '''<a href="/?view=%s&amp;offset=%s%s">next page (older posts) →</a>''' % (view, offset + 50, date_range_params)
 
     result += """
     </div>
@@ -526,7 +528,7 @@ def print_comment(comment_node):
         commentid = comment['_id']
         result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
         if comment['user']:
-            result += '''comment by <b><a href="./users.php?id=%s">%s</a></b> ·\n''' % (comment['user']['slug'], comment['user']['username'])
+            result += '''comment by <b><a href="%s">%s</a></b> ·\n''' % (linkpath.users(userslug=comment['user']['slug']), comment['user']['username'])
         else:
             result += '''comment by <b>[deleted]</b> ·\n'''
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
@@ -561,12 +563,12 @@ def print_post_and_comment_thread(postid, display_format):
     result += show_head(post['title'])
     result += "<body>\n"
     result += show_navbar(navlinks=[
-            '''<a href="./posts.php?id=%s&amp;format=queries" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % htmlescape(postid)
+            '''<a href="./%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.posts(postid=htmlescape(postid), display_format="queries")
         ])
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
     result += "<h1>" + htmlescape(post['title']) + "</h1>\n"
-    result += '''post by <b><a href="./users.php?id=%s">%s</a></b> ·\n''' % (post['user']['slug'], post['user']['username'])
+    result += '''post by <b><a href="%s">%s</a></b> ·\n''' % (linkpath.users(userslug=post['user']['slug']), post['user']['username'])
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
     result += '''<a href="%s" title="EA Forum link">EA</a> ·\n''' % post['pageUrl']
@@ -605,10 +607,10 @@ def html_page_for_user(username, display_format):
     """
     result += show_head(username)
     result += "<body>"
-    feed_link = '''<a href="./users.php?id=%s&format=rss">Feed</a>''' % username
+    feed_link = '''<a href="%s">Feed</a>''' % linkpath.users(userslug=username, display_format="rss")
     result += show_navbar(navlinks=[
             feed_link,
-            '''<a href="./users.php?id=%s&amp;format=queries" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % htmlescape(username)
+            '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.users(userslug=htmlescape(username), display_format="queries")
         ])
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
@@ -622,24 +624,24 @@ def html_page_for_user(username, display_format):
         content_type = "post" if "title" in content else "comment"
         result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: #ECF5FF;">\n'''
         if content_type == "post":
-            result += '''    <h2><a href="./posts.php?id=%s">%s</a></h2>\n''' % (content['_id'], htmlescape(content['title']))
+            result += '''    <h2><a href="%s">%s</a></h2>\n''' % linkpath.posts(postid=content['_id']), htmlescape(content['title'])
             result += '''    %s · score: %s (%s votes)\n''' % (content['postedAt'], content['baseScore'], content['voteCount'])
         else:
             if content['post'] is None:
-                result += '''    <a href="./posts.php?id=%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (content['postId'], content['_id'], content['user']['username'])
+                result += '''    <a href="%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (linkpath.posts(postid=content['postId']), content['_id'], content['user']['username'])
                 result += '''    %s\n''' % content['postedAt']
             else:
                 result += ('''    Comment by
                     <b>%s</b> on
-                    <a href="./posts.php?id=%s">%s</a></b> ·
-                    <a href="./posts.php?id=%s#%s">%s</a> ·
+                    <a href="%s">%s</a></b> ·
+                    <a href="%s#%s">%s</a> ·
                     score: %s (%s votes) ·
                     <a href="%s" title="EA Forum link">EA</a> ·
                     <a href="%s" title="GreaterWrong link">GW</a>''' % (
                         username,
-                        content['postId'],
+                        linkpath.posts(postid=content['postId']),
                         htmlescape(content['post']['title']),
-                        content['postId'],
+                        linkpath.posts(postid=content['postId']),
                         content['_id'],
                         content['postedAt'],
                         content['baseScore'],

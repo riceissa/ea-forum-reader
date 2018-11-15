@@ -183,6 +183,7 @@ def recent_comments_query(run_query=True):
           post {
             _id
             title
+            slug
           }
           user {
             _id
@@ -267,7 +268,7 @@ def show_daily_posts(offset, view, before, after, display_format):
         ''' % (
                 linkpath.users(userslug=comment['user']['slug']),
                 comment['user']['slug'],
-                linkpath.posts(postid=comment['post']['_id']),
+                linkpath.posts(postid=comment['post']['_id'], postslug=comment['post']['slug']),
                 comment['_id'],
                 htmlescape(comment['post']['title']),
                 comment['htmlHighlight']
@@ -324,7 +325,7 @@ def show_daily_posts(offset, view, before, after, display_format):
     result += '''<br/><br/>\n'''
 
     for post in posts:
-        post_url = linkpath.posts(postid=post['_id'])
+        post_url = linkpath.posts(postid=post['_id'], postslug=post['slug'])
         result += ('''<div style="margin-bottom: 15px;">\n''')
         result += (('''    <a href="%s">''' % post_url) + htmlescape(post['title']) + "</a><br />\n")
         if post['user'] is None:
@@ -563,7 +564,7 @@ def print_post_and_comment_thread(postid, display_format):
     result += show_head(post['title'])
     result += "<body>\n"
     result += show_navbar(navlinks=[
-            '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.posts(postid=htmlescape(postid), display_format="queries")
+            '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.posts(postid=htmlescape(postid), postslug=post['slug'], display_format="queries")
         ])
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
@@ -624,11 +625,11 @@ def html_page_for_user(username, display_format):
         content_type = "post" if "title" in content else "comment"
         result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: #ECF5FF;">\n'''
         if content_type == "post":
-            result += '''    <h2><a href="%s">%s</a></h2>\n''' % (linkpath.posts(postid=content['_id']), htmlescape(content['title']))
+            result += '''    <h2><a href="%s">%s</a></h2>\n''' % (linkpath.posts(postid=content['_id'], postslug=content['slug']), htmlescape(content['title']))
             result += '''    %s · score: %s (%s votes)\n''' % (content['postedAt'], content['baseScore'], content['voteCount'])
         else:
             if content['post'] is None:
-                result += '''    <a href="%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (linkpath.posts(postid=content['postId']), content['_id'], content['user']['username'])
+                result += '''    <a href="%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (linkpath.posts(postid=content['postId'], postslug=content['post']['slug']), content['_id'], content['user']['username'])
                 result += '''    %s\n''' % content['postedAt']
             else:
                 result += ('''    Comment by
@@ -639,9 +640,9 @@ def html_page_for_user(username, display_format):
                     <a href="%s" title="EA Forum link">EA</a> ·
                     <a href="%s" title="GreaterWrong link">GW</a>''' % (
                         username,
-                        linkpath.posts(postid=content['postId']),
+                        linkpath.posts(postid=content['postId'], postslug=content['post']['slug']),
                         htmlescape(content['post']['title']),
-                        linkpath.posts(postid=content['postId']),
+                        linkpath.posts(postid=content['postId'], postslug=content['post']['slug']),
                         content['_id'],
                         content['postedAt'],
                         content['baseScore'],
@@ -716,6 +717,7 @@ def get_comments_for_user(username, run_query=True):
           _id
           post {
             title
+            slug
           }
           user {
             username

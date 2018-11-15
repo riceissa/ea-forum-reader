@@ -563,7 +563,7 @@ def print_post_and_comment_thread(postid, display_format):
     result += show_head(post['title'])
     result += "<body>\n"
     result += show_navbar(navlinks=[
-            '''<a href="./%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.posts(postid=htmlescape(postid), display_format="queries")
+            '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.posts(postid=htmlescape(postid), display_format="queries")
         ])
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
@@ -624,7 +624,7 @@ def html_page_for_user(username, display_format):
         content_type = "post" if "title" in content else "comment"
         result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: #ECF5FF;">\n'''
         if content_type == "post":
-            result += '''    <h2><a href="%s">%s</a></h2>\n''' % linkpath.posts(postid=content['_id']), htmlescape(content['title'])
+            result += '''    <h2><a href="%s">%s</a></h2>\n''' % (linkpath.posts(postid=content['_id']), htmlescape(content['title']))
             result += '''    %s · score: %s (%s votes)\n''' % (content['postedAt'], content['baseScore'], content['voteCount'])
         else:
             if content['post'] is None:

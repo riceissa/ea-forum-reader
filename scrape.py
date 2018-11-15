@@ -10,7 +10,10 @@ def htmlescape(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 def ea_forum_to_gw(ea_forum_link):
-    return ea_forum_link.replace('forum.effectivealtruism.org', 'ea.greaterwrong.com', 1)
+    if "forum.effectivealtruism.org" in config.GRAPHQL_URL:
+        return ea_forum_link.replace('forum.effectivealtruism.org', 'ea.greaterwrong.com', 1)
+    else:
+        return ea_forum_link.replace('www.lesswrong.com', 'www.greaterwrong.com', 1)
 
 def show_head(title):
     result = ("""

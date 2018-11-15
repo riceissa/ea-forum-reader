@@ -84,8 +84,8 @@ def show_head(title):
         </style>
     </head>
     """ % (
-            config.LINK_COLOR,
-            htmlescape(title)
+            htmlescape(title),
+            config.LINK_COLOR
         )
     )
 

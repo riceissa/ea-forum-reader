@@ -585,6 +585,10 @@ def print_post_and_comment_thread(postid, display_format):
     result += '''<a href="%s" title="EA Forum link">EA</a> ·\n''' % post['pageUrl']
     result += '''<a href="%s" title="GreaterWrong link">GW</a> ·\n''' % ea_forum_to_gw(post['pageUrl'])
     result += '''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>\n'
+    if post['url'] is not None:
+        result += ('''
+            <p>This is a link post for <a href="%s">%s</a></p>
+        '''% (post['url'], post['url']))
     result += cleanHtmlBody(post['htmlBody'])
 
     result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'

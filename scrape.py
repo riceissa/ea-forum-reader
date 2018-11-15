@@ -91,7 +91,7 @@ def show_navbar(navlinks=None, search_value=""):
     if navlinks is None:
         navlinks = []
 
-    result = ("""<nav><a href=".">Home</a> ·
+    result = ("""<nav><a href="/">Home</a> ·
         <a href="https://github.com/riceissa/ea-forum-reader">About</a> ·
         <a href="%s">User list</a>
         """ % linkpath.userlist())

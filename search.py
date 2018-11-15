@@ -7,8 +7,6 @@ from urllib.parse import quote
 from scrape import htmlescape, show_navbar, show_head
 
 ALGOLIA_URL = ""
-with open(sys.argv[1], "r") as f:
-    ALGOLIA_URL = next(f).strip()
 
 
 def search_posts(string):
@@ -77,7 +75,16 @@ def print_posts(string):
         print(show_post(post, string, seen))
 
 
-if len(sys.argv) > 2:
+if __name__ == "__main__":
+    arg_count = 2
+
+    if len(sys.argv) != arg_count + 1:
+        print("Unexpected number of args")
+        sys.exit()
+
+    with open(sys.argv[1], "r") as f:
+        ALGOLIA_URL = next(f).strip()
+
     search_string = sys.argv[2]
     print(''' <!DOCTYPE html>
         <html>''')

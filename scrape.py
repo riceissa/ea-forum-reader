@@ -39,7 +39,7 @@ def show_head(title):
                 margin-left: 0px;
             }
             h1 {
-                color: #326492;
+                color: %s;
             }
             img {
                 max-width: 100%%;
@@ -85,6 +85,7 @@ def show_head(title):
     </head>
     """ % (
             htmlescape(title),
+            config.LINK_COLOR,
             config.LINK_COLOR
         )
     )

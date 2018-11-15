@@ -636,7 +636,7 @@ def html_page_for_user(username, display_format):
                     score: %s (%s votes) ·
                     <a href="%s" title="EA Forum link">EA</a> ·
                     <a href="%s" title="GreaterWrong link">GW</a>''' % (
-                        content['user']['username'],
+                        username,
                         content['postId'],
                         htmlescape(content['post']['title']),
                         content['postId'],

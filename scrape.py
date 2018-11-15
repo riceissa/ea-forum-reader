@@ -226,7 +226,7 @@ def show_daily_posts(offset, view, before, after, display_format):
     result = """<!DOCTYPE html>
     <html>
     """
-    result += show_head("EA Forum Reader")
+    result += show_head(config.TITLE)
     result += "<body>\n"
     result += show_navbar(navlinks=[
         '''<a href="/?view=%s&amp;offset=%s&amp;before=%s&amp;after=%s&amp;format=queries" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % (view, offset, before, after)
@@ -284,7 +284,7 @@ def show_daily_posts(offset, view, before, after, display_format):
 
     result += "</div>"  # sidebar
     result += '''<div id="content">'''
-    result += """<h1><a href="./">EA Forum Reader</a></h1>"""
+    result += """<h1><a href="/">%s</a></h1>""" % config.TITLE
 
     result += '''
         View:
@@ -675,7 +675,7 @@ def feed_for_user(username):
         <channel>
             <title>%s</title>
             <description>%s</description>
-            <language>en-us</language>\n''' % (username + " feed - EA Forum Reader", username + "’s posts and comments on the Effective Altruism Forum"))
+            <language>en-us</language>\n''' % (username + " feed - " + config.TITLE, username + "’s posts and comments on the Effective Altruism Forum"))
 
     comments = get_comments_for_user(username)
     posts = get_posts_for_user(username)

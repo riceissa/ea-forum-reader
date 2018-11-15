@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-PATH_STYLE = "localhost"
-# PATH_STYLE = "official"
+import config
+
+PATH_STYLE = config.PATH_STYLE
 
 
 def posts(postid, postslug="", display_format="html"):

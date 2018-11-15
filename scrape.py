@@ -766,6 +766,7 @@ def get_posts_for_user(username, run_query=True):
           htmlBody
           voteCount
           baseScore
+          slug
         }
       }
     }

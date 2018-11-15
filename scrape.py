@@ -26,7 +26,7 @@ def show_head(title):
                 background-color: whitesmoke;
             }
             a {
-                color: #326492;
+                color: %s;
                 text-decoration: underline;
             }
             a:visited {
@@ -83,7 +83,11 @@ def show_head(title):
             }
         </style>
     </head>
-    """ % htmlescape(title))
+    """ % (
+            config.LINK_COLOR,
+            htmlescape(title)
+        )
+    )
 
     return result
 
@@ -524,7 +528,7 @@ def update_parity(comment_node, parity):
 def print_comment(comment_node):
     result = ""
     comment = comment_node.data
-    color = "#ECF5FF" if comment_node.parity == "odd" else "#FFFFFF"
+    color = config.COMMENT_COLOR if comment_node.parity == "odd" else "#FFFFFF"
 
     # If this is the root node, comment is {} so skip it
     if comment:
@@ -625,7 +629,7 @@ def html_page_for_user(username, display_format):
 
     for content in all_content:
         content_type = "post" if "title" in content else "comment"
-        result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: #ECF5FF;">\n'''
+        result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: %s;">\n''' % config.COMMENT_COLOR
         if content_type == "post":
             result += '''    <h2><a href="%s">%s</a></h2>\n''' % (linkpath.posts(postid=content['_id'], postslug=content['slug']), htmlescape(content['title']))
             result += '''    %s · score: %s (%s votes)\n''' % (content['postedAt'], content['baseScore'], content['voteCount'])

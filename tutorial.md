@@ -5,7 +5,8 @@ have wanted to explore LW/EA Forum data but have found GraphQL intimidating
 
 # General steps for writing a query
 
-(This section will make more sense if you have seen some example queries.)
+(This section will make more sense if you have seen some example queries; see
+next section.)
 
 1. Go to <https://www.lesswrong.com/graphiql> or
    <https://forum.effectivealtruism.org/graphiql> depending on which forum you
@@ -22,6 +23,8 @@ have wanted to explore LW/EA Forum data but have found GraphQL intimidating
    (which mainly controls how the results are sorted).
 5. Pass in parameters for that view using keys in the `terms` block
 6. Start a `results` block, and select the fields you want to see for the results.
+   (If you don't select any fields, it will default to all fields, so you can
+   do that once and delete the fields you don't need.)
 
 # Examples
 

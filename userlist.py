@@ -64,6 +64,7 @@ def show_users_list(sort_by, display_format):
         <table>
             <tr>
                 <th>Username</th>
+                <th>User ID</th>
                 <th><a href="%s">Karma</a></th>
                 <th><a href="%s">Post count</a></th>
                 <th><a href="%s">Comment count</a></th>
@@ -76,16 +77,21 @@ def show_users_list(sort_by, display_format):
     )
 
     for user in users:
+        if user['slug'] is None:
+            linked_user = "[deleted]"
+        else:
+            linked_user = '''<a href="%s">%s</a>''' % (linkpath.users(userslug=user['slug']), user['slug'])
         result += ('''
             <tr>
-                <td><a href="%s">%s</a></td>
+                <td>%s</td>
+                <td>%s</td>
                 <td style="text-align: right;">%s</td>
                 <td style="text-align: right;">%s</td>
                 <td style="text-align: right;">%s</td>
             </tr>
         ''' % (
-                linkpath.users(userslug=user['slug']),
-                user['slug'],
+                linked_user,
+                user['_id'],
                 user['karma'],
                 user['postCount'],
                 user['commentCount']

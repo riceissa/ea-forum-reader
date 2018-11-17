@@ -201,6 +201,8 @@ def recent_comments_query(run_query=True):
           }
           plaintextExcerpt
           htmlHighlight
+          postId
+          pageUrl
         }
       }
     }
@@ -270,6 +272,9 @@ def show_daily_posts(offset, view, before, after, display_format):
 
     result += '''<h2>Recent comments</h2>'''
     for comment in recent_comments:
+        post = comment['post']
+        if post is None:
+            post = {'slug': comment['pageUrl'].split('/')[-1].split('#')[0], 'title': '[deleted]'}
         result += ('''
             <a href="%s">%s</a> on <a href="%s#%s">%s</a><br/>
             <span style="font-size: 14px;">
@@ -278,9 +283,9 @@ def show_daily_posts(offset, view, before, after, display_format):
         ''' % (
                 linkpath.users(userslug=comment['user']['slug']),
                 comment['user']['slug'],
-                linkpath.posts(postid=comment['post']['_id'], postslug=comment['post']['slug']),
+                linkpath.posts(postid=comment['postId'], postslug=post['slug']),
                 comment['_id'],
-                htmlescape(comment['post']['title']),
+                htmlescape(post['title']),
                 comment['htmlHighlight']
             )
         )
@@ -432,7 +437,12 @@ def get_content_for_post(postid, run_query=True):
         return query
 
     request = send_query(query)
-    return request.json()['data']['post']['result']
+    try:
+        return request.json()['data']['post']['result']
+    except TypeError:
+        return {'title': '', 'slug': '', 'baseScore': 0, 'voteCount': 0, 'pageUrl': '',
+                'url': '', 'htmlBody': '', 'postedAt': '', 'commentsCount': 0,
+                'user': {'slug': '', 'username': ''}}
 
 def get_comments_for_post(postid, run_query=True):
     query = ("""

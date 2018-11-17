@@ -105,4 +105,9 @@ and paste either query (pasting both won't work).
   clicking on the resulting tooltip will show the parameters that can be passed
   to that block.
 - Forum search is *not* done via GraphQL. Rather, a separate API (the Algolia
-  search API) is used.
+  search API) is used. Use of the search API is outside the scope of this
+  tutorial.
+
+# Queries that don't work (or are hard to do)
+
+TODO list some from email.

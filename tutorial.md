@@ -5,16 +5,23 @@ have wanted to explore LW/EA Forum data but have found GraphQL intimidating
 
 # General steps for writing a query
 
-1. Figure out what the output type should be (e.g. `comments`, `comment`,
+(This section will make more sense if you have seen some example queries.)
+
+1. Go to <https://www.lesswrong.com/graphiql> or
+   <https://forum.effectivealtruism.org/graphiql> depending on which forum you
+   want to query data for.
+2. Figure out what the output type should be (e.g. `comments`, `comment`,
    `posts`, `post`).
-2. Go to the [collections](https://github.com/LessWrong2/Lesswrong2/tree/devel/packages/lesswrong/lib/collections)
+3. Go to the [collections](https://github.com/LessWrong2/Lesswrong2/tree/devel/packages/lesswrong/lib/collections)
    directory in the LessWrong 2.0 codebase, and find the `views.js` file for your output type.
    For example, if your output type is `comments`, then the corresponding `views.js` file is
    <https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/collections/comments/views.js>.
-3. Look through the various "views" in the `views.js` file to see if there is a
+4. Look through the various "views" in the `views.js` file to see if there is a
    relevant view. The main things to pay attention to are the `selector` block
    (which controls how the results will be filtered) and the `options` block
    (which mainly controls how the results are sorted).
+5. Pass in parameters for that view using keys in the `terms` block
+6. Start a `results` block, and select the fields you want to see for the results.
 
 # Examples
 
@@ -88,3 +95,11 @@ where you will see the following queries:
 Since this was for the EA Forum, we can now go to
 <https://forum.effectivealtruism.org/graphiql>
 and paste either query (pasting both won't work).
+
+# Tips
+
+- In GraphiQL, hovering over some words like `input` and `results` and then
+  clicking on the resulting tooltip will show the parameters that can be passed
+  to that block.
+- Forum search is *not* done via GraphQL. Rather, a separate API (the Algolia
+  search API) is used.

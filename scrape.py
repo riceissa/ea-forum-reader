@@ -2,6 +2,7 @@
 
 import requests
 import datetime
+from urllib.parse import quote
 
 import linkpath
 import config
@@ -173,7 +174,7 @@ def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
     )
 
     if not run_query:
-        return query
+        return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = send_query(query)
     return request.json()['data']['posts']['results']
@@ -209,7 +210,7 @@ def recent_comments_query(run_query=True):
     """)
 
     if not run_query:
-        return query
+        return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = send_query(query)
     return request.json()['data']['comments']['results']
@@ -396,7 +397,7 @@ def userslug_to_userid(userslug, run_query=True):
     """ % userslug)
 
     if not run_query:
-        return query
+        return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = send_query(query)
     return request.json()['data']['user']['result']['_id']
@@ -434,7 +435,7 @@ def get_content_for_post(postid, run_query=True):
     """ % postid)
 
     if not run_query:
-        return query
+        return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = send_query(query)
     try:
@@ -476,7 +477,7 @@ def get_comments_for_post(postid, run_query=True):
     """ % postid)
 
     if not run_query:
-        return query
+        return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = send_query(query)
     result = []
@@ -762,7 +763,7 @@ def get_comments_for_user(username, run_query=True):
     """ % userid)
 
     if not run_query:
-        return userslug_to_userid(username, run_query=False) + "\n\n" + query
+        return userslug_to_userid(username, run_query=False) + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = send_query(query)
     result = []
@@ -797,7 +798,7 @@ def get_posts_for_user(username, run_query=True):
     """ % userid)
 
     if not run_query:
-        return userslug_to_userid(username, run_query=False) + "\n\n" + query
+        return userslug_to_userid(username, run_query=False) + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = send_query(query)
     result = []

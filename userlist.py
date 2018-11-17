@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+from urllib.parse import quote
 from scrape import *
 
 import linkpath
@@ -34,7 +35,7 @@ def users_list_query(sort_by="karma", run_query=True):
     """ % sort_line)
 
     if not run_query:
-        return query
+        return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
     request = send_query(query)
     return request.json()['data']['users']['results']
 

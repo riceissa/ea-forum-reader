@@ -3,6 +3,19 @@ LessWrong and the Effective Altruism Forum. It's mostly intended for people who
 have wanted to explore LW/EA Forum data but have found GraphQL intimidating
 (this was the case for myself until a week ago).
 
+# General steps for writing a query
+
+1. Figure out what the output type should be (e.g. `comments`, `comment`,
+   `posts`, `post`).
+2. Go to the [collections](https://github.com/LessWrong2/Lesswrong2/tree/devel/packages/lesswrong/lib/collections)
+   directory in the LessWrong 2.0 codebase, and find the `views.js` file for your output type.
+   For example, if your output type is `comments`, then the corresponding `views.js` file is
+   <https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/collections/comments/views.js>.
+3. Look through the various "views" in the `views.js` file to see if there is a
+   relevant view. The main things to pay attention to are the `selector` block
+   (which controls how the results will be filtered) and the `options` block
+   (which mainly controls how the results are sorted).
+
 # Examples
 
 I've built a sample interface for both LessWrong and EA Forum:
@@ -12,8 +25,8 @@ I've built a sample interface for both LessWrong and EA Forum:
 
 For article-reading and commenting purposes, most users will probably prefer to
 use the official versions of the forums or the GreaterWrong counterparts.
-However, one interesting feature of my interface is that it allows an easy
-access to the queries used to generate pages.
+However, one interesting feature of my interface is that it allows an easy way
+to access to the queries used to generate pages.
 
 By passing `format=queries` to any page, you can view the GraphQL queries that
 were made to generate that page. For example, clicking "Queries" on the page
@@ -71,3 +84,7 @@ where you will see the following queries:
         }
       }
     }
+
+Since this was for the EA Forum, we can now go to
+<https://forum.effectivealtruism.org/graphiql>
+and paste either query (pasting both won't work).

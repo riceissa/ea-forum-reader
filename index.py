@@ -84,6 +84,7 @@ def recent_comments_query(run_query=True):
     request = send_query(query)
     return request.json()['data']['comments']['results']
 
+
 def show_daily_posts(offset, view, before, after, display_format):
     posts = posts_list_query(offset=offset, view=view, before=before, after=after,
                              run_query=(False if display_format == "queries" else True))

@@ -16,13 +16,13 @@ next section.)
 3. Go to the [collections](https://github.com/LessWrong2/Lesswrong2/tree/devel/packages/lesswrong/lib/collections)
    directory in the LessWrong 2.0 codebase, and find the `views.js` file for your output type.
    For example, if your output type is `comments`, then the corresponding `views.js` file is
-   <https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/collections/comments/views.js>.
+   located at [`collections/comments/views.js`](https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/collections/comments/views.js).
 4. Look through the various "views" in the `views.js` file to see if there is a
    relevant view. The main things to pay attention to are the `selector` block
    (which controls how the results will be filtered) and the `options` block
    (which mainly controls how the results are sorted).
 5. Pass in parameters for that view using keys in the `terms` block
-6. Start a `results` block, and select the fields you want to see for the results.
+6. Start a `results` block, and select the fields you want to see for this output type.
    (If you don't select any fields, it will default to all fields, so you can
    do that once and delete the fields you don't need.)
 
@@ -36,7 +36,7 @@ I've built a sample interface for both LessWrong and EA Forum:
 For article-reading and commenting purposes, most users will probably prefer to
 use the official versions of the forums or the GreaterWrong counterparts.
 However, one interesting feature of my interface is that it allows an easy way
-to access to the queries used to generate pages.
+to access the queries used to generate pages.
 
 By passing `format=queries` to any page, you can view the GraphQL queries that
 were made to generate that page. For example, clicking "Queries" on the page

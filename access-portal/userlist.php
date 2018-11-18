@@ -7,7 +7,7 @@ if ($_REQUEST['format'] ?? '') {
     $format = "html";
   }
 } else {
-  $formt = "html";
+  $format = "html";
 }
 
 if ($_REQUEST['sort'] ?? '') {

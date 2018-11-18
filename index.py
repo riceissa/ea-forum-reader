@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import sys
-from scrape import *
+
+import util
 
 
 def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
@@ -45,7 +46,7 @@ def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = send_query(query)
+    request = util.send_query(query)
     return request.json()['data']['posts']['results']
 
 
@@ -81,7 +82,7 @@ def recent_comments_query(run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = send_query(query)
+    request = util.send_query(query)
     return request.json()['data']['comments']['results']
 
 
@@ -102,9 +103,9 @@ def show_daily_posts(offset, view, before, after, display_format):
     result = """<!DOCTYPE html>
     <html>
     """
-    result += show_head(config.TITLE)
+    result += util.show_head(config.TITLE)
     result += "<body>\n"
-    result += show_navbar(navlinks=[
+    result += util.show_navbar(navlinks=[
         '''<a href="/?view=%s&amp;offset=%s&amp;before=%s&amp;after=%s&amp;format=queries" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % (view, offset, before, after)
         ])
     result += '''<div id="wrapper">'''
@@ -156,7 +157,7 @@ def show_daily_posts(offset, view, before, after, display_format):
                 comment['user']['slug'],
                 linkpath.posts(postid=comment['postId'], postslug=post['slug']),
                 comment['_id'],
-                htmlescape(post['title']),
+                util.htmlescape(post['title']),
                 comment['htmlHighlight']
             )
         )
@@ -217,7 +218,7 @@ def show_daily_posts(offset, view, before, after, display_format):
             result += "[meta] " if post['meta'] else ""
         else:
             result += "[community] " if post['meta'] else ""
-        result += (('''    <a href="%s">''' % post_url) + htmlescape(post['title']) + "</a><br />\n")
+        result += (('''    <a href="%s">''' % post_url) + util.htmlescape(post['title']) + "</a><br />\n")
         if post['user'] is None or post['user']['slug'] is None:
             result += '''[deleted] ·\n'''
         else:

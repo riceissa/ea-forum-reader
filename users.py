@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 import sys
-from scrape import *
+
+import util
+
 
 def html_page_for_user(username, display_format):
     comments = get_comments_for_user(username, run_query=(False if display_format == "queries" else True))
@@ -17,12 +19,12 @@ def html_page_for_user(username, display_format):
     result = """<!DOCTYPE html>
     <html>
     """
-    result += show_head(username)
+    result += util.show_head(username)
     result += "<body>"
     feed_link = '''<a href="%s">Feed</a>''' % linkpath.users(userslug=username, display_format="rss")
-    result += show_navbar(navlinks=[
+    result += util.show_navbar(navlinks=[
             feed_link,
-            '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.users(userslug=htmlescape(username), display_format="queries")
+            '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.users(userslug=util.htmlescape(username), display_format="queries")
         ])
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
@@ -36,7 +38,7 @@ def html_page_for_user(username, display_format):
         content_type = "post" if "title" in content else "comment"
         result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: %s;">\n''' % config.COMMENT_COLOR
         if content_type == "post":
-            result += '''    <h2><a href="%s">%s</a></h2>\n''' % (linkpath.posts(postid=content['_id'], postslug=content['slug']), htmlescape(content['title']))
+            result += '''    <h2><a href="%s">%s</a></h2>\n''' % (linkpath.posts(postid=content['_id'], postslug=content['slug']), util.htmlescape(content['title']))
             result += '''    %s · score: %s (%s votes)\n''' % (content['postedAt'], content['baseScore'], content['voteCount'])
         else:
             if content['post'] is None:
@@ -53,15 +55,15 @@ def html_page_for_user(username, display_format):
                     <a href="%s" title="GreaterWrong link">GW</a>''' % (
                         username,
                         linkpath.posts(postid=content['postId'], postslug=content['post']['slug']),
-                        htmlescape(content['post']['title']),
+                        util.htmlescape(content['post']['title']),
                         linkpath.posts(postid=content['postId'], postslug=content['post']['slug']),
                         content['_id'],
                         content['postedAt'],
                         content['baseScore'],
                         content['voteCount'],
                         content['pageUrl'],
-                        ea_forum_to_gw(content['pageUrl'])))
-            content_body = cleanHtmlBody(content['htmlBody'])
+                        util.ea_forum_to_gw(content['pageUrl'])))
+            content_body = util.cleanHtmlBody(content['htmlBody'])
             result += '''    %s\n''' % content_body
         result += "</div>\n"
 
@@ -99,9 +101,9 @@ def feed_for_user(username):
             if content['post'] is None:
                 result += "    <title>Comment by %s on [deleted post]</title>\n" % (content['user']['username'])
             else:
-                result += "    <title>Comment by %s on %s</title>\n" % (content['user']['username'], htmlescape(content['post']['title']))
+                result += "    <title>Comment by %s on %s</title>\n" % (content['user']['username'], util.htmlescape(content['post']['title']))
         result += '''    <link>%s</link>\n''' % content['pageUrl']
-        content_body = htmlescape(cleanHtmlBody(content['htmlBody']))
+        content_body = util.htmlescape(util.cleanHtmlBody(content['htmlBody']))
         result += '''    <description>%s</description>\n''' % content_body
         result += '''    <author>%s</author>\n''' % username
         result += '''    <guid>%s</guid>\n''' % content['_id']
@@ -115,7 +117,7 @@ def feed_for_user(username):
 
 
 def get_comments_for_user(username, run_query=True):
-    userid = userslug_to_userid(username, run_query=True)
+    userid = util.userslug_to_userid(username, run_query=True)
     query = ("""
     {
       comments(input: {
@@ -149,9 +151,9 @@ def get_comments_for_user(username, run_query=True):
     """ % userid)
 
     if not run_query:
-        return userslug_to_userid(username, run_query=False) + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
+        return util.userslug_to_userid(username, run_query=False) + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = send_query(query)
+    request = util.send_query(query)
     result = []
     for comment in request.json()['data']['comments']['results']:
         result.append(comment)
@@ -159,7 +161,7 @@ def get_comments_for_user(username, run_query=True):
 
 
 def get_posts_for_user(username, run_query=True):
-    userid = userslug_to_userid(username, run_query=True)
+    userid = util.userslug_to_userid(username, run_query=True)
     query = ("""
     {
       posts(input: {
@@ -184,9 +186,9 @@ def get_posts_for_user(username, run_query=True):
     """ % userid)
 
     if not run_query:
-        return userslug_to_userid(username, run_query=False) + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
+        return util.userslug_to_userid(username, run_query=False) + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = send_query(query)
+    request = util.send_query(query)
     result = []
     for post in request.json()['data']['posts']['results']:
         result.append(post)

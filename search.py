@@ -5,14 +5,15 @@ import json
 import re
 import requests
 from urllib.parse import quote
-from scrape import htmlescape, show_navbar, show_head
+
+import util
 
 ALGOLIA_URL = ""
 
 
 def highlighted_search_string(body, string):
     # body is already html escaped, so we need string to be on the same level
-    esc_str = htmlescape(string)
+    esc_str = util.htmlescape(string)
 
     highlighted = r'''<span style="background-color: #ffff00;">\1</span>'''
     return re.sub("(" + re.escape(esc_str) + ")", highlighted, body, flags=re.IGNORECASE)
@@ -40,13 +41,13 @@ def show_comment(comment, string):
         ''' % (comment['userId'],
                comment['authorUserName'],
                comment['postId'],
-               htmlescape(comment['postTitle']),
+               util.htmlescape(comment['postTitle']),
                comment['postId'],
                comment['_id'],
                comment['postedAt'],
                comment['baseScore']))
 
-    result += '''<pre style="font-family: Lato, Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % highlighted_search_string(htmlescape(comment['body']), string)
+    result += '''<pre style="font-family: Lato, Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % highlighted_search_string(util.htmlescape(comment['body']), string)
     result += "</div>"
 
     return result
@@ -56,13 +57,13 @@ def show_post(post, string, seen):
     result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: #ECF5FF;"><a href="./posts.php?id=%s">%s</a>
     by <a href="./users.php?userid=%s">%s</a> · %s · score: %s
     ''' % (post['_id'],
-           htmlescape(post['title']),
+           util.htmlescape(post['title']),
            post['userId'],
            post['authorUserName'],
            post['postedAt'],
            post['baseScore']))
     if string.lower() in post['body'].lower():
-        result += '''<pre style="font-family: Lato, Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % highlighted_search_string(htmlescape(post['body']), string)
+        result += '''<pre style="font-family: Lato, Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % highlighted_search_string(util.htmlescape(post['body']), string)
     else:
         if post['_id'] in seen:
             # If we didn't even match inside the body and we've seen this post
@@ -97,9 +98,9 @@ if __name__ == "__main__":
     search_string = sys.argv[2]
     print(''' <!DOCTYPE html>
         <html>''')
-    print(show_head(search_string))
+    print(util.show_head(search_string))
     print("<body>")
-    print(show_navbar(search_value=search_string))
+    print(util.show_navbar(search_value=search_string))
     print('''<div id="wrapper">''')
     print('''<div id="content">''')
     print('''<ul>

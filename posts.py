@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import sys
-from scrape import *
+
+import util
 
 
 def get_content_for_post(postid, run_query=True):
@@ -38,7 +39,7 @@ def get_content_for_post(postid, run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = send_query(query)
+    request = util.send_query(query)
     try:
         return request.json()['data']['post']['result']
     except TypeError:
@@ -81,7 +82,7 @@ def get_comments_for_post(postid, run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = send_query(query)
+    request = util.send_query(query)
     result = []
     for comment in request.json()['data']['comments']['results']:
         result.append(comment)
@@ -160,8 +161,8 @@ def print_comment(comment_node):
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes) · ")
         result += ('<a title="Official link" href="' + comment['pageUrl'] + '">EA</a> · ')
-        result += '<a title="GreaterWrong link" href="' + ea_forum_to_gw(comment['pageUrl']) + '">GW</a>'
-        result += (cleanHtmlBody(comment['htmlBody']))
+        result += '<a title="GreaterWrong link" href="' + util.ea_forum_to_gw(comment['pageUrl']) + '">GW</a>'
+        result += (util.cleanHtmlBody(comment['htmlBody']))
 
     if comment_node.children:
         for child in comment_node.children:
@@ -186,25 +187,25 @@ def print_post_and_comment_thread(postid, display_format):
     result = """<!DOCTYPE html>
     <html>
     """
-    result += show_head(post['title'])
+    result += util.show_head(post['title'])
     result += "<body>\n"
-    result += show_navbar(navlinks=[
-            '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.posts(postid=htmlescape(postid), postslug=post['slug'], display_format="queries")
+    result += util.show_navbar(navlinks=[
+            '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.posts(postid=util.htmlescape(postid), postslug=post['slug'], display_format="queries")
         ])
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
-    result += "<h1>" + htmlescape(post['title']) + "</h1>\n"
+    result += "<h1>" + util.htmlescape(post['title']) + "</h1>\n"
     result += '''post by <b><a href="%s">%s</a></b> ·\n''' % (linkpath.users(userslug=post['user']['slug']), post['user']['username'])
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
     result += '''<a href="%s" title="Official link">EA</a> ·\n''' % post['pageUrl']
-    result += '''<a href="%s" title="GreaterWrong link">GW</a> ·\n''' % ea_forum_to_gw(post['pageUrl'])
+    result += '''<a href="%s" title="GreaterWrong link">GW</a> ·\n''' % util.ea_forum_to_gw(post['pageUrl'])
     result += '''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>\n'
     if post['url'] is not None:
         result += ('''
             <p>This is a link post for <a href="%s">%s</a></p>
         '''% (post['url'], post['url']))
-    result += cleanHtmlBody(post['htmlBody'])
+    result += util.cleanHtmlBody(post['htmlBody'])
 
     result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'
 

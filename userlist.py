@@ -2,8 +2,8 @@
 
 import sys
 from urllib.parse import quote
-from scrape import *
 
+import util
 import linkpath
 
 def users_list_query(sort_by="karma", run_query=True):
@@ -36,7 +36,7 @@ def users_list_query(sort_by="karma", run_query=True):
 
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
-    request = send_query(query)
+    request = util.send_query(query)
     return request.json()['data']['users']['results']
 
 
@@ -52,9 +52,9 @@ def show_users_list(sort_by, display_format):
     result = """<!DOCTYPE html>
     <html>
     """
-    result += show_head("Users list")
+    result += util.show_head("Users list")
     result += "<body>\n"
-    result += show_navbar(navlinks=[
+    result += util.show_navbar(navlinks=[
             '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.userlist(display_format="queries")
         ])
     result += '''<div id="wrapper">'''

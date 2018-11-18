@@ -2,6 +2,7 @@
 
 import sys
 import datetime
+from urllib.parse import quote
 
 import config
 import util

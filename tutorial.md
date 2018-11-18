@@ -11,18 +11,39 @@ next section.)
 1. Go to <https://www.lesswrong.com/graphiql> or
    <https://forum.effectivealtruism.org/graphiql> depending on which forum you
    want to query data for.
+
 2. Figure out what the output type should be (e.g. `comments`, `comment`,
    `posts`, `post`).
-3. Go to the [collections](https://github.com/LessWrong2/Lesswrong2/tree/devel/packages/lesswrong/lib/collections)
-   directory in the LessWrong 2.0 codebase, and find the `views.js` file for your output type.
-   For example, if your output type is `comments`, then the corresponding `views.js` file is
-   located at [`collections/comments/views.js`](https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/collections/comments/views.js).
-4. Look through the various "views" in the `views.js` file to see if there is a
-   relevant view. The main things to pay attention to are the `selector` block
-   (which controls how the results will be filtered) and the `options` block
-   (which mainly controls how the results are sorted).
-5. Pass in parameters for that view using keys in the `terms` block
-6. Start a `results` block, and select the fields you want to see for this output type.
+
+3. Type `{output_type(input)}` into GraphiQL and hover over `input` and click
+   on the type after `input` (e.g. `MultiCommentInput`, `SingleCommentInput`).
+   Depending on the fields listed, there will now be two ways to proceed.
+   (Generally, it seems like singular output types (e.g. `comment`) will have
+   `selector` and plural output types (e.g. `comments`) will have `terms`.)
+
+   In the fields listed, if there is `selector`:
+
+   - Click on the selector type (e.g. `CommentSelectorUniqueInput`). Use one of
+     the fields (e.g. `_id`) to pick out the specific item you want.
+
+
+   If there is `terms`:
+
+   - Go to the
+     [collections](https://github.com/LessWrong2/Lesswrong2/tree/devel/packages/lesswrong/lib/collections)
+     directory in the LessWrong 2.0 codebase, and find the `views.js` file for
+     your output type. For example, if your output type is `comments`, then the
+     corresponding `views.js` file is located at
+     [`collections/comments/views.js`](https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/collections/comments/views.js).
+
+   - Look through the various "views" in the `views.js` file to see if there is
+     a relevant view. The main things to pay attention to are the `selector`
+     block (which controls how the results will be filtered) and the `options`
+     block (which mainly controls how the results are sorted).
+
+   - Pass in parameters for that view using keys in the `terms` block
+
+8. Start a `results` block, and select the fields you want to see for this output type.
    (If you don't select any fields, it will default to all fields, so you can
    do that once and delete the fields you don't need.)
 

@@ -17,7 +17,8 @@ next section.)
 
 3. Type `{output_type(input)}` into GraphiQL and hover over `input` and click
    on the type after `input` (e.g. `MultiCommentInput`, `SingleCommentInput`).
-   Depending on the fields listed, there will now be two ways to proceed.
+   A column on the right should appear.
+   Depending on the fields listed in that column, there will now be two ways to proceed.
    (Generally, it seems like singular output types (e.g. `comment`) will have
    `selector` and plural output types (e.g. `comments`) will have `terms`.)
 
@@ -25,7 +26,6 @@ next section.)
 
    - Click on the selector type (e.g. `CommentSelectorUniqueInput`). Use one of
      the fields (e.g. `_id`) to pick out the specific item you want.
-
 
    If there is `terms`:
 

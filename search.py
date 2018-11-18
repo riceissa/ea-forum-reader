@@ -34,12 +34,18 @@ def search_comments(string):
 
 
 def show_comment(comment, string):
+    if 'authorUserName' in comment:
+        user = comment['authorUserName']
+    elif 'authorSlug' in comment:
+        user = comment['authorSlug']
+    else:
+        user = comment['authorDisplayName']
     result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: #ECF5FF;">comment by <a href="./users.php?userid=%s">%s</a>
         on <a href="./posts.php?id=%s">%s</a>
         · <a href="./posts.php?id=%s#%s">%s</a>
         · score: %s
         ''' % (comment['userId'],
-               comment['authorUserName'],
+               user,
                comment['postId'],
                util.htmlescape(comment['postTitle']),
                comment['postId'],
@@ -54,12 +60,18 @@ def show_comment(comment, string):
 
 
 def show_post(post, string, seen):
+    if 'authorUserName' in post:
+        user = post['authorUserName']
+    elif 'authorSlug' in post:
+        user = post['authorSlug']
+    else:
+        user = post['authorDisplayName']
     result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: #ECF5FF;"><a href="./posts.php?id=%s">%s</a>
     by <a href="./users.php?userid=%s">%s</a> · %s · score: %s
     ''' % (post['_id'],
            util.htmlescape(post['title']),
            post['userId'],
-           post['authorUserName'],
+           user,
            post['postedAt'],
            post['baseScore']))
     if string.lower() in post['body'].lower():

@@ -28,30 +28,33 @@ next section.)
 
 # Examples
 
-I've built a sample interface for both LessWrong and EA Forum:
+I've built a sample interface for both LessWrong and EA Forum that allows an
+easy way to access the queries used to generate pages:
 
 - <https://lw2.issarice.com/>
 - <https://eaforum.issarice.com/>
 
-For article-reading and commenting purposes, most users will probably prefer to
-use the official versions of the forums or the GreaterWrong counterparts.
-However, one interesting feature of my interface is that it allows an easy way
-to access the queries used to generate pages.
+By passing `format=queries` in the URL to any page, you can view the GraphQL
+queries that were made to generate that page. Rather than showing many examples
+in this post, I will just show one example in this post, and let you explore
+the reader.
 
-By passing `format=queries` to any page, you can view the GraphQL queries that
-were made to generate that page. For example, clicking "Queries" on the page
-<https://eaforum.issarice.com/?view=top&before=2013-12-31&after=2013-01-01>
-(which shows the top-scoring posts during 2013)
-takes you to <https://eaforum.issarice.com/?view=top&offset=0&before=2013-12-31&after=2013-01-01&format=queries>
-where you will see the following queries:
+As an example, consider the page
+<https://eaforum.issarice.com/?view=top>.
+Clicking on "Queries" at the top of the page takes you to the page
+<https://eaforum.issarice.com/?view=top&offset=0&before=&after=&format=queries>
+Here you will see the following:
 
+```
     {
       posts(input: {
         terms: {
           view: "top"
           limit: 50
-          before: "2013-12-31"
-          after: "2013-01-01"
+          meta: null  # this seems to get both meta and non-meta posts
+
+
+
         }
       }) {
         results {
@@ -63,6 +66,7 @@ where you will see the following queries:
           baseScore
           voteCount
           commentsCount
+          meta
           user {
             username
             slug
@@ -70,6 +74,10 @@ where you will see the following queries:
         }
       }
     }
+
+Run this query
+
+
 
     {
       comments(input: {
@@ -91,13 +99,24 @@ where you will see the following queries:
           }
           plaintextExcerpt
           htmlHighlight
+          postId
+          pageUrl
         }
       }
     }
 
-Since this was for the EA Forum, we can now go to
-<https://forum.effectivealtruism.org/graphiql>
-and paste either query (pasting both won't work).
+Run this query
+```
+
+Clicking on "Run this query" (not linked in this tutorial, but linked in the
+actual page) below each query will take you to the GraphiQL page with the query
+preloaded. There, you can click on the "Execute Query" button to actually run
+the query and see the result.
+
+I should note that my reader implementation is optimized for my own (probably
+unusual) consumption and learning. For article-reading and commenting purposes
+(i.e. not for learning how to use GraphQL), most users will probably prefer to
+use the official versions of the forums or the GreaterWrong counterparts.
 
 # Tips
 

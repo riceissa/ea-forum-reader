@@ -67,6 +67,13 @@ def show_head(title):
                 border: 1px solid #aaaaaa;
                 padding: 5px 10px;
             }
+
+            /* See https://stackoverflow.com/a/34259648/3422337 */
+            .spoiler { border: 1px solid black; }
+            .spoiler, .spoiler > * { transition: color 0.5s, opacity 0.5s; }
+            .spoiler:not(:hover) { color: transparent; }
+            .spoiler:not(:hover) > * { opacity: 0; }
+
             #wrapper {
               border-left: 1px solid #d2d2d2;
               border-right: 1px solid #d2d2d2;

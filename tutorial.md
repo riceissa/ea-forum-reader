@@ -37,11 +37,12 @@ next section.)
      [`collections/comments/views.js`](https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/collections/comments/views.js).
 
    - Look through the various "views" in the `views.js` file to see if there is
-     a relevant view. The main things to pay attention to are the `selector`
-     block (which controls how the results will be filtered) and the `options`
-     block (which mainly controls how the results are sorted).
+     a relevant view. (There is also a default view if you don't select any
+     view.) The main things to pay attention to are the `selector` block (which
+     controls how the results will be filtered) and the `options` block (which
+     mainly controls how the results are sorted).
 
-   - Pass in parameters for that view using keys in the `terms` block
+   - Pass in parameters for that view using keys in the `terms` block.
 
 8. Start a `results` block, and select the fields you want to see for this output type.
    (If you don't select any fields, it will default to all fields, so you can
@@ -153,3 +154,13 @@ use the official versions of the forums or the GreaterWrong counterparts.
 # Queries that don't work (or are hard to do)
 
 TODO list some from email.
+
+# Acknowledgments
+
+Thanks to:
+
+- Louis Francini for helping me with some GraphQL queries and for feedback on
+  the post and the reader.
+- Oliver Habryka for answering some questions I had about GraphQL.
+- Vipul Naik for funding my work on this post and some of my work on the
+  reader.

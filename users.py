@@ -3,6 +3,8 @@
 import sys
 
 import util
+import config
+import linkpath
 
 
 def html_page_for_user(username, display_format):

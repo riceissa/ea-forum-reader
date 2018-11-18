@@ -3,6 +3,7 @@
 import sys
 from urllib.parse import quote
 
+import config
 import util
 import linkpath
 

@@ -2,7 +2,9 @@
 
 import sys
 
+import config
 import util
+import linkpath
 
 
 def get_content_for_post(postid, run_query=True):

@@ -106,7 +106,9 @@ and paste either query (pasting both won't work).
   to that block.
 - Forum search is *not* done via GraphQL. Rather, a separate API (the Algolia
   search API) is used. Use of the search API is outside the scope of this
-  tutorial.
+  tutorial. This is also why the search results page on my reader
+  ([example](https://eaforum.issarice.com/search.php?q=hpmor)) has no "Queries"
+  link (for now).
 
 # Queries that don't work (or are hard to do)
 

@@ -144,7 +144,7 @@ def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
         terms: {
           view: "%s"
           limit: 50
-          meta: null
+          meta: null  # this seems to get both meta and non-meta posts
           %s
           %s
           %s

@@ -118,7 +118,8 @@ def show_daily_posts(offset, view, before, after, display_format):
             <h2>Archive</h2>
             <ul>
     '''
-    for year in range(2011, datetime.datetime.utcnow().year + 1):
+    start_year = 2006 if "lesswrong" in config.GRAPHQL_URL else 2011
+    for year in range(start_year, datetime.datetime.utcnow().year + 1):
         result += "<li>\n"
         result += '''<a href="/?view=%s&amp;before=%s&amp;after=%s">%s</a>''' % (
             view,

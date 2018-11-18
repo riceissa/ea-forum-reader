@@ -10,11 +10,13 @@ import config
 def htmlescape(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
+
 def ea_forum_to_gw(ea_forum_link):
     if "forum.effectivealtruism.org" in config.GRAPHQL_URL:
         return ea_forum_link.replace('forum.effectivealtruism.org', 'ea.greaterwrong.com', 1)
     else:
         return ea_forum_link.replace('www.lesswrong.com', 'www.greaterwrong.com', 1)
+
 
 def show_head(title):
     result = ("""
@@ -122,8 +124,10 @@ def show_navbar(navlinks=None, search_value=""):
 
     return result
 
+
 def send_query(query):
     return requests.get(config.GRAPHQL_URL, params={'query': query})
+
 
 def cleanHtmlBody(htmlBody):
     """For some reason htmlBody values often have the following tags that

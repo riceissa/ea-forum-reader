@@ -74,7 +74,7 @@ def show_post(post, string, seen):
            user,
            post['postedAt'],
            post['baseScore']))
-    if string.lower() in post['body'].lower():
+    if 'body' in post and string.lower() in post['body'].lower():
         result += '''<pre style="font-family: Lato, Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % highlighted_search_string(util.htmlescape(post['body']), string)
     else:
         if post['_id'] in seen:

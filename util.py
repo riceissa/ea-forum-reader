@@ -30,7 +30,7 @@ def int_to_base36(number):
 def legacy_link(legacy_slug):
     slug = int_to_base36(legacy_slug)
     if "forum.effectivealtruism.org" in config.GRAPHQL_URL:
-        return 'https://web.archive.org/web/*/http://effective-altruism.org/ea/%s/*' % slug
+        return 'https://web.archive.org/web/*/http://effective-altruism.com/ea/%s/*' % slug
     else:
         return 'https://web.archive.org/web/*/http://lesswrong.com/lw/%s/*' % slug
 

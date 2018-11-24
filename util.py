@@ -22,7 +22,7 @@ def int_to_base36(number):
     alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
     base36 = ''
     while base36 == '' or number > 0:
-        number, i = divmod(number, 36)
+        number, i = divmod(int(number), 36)
         base36 = alphabet[i] + base36
     return base36
 

@@ -30,6 +30,7 @@ def get_content_for_post(postid, run_query=True):
           baseScore
           voteCount
           pageUrl
+          legacyId
           user {
             username
             slug
@@ -47,7 +48,7 @@ def get_content_for_post(postid, run_query=True):
         return request.json()['data']['post']['result']
     except TypeError:
         return {'title': '', 'slug': '', 'baseScore': 0, 'voteCount': 0, 'pageUrl': '',
-                'url': '', 'htmlBody': '', 'postedAt': '', 'commentsCount': 0,
+                'url': '', 'htmlBody': '', 'postedAt': '', 'commentsCount': 0, 'legacyId': None,
                 'user': {'slug': '', 'username': ''}}
 
 
@@ -203,6 +204,8 @@ def print_post_and_comment_thread(postid, display_format):
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
     result += '''<a href="%s" title="Official link">EA</a> ·\n''' % post['pageUrl']
     result += '''<a href="%s" title="GreaterWrong link">GW</a> ·\n''' % util.ea_forum_to_gw(post['pageUrl'])
+    if post['legacyId'] is not None:
+        result += '''<a href="%s" title="Legacy link">Legacy</a> ·\n''' % util.legacy_link(post['legacyId'])
     result += '''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>\n'
     if post['url'] is not None:
         result += ('''

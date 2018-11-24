@@ -18,6 +18,23 @@ def ea_forum_to_gw(ea_forum_link):
         return ea_forum_link.replace('www.lesswrong.com', 'www.greaterwrong.com', 1)
 
 
+def int_to_base36(number):
+    alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
+    base36 = ''
+    while base36 == '' or number > 0:
+        number, i = divmod(number, 36)
+        base36 = alphabet[i] + base36
+    return base36
+
+
+def legacy_link(legacy_slug):
+    slug = int_to_base36(legacy_slug)
+    if "forum.effectivealtruism.org" in config.GRAPHQL_URL:
+        return 'https://web.archive.org/web/*/http://effective-altruism.org/ea/%s/*' % slug
+    else:
+        return 'https://web.archive.org/web/*/http://lesswrong.com/lw/%s/*' % slug
+
+
 def show_head(title):
     result = ("""
     <head>

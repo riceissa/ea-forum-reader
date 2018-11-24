@@ -122,7 +122,7 @@ def show_navbar(navlinks=None, search_value=""):
         search_value = 'value="%s"' % htmlescape(search_value)
 
     result += ("""
-        <form action="./search.php" method="get" style="display: inline-block;">
+        <form action="/search.php" method="get" style="display: inline-block;">
                 <input name="q" type="text" %s/>
                 <input type="submit" value="Search" />
         </form>

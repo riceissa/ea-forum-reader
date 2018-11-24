@@ -34,3 +34,9 @@ def userlist(sort="karma", display_format="html"):
             return "/userlist?sort=" + sort + "&amp;format=" + display_format
         else:
             return "/userlist?sort=" + sort
+
+def search():
+    if PATH_STYLE == "localhost":
+        return "./search.php"
+    else:
+        return "/search.php"

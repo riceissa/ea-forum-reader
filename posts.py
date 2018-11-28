@@ -191,7 +191,7 @@ def print_post_and_comment_thread(postid, display_format):
     result = """<!DOCTYPE html>
     <html>
     """
-    result += util.show_head(post['title'])
+    result += util.show_head(title=post['title'], author=post['user']['slug'], date=post['postedAt'], publisher="LessWrong 2.0" if "lesswrong" in config.GRAPHQL_URL else "Effective Altruism Forum")
     result += "<body>\n"
     result += util.show_navbar(navlinks=[
             '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.posts(postid=util.htmlescape(postid), postslug=post['slug'], display_format="queries")

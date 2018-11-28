@@ -8,7 +8,7 @@ import linkpath
 import config
 
 def htmlescape(string):
-    return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&#34;')
 
 
 def ea_forum_to_gw(ea_forum_link):
@@ -35,11 +35,20 @@ def legacy_link(legacy_slug):
         return 'https://web.archive.org/web/*/http://lesswrong.com/lw/%s/*' % slug
 
 
-def show_head(title):
+def show_head(title, author="", date="", publisher=""):
     result = ("""
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        %s
+        %s
+        <meta property="og:title" content="%s" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:type" content="article" />
+        <meta name="citation_title" content="%s">
+        %s
+        %s
+        <meta name="citation_fulltext_world_readable" content="">
         <title>%s</title>
         <style type="text/css">
             body {
@@ -114,6 +123,12 @@ def show_head(title):
         </style>
     </head>
     """ % (
+            '''<meta name="author" content="%s">''' % htmlescape(author) if author else "",
+            '''<meta name="dcterms.date" content="%s">''' % htmlescape(date) if date else "",
+            htmlescape(title),
+            htmlescape(title),
+            '''<meta name="citation_author" content="%s">''' % htmlescape(author) if author else "",
+            '''<meta name="citation_publication_date" content="%s">''' % htmlescape(date) if date else "",
             htmlescape(title),
             config.LINK_COLOR,
             config.LINK_COLOR

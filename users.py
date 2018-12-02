@@ -49,12 +49,16 @@ def html_page_for_user(username, display_format):
                 result += '''    <a href="%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (linkpath.posts(postid=content['postId'], postslug=postslug), content['_id'], content['user']['username'])
                 result += '''    %s\n''' % content['postedAt']
             else:
+                if "lesswrong" in config.GRAPHQL_URL:
+                    official_link = '''<a href="%s" title="Official LessWrong 2.0 link">LW</a>''' % content['pageUrl']
+                else:
+                    official_link = '''<a href="%s" title="Official EA Forum link">EA</a>''' % content['pageUrl']
                 result += ('''    Comment by
                     <b>%s</b> on
                     <a href="%s">%s</a></b> ·
                     <a href="%s#%s">%s</a> ·
                     score: %s (%s votes) ·
-                    <a href="%s" title="Official link">EA</a> ·
+                    %s ·
                     <a href="%s" title="GreaterWrong link">GW</a>''' % (
                         username,
                         linkpath.posts(postid=content['postId'], postslug=content['post']['slug']),
@@ -64,7 +68,7 @@ def html_page_for_user(username, display_format):
                         content['postedAt'],
                         content['baseScore'],
                         content['voteCount'],
-                        content['pageUrl'],
+                        official_link,
                         util.ea_forum_to_gw(content['pageUrl'])))
             content_body = util.cleanHtmlBody(content['htmlBody'])
             result += '''    %s\n''' % content_body

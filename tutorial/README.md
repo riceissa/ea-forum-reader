@@ -19,7 +19,11 @@ For the queries that I know how to do, here is the general outline of steps:
 
 3. Type `{output_type(input)}` into GraphiQL and hover over `input`.
 
+   Here is what it looks like for the comment output type:
+
    ![](comment-input-hover.png)
+
+   Here is what it looks like for the comments output type:
 
    ![](comments-input-hover.png)
 
@@ -29,6 +33,19 @@ For the queries that I know how to do, here is the general outline of steps:
    Depending on the fields listed in that column, there will now be two ways to proceed.
    (Generally, it seems like singular output types (e.g. `comment`) will have
    `selector` and plural output types (e.g. `comments`) will have `terms`.)
+
+   Here is what it looks like for the comment output type. In the image, I have
+   already clicked on `SingleCommentInput` so you can see `selector` under the
+   "Documentation Explorer" column.
+
+   ![](comment-SingleCommentInput.png)
+
+   Here is what it looks like for the comment output type. Again, in this image,
+   I have already clicked on `MultiCommentInput` so you can see `terms` under the
+   "Documentation Explorer" column.
+
+   ![](comments-MultiCommentInput.png)
+
 
    In the fields listed, if there is `selector`:
 

@@ -182,11 +182,15 @@ use the official versions of the forums or the GreaterWrong counterparts.
   search API) is used. Use of the search API is outside the scope of this
   tutorial. This is also why the search results page on my reader
   ([example](https://eaforum.issarice.com/search.php?q=hpmor)) has no "Queries"
-  link (for now).
-
-# Queries that don't work (or are hard to do)
-
-TODO list some from email.
+  link ([for now](https://github.com/riceissa/ea-forum-reader/issues/8)).
+- For queries that use a `terms` block: even though a "view" is just a
+  [shorthand](http://docs.vulcanjs.org/terms-parameters.html) for a
+  selector/options pair, it is not possible to pass in arbitrary
+  selector/options pairs (due to the way security is handled by Vulcan).
+  If you don't use a view, the default view is selected.
+  The main consequence of this is that you won't be able to make some queries
+  that you might want to make.
+- Some queries are hard/impossible to do.
 
 # Acknowledgments
 

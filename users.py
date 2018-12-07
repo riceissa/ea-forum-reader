@@ -9,13 +9,16 @@ import linkpath
 
 
 def html_page_for_user(username, display_format):
-    comments = get_comments_for_user(username, run_query=(False if display_format == "queries" else True))
-    posts = get_posts_for_user(username, run_query=(False if display_format == "queries" else True))
+    run_query = False if display_format == "queries" else True
+    comments = get_comments_for_user(username, run_query=run_query)
+    posts = get_posts_for_user(username, run_query=run_query)
+    user_info = query_user_info(username, run_query=run_query)
 
     if display_format == "queries":
         result = "<pre>"
         result += comments + "\n"
         result += posts + "\n"
+        result += user_info + "\n"
         result += "</pre>\n"
         return result
 
@@ -30,6 +33,35 @@ def html_page_for_user(username, display_format):
             '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.users(userslug=util.htmlescape(username), display_format="queries")
         ])
     result += '''<div id="wrapper">'''
+
+    result += '''<div id="sidebar">'''
+    result += '''<h2>User info</h2>'''
+    result += '''  <dl>'''
+    if "displayName" in user_info and user_info["displayName"]:
+        result += '''    <dt>Display name</dt>'''
+        result += '''    <dd>%s</dd>''' % user_info["displayName"]
+    if "karma" in user_info and user_info["karma"]:
+        result += '''    <dt>Karma</dt>'''
+        result += '''    <dd>%s</dd>''' % user_info["karma"]
+    if "location" in user_info and user_info["location"]:
+        result += '''    <dt>Location</dt>'''
+        result += '''    <dd>%s</dd>''' % user_info["location"]
+    if "htmlBio" in user_info and user_info["htmlBio"]:
+        result += '''    <dt>Biography</dt>'''
+        result += '''    <dd>%s</dd>''' % user_info["htmlBio"]
+    if "postCount" in user_info and user_info["postCount"]:
+        result += '''    <dt>Post count</dt>'''
+        result += '''    <dd>%s</dd>''' % user_info["postCount"]
+    if "commentCount" in user_info and user_info["commentCount"]:
+        result += '''    <dt>Comment count</dt>'''
+        result += '''    <dd>%s</dd>''' % user_info["commentCount"]
+    if "website" in user_info and user_info["website"]:
+        result += '''    <dt>Website</dt>'''
+        result += '''    <dd><a href="%s">%s</a></dd>''' % (user_info["website"],
+                                                            user_info["website"])
+    result += '''  </dl>'''
+    result += '''</div>'''  # closes sidebar
+
     result += '''<div id="content">'''
 
     all_content = []
@@ -121,6 +153,34 @@ def feed_for_user(username):
     </rss>'''
 
     return result
+
+
+def query_user_info(userslug, run_query=True):
+    query = ("""
+    {
+      user(input: {selector: {slug: "%s"}}) {
+        result {
+          _id
+          slug
+          karma
+          htmlBio
+          website
+          location
+          profile
+          displayName
+          postCount
+          commentCount
+        }
+      }
+    }
+    """ % userslug)
+
+    if not run_query:
+        query_url = config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)
+        return query + ('''\n<a href="%s">Run this query</a>\n\n''' % query_url)
+
+    request = util.send_query(query)
+    return request.json()['data']['user']['result']
 
 
 def get_comments_for_user(username, run_query=True):

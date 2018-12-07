@@ -17,7 +17,13 @@ For the queries that I know how to do, here is the general outline of steps:
 2. Figure out what the output type should be (e.g. `comments`, `comment`,
    `posts`, `post`).
 
-3. Type `{output_type(input)}` into GraphiQL and hover over `input` and click
+3. Type `{output_type(input)}` into GraphiQL and hover over `input`.
+
+   ![](comment-input-hover.png)
+
+   ![](comments-input-hover.png)
+
+4. Click
    on the type after `input` (e.g. `MultiCommentInput`, `SingleCommentInput`).
    A column on the right should appear.
    Depending on the fields listed in that column, there will now be two ways to proceed.
@@ -46,7 +52,7 @@ For the queries that I know how to do, here is the general outline of steps:
 
    - Pass in parameters for that view using keys in the `terms` block.
 
-8. Start a `results` block, and select the fields you want to see for this output type.
+5. Start a `results` block, and select the fields you want to see for this output type.
    (If you don't select any fields, it will default to all fields, so you can
    do that once and delete the fields you don't need.)
 

@@ -21,11 +21,11 @@ For the queries that I know how to do, here is the general outline of steps:
 
    Here is what it looks like for the comment output type:
 
-   ![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-input-hover.png)
+   [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-input-hover.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-input-hover.png)
 
    Here is what it looks like for the comments output type:
 
-   ![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comments-input-hover.png)
+   [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comments-input-hover.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comments-input-hover.png)
 
 4. Click
    on the type that appears after `input` (e.g. `MultiCommentInput`, `SingleCommentInput`).
@@ -38,13 +38,13 @@ For the queries that I know how to do, here is the general outline of steps:
    already clicked on `SingleCommentInput` so you can see `selector` under the
    documentation (rightmost) column.
 
-   ![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-SingleCommentInput.png)
+   [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-SingleCommentInput.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-SingleCommentInput.png)
 
    Here is what it looks like for the comments output type. Again, in this image,
    I have already clicked on `MultiCommentInput` so you can see `terms` under the
    documentation (rightmost) column.
 
-   ![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comments-MultiCommentInput.png)
+   [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comments-MultiCommentInput.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comments-MultiCommentInput.png)
 
 
    In the fields listed, if there is `selector`:
@@ -54,11 +54,11 @@ For the queries that I know how to do, here is the general outline of steps:
 
      Here is what you should click on:
 
-     ![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-CommentSelectorUniqueInput.png)
+     [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-CommentSelectorUniqueInput.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-CommentSelectorUniqueInput.png)
 
      What it looks like after you have clicked:
 
-     ![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-fields.png)
+     [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-fields.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-fields.png)
 
    If there is `terms`:
 

@@ -1,12 +1,14 @@
 This post is a tutorial on using GraphQL to query for information about
 LessWrong and the Effective Altruism Forum. It's mostly intended for people who
 have wanted to explore LW/EA Forum data but have found GraphQL intimidating
-(this was the case for myself until a week ago).
+(this was the case for myself until several weeks ago).
 
 # General steps for writing a query
 
 (This section will make more sense if you have seen some example queries; see
 next section.)
+
+For the queries that I know how to do, here is the general outline of steps:
 
 1. Go to <https://www.lesswrong.com/graphiql> or
    <https://forum.effectivealtruism.org/graphiql> depending on which forum you

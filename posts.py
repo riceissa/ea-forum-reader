@@ -169,7 +169,7 @@ def print_comment(comment_node):
         else:
             result += ('<a title="Official EA Forum link" href="' + comment['pageUrl'] + '">EA</a> · ')
         result += '<a title="GreaterWrong link" href="' + util.ea_forum_to_gw(comment['pageUrl']) + '">GW</a>'
-        result += (util.cleanHtmlBody(comment['htmlBody']))
+        result += util.cleanHtmlBody(util.substitute_alt_links(comment['htmlBody']))
 
     if comment_node.children:
         for child in comment_node.children:
@@ -217,7 +217,7 @@ def print_post_and_comment_thread(postid, display_format):
         result += ('''
             <p>This is a link post for <a href="%s">%s</a></p>
         '''% (post['url'], post['url']))
-    result += util.cleanHtmlBody(post['htmlBody'])
+    result += util.cleanHtmlBody(util.substitute_alt_links(post['htmlBody']))
 
     result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'
 

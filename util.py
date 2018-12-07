@@ -2,6 +2,7 @@
 
 import requests
 import datetime
+import re
 from urllib.parse import quote
 
 import linkpath
@@ -216,3 +217,15 @@ def userslug_to_userid(userslug, run_query=True):
     return request.json()['data']['user']['result']['_id']
 
 
+def substitute_alt_links(html_body):
+    if "lesswrong" in config.GRAPHQL_URL:
+        return re.sub(r'(<a[^>]+href=)"https?://www\.lesswrong\.com/([^"]+)"([^>]*>)([^<]*</a>)',
+                      r'\1"https://lw2.issarice.com/\2"\3\4 [<a href="https://www.lesswrong.com/\2">LW</a> · <a href="https://www.greaterwrong.com/\2">GW</a>]',
+                      html_body)
+    else:
+        return re.sub(r'(<a[^>]+href=)"https?://forum\.effectivealtruism\.org/([^"]+)"([^>]*>)([^<]*</a>)',
+                      r'\1"https://eaforum.issarice.com/\2"\3\4 [<a href="https://forum.effectivealtruism.org/\2">EA</a> · <a href="https://ea.greaterwrong.com/\2">GW</a>]',
+                      html_body)
+        # return re.sub(r'(<a\W+href=)"(https?://forum\.effectivealtruism\.org/[^"]+)"',
+        #               r'\1"https://eaforum.issarice.com/\2"',
+        #               html_body)

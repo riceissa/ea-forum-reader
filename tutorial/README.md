@@ -190,7 +190,12 @@ use the official versions of the forums or the GreaterWrong counterparts.
   If you don't use a view, the default view is selected.
   The main consequence of this is that you won't be able to make some queries
   that you might want to make.
-- Some queries are hard/impossible to do.
+- Some queries are hard/impossible to do. Examples: (1) getting comments of a
+  user by placing conditions on the parent comment or post (e.g. finding all
+  comments by user 1 where they are replying to user 2); (2) querying and
+  sorting posts by a function of arbitrary fields (e.g. as a function of
+  `baseScore` and `voteCount`); (3) finding the highest-karma users looking
+  only at the past $N$ days of activity.
 
 # Acknowledgments
 

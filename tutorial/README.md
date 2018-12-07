@@ -28,7 +28,7 @@ For the queries that I know how to do, here is the general outline of steps:
    ![](comments-input-hover.png)
 
 4. Click
-   on the type after `input` (e.g. `MultiCommentInput`, `SingleCommentInput`).
+   on the type that appears after `input` (e.g. `MultiCommentInput`, `SingleCommentInput`).
    A column on the right should appear.
    Depending on the fields listed in that column, there will now be two ways to proceed.
    (Generally, it seems like singular output types (e.g. `comment`) will have
@@ -36,13 +36,13 @@ For the queries that I know how to do, here is the general outline of steps:
 
    Here is what it looks like for the comment output type. In the image, I have
    already clicked on `SingleCommentInput` so you can see `selector` under the
-   "Documentation Explorer" column.
+   documentation (rightmost) column.
 
    ![](comment-SingleCommentInput.png)
 
-   Here is what it looks like for the comment output type. Again, in this image,
+   Here is what it looks like for the comments output type. Again, in this image,
    I have already clicked on `MultiCommentInput` so you can see `terms` under the
-   "Documentation Explorer" column.
+   documentation (rightmost) column.
 
    ![](comments-MultiCommentInput.png)
 
@@ -51,6 +51,14 @@ For the queries that I know how to do, here is the general outline of steps:
 
    - Click on the selector type (e.g. `CommentSelectorUniqueInput`). Use one of
      the fields (e.g. `_id`) to pick out the specific item you want.
+
+     Here is what you should click on:
+
+     ![](comment-CommentSelectorUniqueInput.png)
+
+     What it looks like after you have clicked:
+
+     ![](comment-fields.png)
 
    If there is `terms`:
 

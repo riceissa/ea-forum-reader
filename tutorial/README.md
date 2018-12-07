@@ -19,35 +19,35 @@ For the queries that I know how to do, here is the general outline of steps:
 
 3. Type `{output_type(input)}` into GraphiQL and hover over `input`.
 
-   Here is what it looks like for the comment output type:
+   Here is what it looks like for the `comment` output type:
 
    [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-input-hover.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-input-hover.png)
 
-   Here is what it looks like for the comments output type:
+   Here is what it looks like for the `comments` output type:
 
    [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comments-input-hover.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comments-input-hover.png)
 
 4. Click
    on the type that appears after `input` (e.g. `MultiCommentInput`, `SingleCommentInput`).
-   A column on the right should appear.
+   A column on the right should appear (if it was not there already).
    Depending on the fields listed in that column, there will now be two ways to proceed.
    (Generally, it seems like singular output types (e.g. `comment`) will have
    `selector` and plural output types (e.g. `comments`) will have `terms`.)
 
-   Here is what it looks like for the comment output type. In the image, I have
+   Here is what it looks like for the `comment` output type. In the image, I have
    already clicked on `SingleCommentInput` so you can see `selector` under the
    documentation (rightmost) column.
 
    [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-SingleCommentInput.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-SingleCommentInput.png)
 
-   Here is what it looks like for the comments output type. Again, in this image,
+   Here is what it looks like for the `comments` output type. Again, in this image,
    I have already clicked on `MultiCommentInput` so you can see `terms` under the
    documentation (rightmost) column.
 
    [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comments-MultiCommentInput.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comments-MultiCommentInput.png)
 
 
-   In the fields listed, if there is `selector`:
+   In the fields listed, if there is `selector` (e.g. for `comment`):
 
    - Click on the selector type (e.g. `CommentSelectorUniqueInput`). Use one of
      the fields (e.g. `_id`) to pick out the specific item you want.
@@ -60,7 +60,7 @@ For the queries that I know how to do, here is the general outline of steps:
 
      [![](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-fields.png)](https://raw.githubusercontent.com/riceissa/ea-forum-reader/master/tutorial/comment-fields.png)
 
-   If there is `terms`:
+   If there is `terms` (e.g. `comments`):
 
    - Go to the
      [collections](https://github.com/LessWrong2/Lesswrong2/tree/devel/packages/lesswrong/lib/collections)

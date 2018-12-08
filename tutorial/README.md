@@ -122,6 +122,8 @@ Here you will see the following:
           voteCount
           commentsCount
           meta
+          question
+          url
           user {
             username
             slug

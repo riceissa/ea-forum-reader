@@ -167,8 +167,8 @@ Run this query
 
 Clicking on "Run this query" (not linked in this tutorial, but linked in the
 actual page) below each query will take you to the GraphiQL page with the query
-preloaded. There, you can click on the "Execute Query" button to actually run
-the query and see the result.
+preloaded. There, you can click on the "Execute Query" button (which looks like
+a play button) to actually run the query and see the result.
 
 I should note that my reader implementation is optimized for my own (probably
 unusual) consumption and learning. For article-reading and commenting purposes

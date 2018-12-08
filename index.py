@@ -33,6 +33,7 @@ def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
           commentsCount
           meta
           question
+          url
           user {
             username
             slug
@@ -227,6 +228,8 @@ def show_daily_posts(offset, view, before, after, display_format):
             result += "[community] " if post['meta'] else ""
         if "question" in post and post["question"]:
             result += "[question] "
+        if "url" in post and post["url"]:
+            result += '''[<a href="%s">link</a>] ''' % post["url"]
 
         result += (('''    <a href="%s">''' % post_url) +
                    util.htmlescape(post['title']) + "</a><br />\n")

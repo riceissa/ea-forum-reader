@@ -226,25 +226,49 @@ def show_comment(comment_node):
     return result
 
 
-def show_answer():
-    pass
+def show_answer(answer):
+    result = ""
+    result += ("""
+    <div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px;">
+        answer by %s · %s · score: %s (%s votes)
+        <br><br>
+        %s
+    </div>
+    """ % (
+        answer["_id"],
+        answer["author"],
+        answer["postedAt"],
+        answer["baseScore"],
+        answer["voteCount"],
+        answer["htmlBody"],
+    ))
+
+    return result
 
 
 def show_post_and_comment_thread(postid, display_format):
-    post = get_content_for_post(postid, run_query=(False if display_format == "queries" else True))
-    comments = get_comments_for_post(postid, run_query=(False if display_format == "queries" else True))
+    run_query = False if display_format == "queries" else True
+    post = get_content_for_post(postid, run_query=run_query)
+    comments = get_comments_for_post(postid, run_query=run_query)
+    if (not run_query) or ("question" in post and post["question"]):
+        answers = query_question_answers(postid, run_query=run_query)
 
     if display_format == "queries":
         result = "<pre>"
         result += post + "\n"
         result += comments + "\n"
+        result += answers + "\n"
         result += "</pre>\n"
         return result
 
     result = """<!DOCTYPE html>
     <html>
     """
-    result += util.show_head(title=post['title'], author=post['user']['slug'], date=post['postedAt'], publisher="LessWrong 2.0" if "lesswrong" in config.GRAPHQL_URL else "Effective Altruism Forum")
+    result += util.show_head(title=post['title'],
+                             author=post['user']['slug'],
+                             date=post['postedAt'],
+                             publisher="LessWrong 2.0" if "lesswrong" in config.GRAPHQL_URL
+                                       else "Effective Altruism Forum")
     result += "<body>\n"
     result += util.show_navbar(navlinks=[
             '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.posts(postid=util.htmlescape(postid), postslug=post['slug'], display_format="queries")
@@ -262,6 +286,7 @@ def show_post_and_comment_thread(postid, display_format):
     result += '''<a href="%s" title="GreaterWrong link">GW</a> ·\n''' % util.ea_forum_to_gw(post['pageUrl'])
     if post['legacyId'] is not None:
         result += '''<a href="%s" title="Legacy link">Legacy</a> ·\n''' % util.legacy_link(post['legacyId'])
+
     result += '''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>\n'
 
     if post['url'] is not None:
@@ -283,6 +308,10 @@ def show_post_and_comment_thread(postid, display_format):
             result += util.cleanHtmlBody(util.substitute_alt_links(post['tableOfContents']['html']))
     else:
         result += util.cleanHtmlBody(util.substitute_alt_links(post['htmlBody']))
+
+    if "question" in post and post["question"]:
+        for answer in answers:
+            result += show_answer(answer)
 
     result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'
 

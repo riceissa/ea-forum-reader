@@ -32,6 +32,7 @@ def get_content_for_post(postid, run_query=True):
           pageUrl
           legacyId
           question
+          tableOfContents
           user {
             username
             slug
@@ -50,7 +51,9 @@ def get_content_for_post(postid, run_query=True):
     except TypeError:
         return {'title': '', 'slug': '', 'baseScore': 0, 'voteCount': 0, 'pageUrl': '',
                 'url': '', 'htmlBody': '', 'postedAt': '', 'commentsCount': 0, 'legacyId': None,
-                'user': {'slug': '', 'username': ''}, 'question': False}
+                'user': {'slug': '', 'username': ''}, 'question': False,
+                'tableOfContents': {'headingsCount': 0, 'html': "", 'sections': []}
+               }
 
 
 def get_comments_for_post(postid, run_query=True):
@@ -221,8 +224,19 @@ def print_post_and_comment_thread(postid, display_format):
         '''% (post['url'], post['url']))
     if "question" in post and post["question"]:
         result += "<p>This is a question post.</p>"
-
-    result += util.cleanHtmlBody(util.substitute_alt_links(post['htmlBody']))
+    if "tableOfContents" in post and post["tableOfContents"] and "sections" in post["tableOfContents"]:
+        if post["tableOfContents"]["sections"]:
+            result += '''<h2>Contents</h2>
+                <ul>'''
+            for section in post["tableOfContents"]["sections"]:
+                result += '''<li><a href="#%s">%s</a></li>''' % (section["anchor"], section["title"])
+            result += '''</ul>'''
+            # post['htmlBody'] is HTML without the table of contents anchors added
+            # in, so we have to use a separate HTML provided by the
+            # tableOfContents JSON
+            result += util.cleanHtmlBody(util.substitute_alt_links(post['tableOfContents']['html']))
+    else:
+        result += util.cleanHtmlBody(util.substitute_alt_links(post['htmlBody']))
 
     result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'
 

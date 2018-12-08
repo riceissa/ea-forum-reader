@@ -198,7 +198,7 @@ use the official versions of the forums or the GreaterWrong counterparts.
   sorting posts by a function of arbitrary fields (e.g. as a function of
   `baseScore` and `voteCount`); (3) finding the highest-karma users looking
   only at the past $N$ days of activity.
-- GraphQL vs GraphiQL: `/graphiql` seems to be endpoint for the interactive
+- GraphQL vs GraphiQL: `/graphiql` seems to be the endpoint for the interactive
   explorer for GraphQL, whereas `/graphql` is the endpoint for the actual API.
   So when you are actually querying the API (via a program you write) I think
   you want to be using <https://www.lesswrong.com/graphql> and

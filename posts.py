@@ -98,6 +98,48 @@ def get_comments_for_post(postid, run_query=True):
     return result
 
 
+def query_question_answers(postid, run_query=True):
+    query = ("""
+    {
+      comments(input: {
+        terms: {
+          view: "questionAnswers",
+          postId: "%s",
+        }
+      }) {
+        results {
+          _id
+          user {
+            _id
+            username
+            displayName
+            slug
+          }
+          userId
+          author
+          parentCommentId
+          pageUrl
+          htmlBody
+          baseScore
+          voteCount
+          postedAt
+          answer
+        }
+      }
+    }
+    """ % postid)
+
+    if not run_query:
+        query_url = config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)
+        return query + ('''\n<a href="%s">Run this query</a>\n\n''' % query_url)
+
+    request = util.send_query(query)
+    result = []
+    for answer in request.json()['data']['comments']['results']:
+        result.append(answer)
+    return result
+
+
 class CommentTree(object):
     def __init__(self, commentid, data):
         self.commentid = commentid
@@ -182,6 +224,10 @@ def print_comment(comment_node):
     result += ("</div>")
 
     return result
+
+
+def show_answer():
+    pass
 
 
 def print_post_and_comment_thread(postid, display_format):

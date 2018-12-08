@@ -31,6 +31,7 @@ def get_content_for_post(postid, run_query=True):
           voteCount
           pageUrl
           legacyId
+          question
           user {
             username
             slug
@@ -49,7 +50,7 @@ def get_content_for_post(postid, run_query=True):
     except TypeError:
         return {'title': '', 'slug': '', 'baseScore': 0, 'voteCount': 0, 'pageUrl': '',
                 'url': '', 'htmlBody': '', 'postedAt': '', 'commentsCount': 0, 'legacyId': None,
-                'user': {'slug': '', 'username': ''}}
+                'user': {'slug': '', 'username': ''}, 'question': False}
 
 
 def get_comments_for_post(postid, run_query=True):
@@ -213,10 +214,14 @@ def print_post_and_comment_thread(postid, display_format):
     if post['legacyId'] is not None:
         result += '''<a href="%s" title="Legacy link">Legacy</a> ·\n''' % util.legacy_link(post['legacyId'])
     result += '''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>\n'
+
     if post['url'] is not None:
         result += ('''
             <p>This is a link post for <a href="%s">%s</a></p>
         '''% (post['url'], post['url']))
+    if "question" in post and post["question"]:
+        result += "<p>This is a question post.</p>"
+
     result += util.cleanHtmlBody(util.substitute_alt_links(post['htmlBody']))
 
     result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'

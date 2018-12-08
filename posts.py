@@ -195,7 +195,7 @@ def update_parity(comment_node, parity):
         update_parity(child, child_parity)
 
 
-def print_comment(comment_node):
+def show_comment(comment_node):
     result = ""
     comment = comment_node.data
     color = config.COMMENT_COLOR if comment_node.parity == "odd" else "#FFFFFF"
@@ -219,7 +219,7 @@ def print_comment(comment_node):
 
     if comment_node.children:
         for child in comment_node.children:
-            result += print_comment(child)
+            result += show_comment(child)
 
     result += ("</div>")
 
@@ -230,7 +230,7 @@ def show_answer():
     pass
 
 
-def print_post_and_comment_thread(postid, display_format):
+def show_post_and_comment_thread(postid, display_format):
     post = get_content_for_post(postid, run_query=(False if display_format == "queries" else True))
     comments = get_comments_for_post(postid, run_query=(False if display_format == "queries" else True))
 
@@ -287,7 +287,7 @@ def print_post_and_comment_thread(postid, display_format):
     result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'
 
     root = build_comment_thread(comments)
-    result += print_comment(root)
+    result += show_comment(root)
 
     result += ("""
     </div>
@@ -303,5 +303,5 @@ if __name__ == "__main__":
     if len(sys.argv) != 2 + 1:
         print("Please enter a post ID as argument")
     else:
-        print(print_post_and_comment_thread(postid=sys.argv[1], display_format=sys.argv[2]))
+        print(show_post_and_comment_thread(postid=sys.argv[1], display_format=sys.argv[2]))
 

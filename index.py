@@ -32,6 +32,7 @@ def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
           voteCount
           commentsCount
           meta
+          question
           user {
             username
             slug
@@ -219,11 +220,17 @@ def show_daily_posts(offset, view, before, after, display_format):
     for post in posts:
         post_url = linkpath.posts(postid=post['_id'], postslug=post['slug'])
         result += ('''<div style="margin-bottom: 15px;">\n''')
+
         if "lesswrong" in config.GRAPHQL_URL:
             result += "[meta] " if post['meta'] else ""
         else:
             result += "[community] " if post['meta'] else ""
-        result += (('''    <a href="%s">''' % post_url) + util.htmlescape(post['title']) + "</a><br />\n")
+        if "question" in post and post["question"]:
+            result += "[question] "
+
+        result += (('''    <a href="%s">''' % post_url) +
+                   util.htmlescape(post['title']) + "</a><br />\n")
+
         if post['user'] is None or post['user']['slug'] is None:
             result += '''[deleted] ·\n'''
         else:

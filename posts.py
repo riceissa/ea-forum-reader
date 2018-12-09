@@ -247,6 +247,9 @@ def show_answer(answer):
 
 
 def show_post_and_comment_thread(postid, display_format):
+    print("""<!DOCTYPE html>
+    <html>
+    """)
     run_query = False if display_format == "queries" else True
     post = get_content_for_post(postid, run_query=run_query)
     comments = get_comments_for_post(postid, run_query=run_query)
@@ -261,9 +264,7 @@ def show_post_and_comment_thread(postid, display_format):
         result += "</pre>\n"
         return result
 
-    result = """<!DOCTYPE html>
-    <html>
-    """
+    result = ""
     result += util.show_head(title=post['title'],
                              author=post['user']['slug'],
                              date=post['postedAt'],

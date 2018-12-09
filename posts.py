@@ -204,7 +204,7 @@ def show_comment(comment_node):
     if comment:
         commentid = comment['_id']
         result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
-        if comment['user']:
+        if comment['user'] and comment['user']['slug'] and comment['user']['username']:
             result += '''comment by <b><a href="%s">%s</a></b> ·\n''' % (linkpath.users(userslug=comment['user']['slug']), comment['user']['username'])
         else:
             result += '''comment by <b>[deleted]</b> ·\n'''

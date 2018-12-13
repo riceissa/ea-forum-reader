@@ -264,9 +264,12 @@ def show_post_and_comment_thread(postid, display_format):
         result += "</pre>\n"
         return result
 
-    result = ""
-    result += util.show_head(title=post['title'],
-                             author=post['user']['slug'],
+    if "user" in post and post["user"] and "slug" in post["user"] and post["user"]["slug"]:
+        author = post['user']['slug']
+    else:
+        author = None
+    result = util.show_head(title=post['title'],
+                             author=author if author is not None else "[deleted]",
                              date=post['postedAt'],
                              publisher="LessWrong 2.0" if "lesswrong" in config.GRAPHQL_URL
                                        else "Effective Altruism Forum")
@@ -277,7 +280,10 @@ def show_post_and_comment_thread(postid, display_format):
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
     result += "<h1>" + util.htmlescape(post['title']) + "</h1>\n"
-    result += '''post by <b><a href="%s">%s</a></b> ·\n''' % (linkpath.users(userslug=post['user']['slug']), post['user']['username'])
+    if author:
+        result += '''post by <b><a href="%s">%s</a></b> ·\n''' % (linkpath.users(userslug=author), author)
+    else:
+        result += '''post by <b>[deleted]</b> ·\n'''
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
     if "lesswrong" in config.GRAPHQL_URL:

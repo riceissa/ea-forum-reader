@@ -304,11 +304,20 @@ def show_post_and_comment_thread(postid, display_format):
         result += "<p>This is a question post.</p>"
     if "tableOfContents" in post and post["tableOfContents"] and "sections" in post["tableOfContents"]:
         if post["tableOfContents"]["sections"]:
-            result += '''<h2>Contents</h2>
-                <ul>'''
-            for section in post["tableOfContents"]["sections"]:
-                result += '''<li><a href="#%s">%s</a></li>''' % (section["anchor"], section["title"])
-            result += '''</ul>'''
+            result += '''<h2>Contents</h2>\n'''
+            result += '<ul>\n'
+            # The last anchor is for comments, so skip that
+            current_level = 1
+            for section in post["tableOfContents"]["sections"][:-1]:
+                if section["level"] > current_level:
+                    result += (" " * current_level) + '<ul>\n'
+                if section["level"] < current_level:
+                    # When closing, we might jump more than one level, so close
+                    # as many as necessary
+                    result += (" " * current_level) + '</ul>\n' * (current_level - section["level"])
+                result += (" " * current_level) + '''<li><a href="#%s">%s</a></li>\n''' % (section["anchor"], section["title"])
+                current_level = section["level"]
+            result += '</ul>\n'
             # post['htmlBody'] is HTML without the table of contents anchors added
             # in, so we have to use a separate HTML provided by the
             # tableOfContents JSON

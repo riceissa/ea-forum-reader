@@ -32,7 +32,7 @@ def get_content_for_post(postid, run_query=True):
           pageUrl
           legacyId
           question
-          %s
+          tableOfContents
           user {
             username
             slug
@@ -40,7 +40,7 @@ def get_content_for_post(postid, run_query=True):
         }
       }
     }
-    """ % (postid, "tableOfContents" if "lesswrong" in config.GRAPHQL_URL else ""))
+    """ % postid)
 
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))

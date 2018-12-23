@@ -7,7 +7,7 @@ Forum](https://forum.effectivealtruism.org/) (and LessWrong 2.0).
 
 ## Acknowledgments
 
-Thanks to Louis Francini for helping me with some of the GraphQL queries, for submitting code improvements, and for feedback.
+Thanks to Louis Francini for helping me with some of the GraphQL queries, for submitting code improvements, for submitting bug reports, and for feedback.
 
 ## License
 

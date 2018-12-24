@@ -168,6 +168,7 @@ def query_user_info(userslug, run_query=True):
           location
           profile
           displayName
+          username
           postCount
           commentCount
         }
@@ -203,6 +204,7 @@ def get_comments_for_user(username, run_query=True):
           user {
             username
             slug
+            displayName
           }
           userId
           postId

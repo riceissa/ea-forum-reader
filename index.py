@@ -75,6 +75,8 @@ def recent_comments_query(run_query=True):
           user {
             _id
             slug
+            username
+            displayName
           }
           plaintextExcerpt
           htmlHighlight
@@ -234,10 +236,10 @@ def show_daily_posts(offset, view, before, after, display_format):
         result += (('''    <a href="%s">''' % post_url) +
                    util.htmlescape(post['title']) + "</a><br />\n")
 
-        if post['user'] is None or post['user']['slug'] is None:
-            result += '''[deleted] ·\n'''
-        else:
-            result += '''<a href="%s">%s</a> ·\n''' % (linkpath.users(userslug=post['user']['slug']), post['user']['username'])
+        result += util.userlink(slug=post.get('user', {}).get('slug', None),
+                                username=post.get('user', {}).get('username', None),
+                                display_name=post.get('user', {}).get('displayName', None))
+        result += " ·\n"
         result += post['postedAt'] + " ·\n"
         result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
         result += ('''    <a href="%s#comments">comments (%s)</a>\n''' % (post_url, post['commentsCount']))

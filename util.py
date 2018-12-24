@@ -217,6 +217,17 @@ def userslug_to_userid(userslug, run_query=True):
     return request.json()['data']['user']['result']['_id']
 
 
+def userlink(slug=None, username=None, display_name=None):
+    if slug:
+        displayed = username if username else slug
+        if display_name and display_name != displayed:
+            displayed = display_name + " (" + displayed + ")"
+        url = linkpath.users(userslug=slug)
+        return '''<a href="%s">%s</a>''' % (url, displayed)
+    else:
+        return '''<b>[deleted]</b>'''
+
+
 def substitute_alt_links(html_body):
     if not html_body:
         return ""

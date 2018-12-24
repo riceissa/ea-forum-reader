@@ -24,7 +24,6 @@ def get_content_for_post(postid, run_query=True):
           url
           title
           slug
-          body
           commentsCount
           htmlBody
           baseScore
@@ -35,6 +34,7 @@ def get_content_for_post(postid, run_query=True):
           tableOfContents
           user {
             username
+            displayName
             slug
           }
         }
@@ -77,7 +77,6 @@ def get_comments_for_post(postid, run_query=True):
           author
           parentCommentId
           pageUrl
-          body
           htmlBody
           baseScore
           voteCount
@@ -204,10 +203,11 @@ def show_comment(comment_node):
     if comment:
         commentid = comment['_id']
         result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
-        if comment['user'] and comment['user']['slug'] and comment['user']['username']:
-            result += '''comment by <b><a href="%s">%s</a></b> ·\n''' % (linkpath.users(userslug=comment['user']['slug']), comment['user']['username'])
-        else:
-            result += '''comment by <b>[deleted]</b> ·\n'''
+        result += "comment by "
+        result += util.userlink(slug=comment.get('user', {}).get('slug', None),
+                                username=comment.get('user', {}).get('username', None),
+                                display_name=comment.get('user', {}).get('displayName', None))
+        result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes) · ")
         if "lesswrong" in config.GRAPHQL_URL:
@@ -280,10 +280,11 @@ def show_post_and_comment_thread(postid, display_format):
     result += '''<div id="wrapper">'''
     result += '''<div id="content">'''
     result += "<h1>" + util.htmlescape(post['title']) + "</h1>\n"
-    if author:
-        result += '''post by <b><a href="%s">%s</a></b> ·\n''' % (linkpath.users(userslug=author), author)
-    else:
-        result += '''post by <b>[deleted]</b> ·\n'''
+    result += "post by "
+    result += util.userlink(slug=post.get("user", {}).get("slug", None),
+                            username=post.get("user", {}).get("username", None),
+                            display_name=post.get("user", {}).get("displayName", None))
+    result += " ·\n"
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
     if "lesswrong" in config.GRAPHQL_URL:

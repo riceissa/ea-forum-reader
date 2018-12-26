@@ -238,6 +238,7 @@ def get_posts_for_user(username, run_query=True):
           view: "userPosts"
           userId: "%s"
           limit: 50
+          meta: null  # this seems to get both meta and non-meta posts
         }
       }) {
         results {

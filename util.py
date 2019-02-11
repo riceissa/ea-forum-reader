@@ -105,6 +105,18 @@ def show_head(title, author="", date="", publisher=""):
             h1 {
                 color: %s;
             }
+            code {
+                background-color: #f6f6f6;
+                padding-left: 4px;
+                padding-right: 4px;
+                word-wrap: normal;
+            }
+            pre code {
+                display: block;
+                line-height: 1.2;
+                overflow: auto;
+                padding: 10px;
+            }
             img {
                 max-width: 100%%;
                 height: auto;

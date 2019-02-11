@@ -292,8 +292,8 @@ def show_post_and_comment_thread(postid, display_format):
                             display_name=post.get("user", {}).get("displayName", None))
     for coauthor in util.strong_get(post, "coauthors", []):
         result += ", " + util.userlink(slug=util.strong_get(coauthor, "slug"),
-                                      username=util.strong_get(coauthor, "username"),
-                                      display_name=util.strong_get(coauthor, "displayName"))
+                                       username=util.strong_get(coauthor, "username"),
+                                       display_name=util.strong_get(coauthor, "displayName"))
     result += " ·\n"
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])

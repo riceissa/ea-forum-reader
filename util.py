@@ -12,6 +12,17 @@ def htmlescape(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&#34;')
 
 
+def strong_get(obj, key, default):
+    """This acts like obj.get(key, default), except that if obj[key] exists but
+    is false, we still return default rather than the accessed result.
+
+    To see the difference, suppose obj = {"a": None}. Then obj.get("a", 1) is
+    None but strong_get(obj, "a", 1) is 1."""
+    result = obj.get(key)
+    if not result:
+        result = default
+    return result
+
 def ea_forum_to_gw(ea_forum_link):
     if "forum.effectivealtruism.org" in config.GRAPHQL_URL:
         return ea_forum_link.replace('forum.effectivealtruism.org', 'ea.greaterwrong.com', 1)

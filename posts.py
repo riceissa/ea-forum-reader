@@ -204,9 +204,9 @@ def show_comment(comment_node):
         commentid = comment['_id']
         result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
         result += "comment by "
-        result += util.userlink(slug=comment.get('user', {}).get('slug', None),
-                                username=comment.get('user', {}).get('username', None),
-                                display_name=comment.get('user', {}).get('displayName', None))
+        result += util.userlink(slug=util.strong_multiget(comment, ['user', 'slug']),
+                                username=util.strong_multiget(comment, ['user', 'username']),
+                                display_name=util.strong_multiget(comment, ['user', 'displayName']))
         result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes) · ")

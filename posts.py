@@ -311,14 +311,18 @@ def show_post_and_comment_thread(postid, display_format):
             current_level = 1
             for section in post["tableOfContents"]["sections"][:-1]:
                 if section["level"] > current_level:
-                    result += (" " * current_level) + '<ul>\n'
+                    result += (" " * (4 * current_level)) + '<ul>\n'
                 if section["level"] < current_level:
                     # When closing, we might jump more than one level, so close
                     # as many as necessary
-                    result += (" " * current_level) + '</ul>\n' * (current_level - section["level"])
-                result += (" " * current_level) + '''<li><a href="#%s">%s</a></li>\n''' % (section["anchor"], section["title"])
+                    for i in range(current_level - section["level"]):
+                        result += (" " * (4 * (i + 1))) + '</ul>\n'
+                result += (" " * (4 * section["level"])) + '''<!-- level {} -->'''.format(section["level"]) + '''<li><a href="#%s">%s</a></li>\n''' % (section["anchor"], section["title"])
                 current_level = section["level"]
-            result += '</ul>\n'
+            # Finally, close off as many levels as needed to bring us back to
+            # the base level
+            for i in range(current_level):
+                result += (" " * (4 * (current_level - i - 1))) + '</ul>\n'
             # post['htmlBody'] is HTML without the table of contents anchors added
             # in, so we have to use a separate HTML provided by the
             # tableOfContents JSON

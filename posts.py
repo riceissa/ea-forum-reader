@@ -37,6 +37,12 @@ def get_content_for_post(postid, run_query=True):
             displayName
             slug
           }
+          coauthors {
+            _id
+            username
+            displayName
+            slug
+          }
         }
       }
     }
@@ -284,6 +290,10 @@ def show_post_and_comment_thread(postid, display_format):
     result += util.userlink(slug=post.get("user", {}).get("slug", None),
                             username=post.get("user", {}).get("username", None),
                             display_name=post.get("user", {}).get("displayName", None))
+    for coauthor in util.strong_get(post, "coauthors", []):
+        result += ", " + util.userlink(slug=util.strong_get(coauthor, "slug"),
+                                      username=util.strong_get(coauthor, "username"),
+                                      display_name=util.strong_get(coauthor, "displayName"))
     result += " ·\n"
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])

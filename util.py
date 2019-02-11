@@ -31,6 +31,18 @@ def strong_get(obj, key, default=None):
     return result
 
 
+def strong_multiget(obj, key_list, default=None):
+    """This acts like strong_get(strong_get(obj, key1), key2, default). The
+    intention is something like, get each key in turn, and return default is we
+    get a None at any point."""
+    if len(key_list) < 1:
+        return obj
+    result = obj
+    for key in key_list[:-1]:
+        result = strong_get(result, key)
+    return strong_get(result, key_list[-1], default)
+
+
 def ea_forum_to_gw(ea_forum_link):
     if "forum.effectivealtruism.org" in config.GRAPHQL_URL:
         return ea_forum_link.replace('forum.effectivealtruism.org', 'ea.greaterwrong.com', 1)

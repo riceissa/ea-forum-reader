@@ -162,8 +162,8 @@ def show_daily_posts(offset, view, before, after, display_format):
             %s
             </span>
         ''' % (
-                linkpath.users(userslug=comment['user']['slug']),
-                comment['user']['slug'],
+                linkpath.users(userslug=coalesce(comment.get('user'), {}).get('slug', "")),
+                coalesce(comment.get('user'), {}).get('slug', ""),
                 linkpath.posts(postid=comment['postId'], postslug=post['slug']),
                 comment['_id'],
                 util.htmlescape(post['title']),

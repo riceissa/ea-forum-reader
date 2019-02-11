@@ -12,16 +12,24 @@ def htmlescape(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&#34;')
 
 
-def strong_get(obj, key, default):
+def strong_get(obj, key, default=None):
     """This acts like obj.get(key, default), except that if obj[key] exists but
-    is false, we still return default rather than the accessed result.
+    is None, we still return default rather than the accessed result. Also, if
+    obj happens to be None, we return default rather than raising an exception.
 
     To see the difference, suppose obj = {"a": None}. Then obj.get("a", 1) is
-    None but strong_get(obj, "a", 1) is 1."""
+    None but strong_get(obj, "a", 1) is 1.
+
+    Since obj can be None, strong_get can also be nested without checking for
+    None each time: strong_get(strong_get({}, "a"), "b", 1) is 1. Thus in some
+    cases a default need only be specified at the end."""
+    if obj is None:
+        return default
     result = obj.get(key)
-    if not result:
+    if result is None:
         result = default
     return result
+
 
 def ea_forum_to_gw(ea_forum_link):
     if "forum.effectivealtruism.org" in config.GRAPHQL_URL:

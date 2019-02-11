@@ -162,8 +162,8 @@ def show_daily_posts(offset, view, before, after, display_format):
             %s
             </span>
         ''' % (
-                linkpath.users(userslug=coalesce(comment.get('user'), {}).get('slug', "")),
-                coalesce(comment.get('user'), {}).get('slug', ""),
+                linkpath.users(userslug=util.strong_multiget(comment, ['user', 'slug'], "")),
+                util.strong_multiget(comment, ['user', 'slug'], ""),
                 linkpath.posts(postid=comment['postId'], postslug=post['slug']),
                 comment['_id'],
                 util.htmlescape(post['title']),
@@ -236,9 +236,9 @@ def show_daily_posts(offset, view, before, after, display_format):
         result += (('''    <a href="%s">''' % post_url) +
                    util.htmlescape(post['title']) + "</a><br />\n")
 
-        result += util.userlink(slug=coalesce(post.get('user'), {}).get('slug'),
-                                username=coalesce(post.get('user'), {}).get('username'),
-                                display_name=coalesce(post.get('user'), {}).get('displayName'))
+        result += util.userlink(slug=util.strong_multiget(post, ['user', 'slug']),
+                                username=util.strong_multiget(post, ['user', 'username']),
+                                display_name=util.strong_multiget(post, ['user', 'displayName']))
         result += " ·\n"
         result += post['postedAt'] + " ·\n"
         result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
@@ -258,13 +258,6 @@ def show_daily_posts(offset, view, before, after, display_format):
     """
 
     return result
-
-
-def coalesce(obj, default):
-    if obj:
-        return obj
-    else:
-        return default
 
 
 if __name__ == "__main__":

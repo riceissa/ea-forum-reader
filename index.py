@@ -37,6 +37,7 @@ def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
           user {
             username
             slug
+            displayName
           }
         }
       }

@@ -79,8 +79,7 @@ def recent_comments_query(run_query=True):
             username
             displayName
           }
-          plaintextExcerpt
-          htmlHighlight
+          htmlBody
           postId
           pageUrl
         }
@@ -168,7 +167,7 @@ def show_daily_posts(offset, view, before, after, display_format):
                 linkpath.posts(postid=comment['postId'], postslug=post['slug']),
                 comment['_id'],
                 util.htmlescape(post['title']),
-                comment['htmlHighlight']
+                comment['htmlBody']
             )
         )
 

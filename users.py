@@ -208,7 +208,6 @@ def get_comments_for_user(username, run_query=True):
           }
           userId
           postId
-          body
           postedAt
           pageUrl
           htmlBody

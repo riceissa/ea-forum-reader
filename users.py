@@ -35,6 +35,14 @@ def html_page_for_user(username, display_format):
     result += '''<div id="wrapper">'''
 
     result += '''<div id="sidebar">'''
+    result += '<p>'
+    if "lesswrong" in config.GRAPHQL_URL:
+        result += ('<a title="Official LessWrong 2.0 link" href="https://www.lesswrong.com/users/' + username + '">LW</a> · ')
+        result += ('<a title="GreaterWrong link" href="https://www.greaterwrong.com/users/' + username + '">GW</a>')
+    else:
+        result += ('<a title="Official EA Forum link" href="https://forum.effectivealtruism.org/users/' + username + '">EA</a> · ')
+        result += ('<a title="GreaterWrong link" href="https://ea.greaterwrong.com/users/' + username + '">GW</a>')
+    result += '</p>'
     result += '''<h2>User info</h2>'''
     result += '''  <dl>'''
     if "displayName" in user_info and user_info["displayName"]:

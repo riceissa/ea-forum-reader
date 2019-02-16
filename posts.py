@@ -2,6 +2,7 @@
 
 import sys
 from urllib.parse import quote
+import datetime
 
 import config
 import util
@@ -62,12 +63,12 @@ def get_content_for_post(postid, run_query=True):
                }
 
 
-def get_comments_for_post(postid, run_query=True):
+def get_comments_for_post(postid, view="postCommentsTop", run_query=True):
     query = ("""
     {
       comments(input: {
         terms: {
-          view: "postCommentsTop",
+          view: "%s",
           postId: "%s",
         }
       }) {
@@ -90,7 +91,7 @@ def get_comments_for_post(postid, run_query=True):
         }
       }
     }
-    """ % postid)
+    """ % (view, postid))
 
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
@@ -258,7 +259,15 @@ def show_post_and_comment_thread(postid, display_format):
     """)
     run_query = False if display_format == "queries" else True
     post = get_content_for_post(postid, run_query=run_query)
-    comments = get_comments_for_post(postid, run_query=run_query)
+    if ("lesswrong" in config.GRAPHQL_URL and
+        datetime.datetime.strptime(util.strong_get(post, 'postedAt',
+                                                   default="2018-01-01")[:len("2018-01-01")],
+                                   "%Y-%m-%d") < datetime.datetime(2009, 2, 27)):
+        comments = get_comments_for_post(postid, view="postCommentsOld", run_query=run_query)
+        sorting_text = "oldest first, as this post is from before comment nesting was available (around 2009-02-27)."
+    else:
+        comments = get_comments_for_post(postid, run_query=run_query)
+        sorting_text = "top scores."
     if (not run_query) or ("question" in post and post["question"]):
         answers = query_question_answers(postid, run_query=run_query)
 
@@ -345,6 +354,7 @@ def show_post_and_comment_thread(postid, display_format):
             result += show_answer(answer)
 
     result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'
+    result += "<p>Comments sorted by %s</p>" % sorting_text
 
     root = build_comment_thread(comments)
     result += show_comment(root)

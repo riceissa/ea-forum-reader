@@ -325,23 +325,13 @@ def show_post_and_comment_thread(postid, display_format):
     if "tableOfContents" in post and post["tableOfContents"] and "sections" in post["tableOfContents"]:
         if post["tableOfContents"]["sections"]:
             result += '''<h2>Contents</h2>\n'''
-            result += '<ul>\n'
+            result += '<pre style="font-size: 12px;">\n'
             # The last anchor is for comments, so skip that
-            current_level = 1
             for section in post["tableOfContents"]["sections"][:-1]:
-                if section["level"] > current_level:
-                    result += (" " * (4 * current_level)) + '<ul>\n'
-                if section["level"] < current_level:
-                    # When closing, we might jump more than one level, so close
-                    # as many as necessary
-                    for i in range(current_level - section["level"]):
-                        result += (" " * (4 * (i + 1))) + '</ul>\n'
-                result += (" " * (4 * section["level"])) + '''<!-- level {} -->'''.format(section["level"]) + '''<li><a href="#%s">%s</a></li>\n''' % (section["anchor"], section["title"])
-                current_level = section["level"]
-            # Finally, close off as many levels as needed to bring us back to
-            # the base level
-            for i in range(current_level):
-                result += (" " * (4 * (current_level - i - 1))) + '</ul>\n'
+                indent = " " * (2 * section["level"])
+                result += '''%s<a href="#%s">%s</a>\n''' % (indent, section["anchor"],
+                                                            section["title"])
+            result += '</pre>\n'
             # post['htmlBody'] is HTML without the table of contents anchors added
             # in, so we have to use a separate HTML provided by the
             # tableOfContents JSON

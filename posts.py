@@ -146,6 +146,47 @@ def query_question_answers(postid, run_query=True):
     return result
 
 
+def query_replies_to_answer(answer_id, run_query=True):
+    query = ("""
+    {
+      comments(input: {
+        terms: {
+          view: "repliesToAnswer",
+          parentAnswerId: "%s",
+        }
+      }) {
+        results {
+          _id
+          user {
+            _id
+            username
+            displayName
+            slug
+          }
+          userId
+          author
+          parentCommentId
+          pageUrl
+          baseScore
+          voteCount
+          postedAt
+          htmlBody
+        }
+      }
+    }
+    """ % answer_id)
+
+    if not run_query:
+        query_url = config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)
+        return query + ('''\n<a href="%s">Run this query</a>\n\n''' % query_url)
+
+    request = util.send_query(query)
+    result = []
+    for comment in request.json()['data']['comments']['results']:
+        result.append(comment)
+    return result
+
+
 class CommentTree(object):
     def __init__(self, commentid, data):
         self.commentid = commentid
@@ -228,31 +269,35 @@ def show_comment(comment_node):
         for child in comment_node.children:
             result += show_comment(child)
 
-    result += ("</div>")
+    if comment:
+        result += "</div>"
 
     return result
 
 
 def show_answer(answer):
-    result = ""
-    result += ("""
+    result = ("""
     <div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px;">
-        answer by %s · %s · score: %s (%s votes) · %s · %s
+        answer by %s · <a href="#%s">%s</a> · score: %s (%s votes) · %s · %s
         <br>
         %s
-    </div>
     """ % (
         answer["_id"],
         util.userlink(slug=util.strong_multiget(answer, ["user", "slug"]),
                       username=answer["author"],
                       display_name=util.strong_multiget(answer, ["user", "displayName"])),
+        answer["_id"],
         answer["postedAt"],
         answer["baseScore"],
         answer["voteCount"],
         util.official_link(util.strong_get(answer, "pageUrl")),
         util.gw_link(util.strong_get(answer, "pageUrl")),
-        answer["htmlBody"],
+        util.cleanHtmlBody(answer["htmlBody"]),
     ))
+    replies = query_replies_to_answer(util.strong_get(answer, "_id"))
+    root = build_comment_thread(replies)
+    result += show_comment(root)
+    result += "</div>"
 
     return result
 

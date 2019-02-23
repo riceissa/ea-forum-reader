@@ -221,7 +221,7 @@ def show_comment(comment_node):
             result += ('<a title="Official LessWrong 2.0 link" href="' + comment['pageUrl'] + '">LW</a> · ')
         else:
             result += ('<a title="Official EA Forum link" href="' + comment['pageUrl'] + '">EA</a> · ')
-        result += '<a title="GreaterWrong link" href="' + util.ea_forum_to_gw(comment['pageUrl']) + '">GW</a>'
+        result += '<a title="GreaterWrong link" href="' + util.official_url_to_gw(comment['pageUrl']) + '">GW</a>'
         result += util.cleanHtmlBody(util.substitute_alt_links(comment['htmlBody']))
 
     if comment_node.children:
@@ -237,16 +237,20 @@ def show_answer(answer):
     result = ""
     result += ("""
     <div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px;">
-        answer by %s · %s · score: %s (%s votes)
-        <br><br>
+        answer by %s · %s · score: %s (%s votes) · %s · %s
+        <br>
         %s
     </div>
     """ % (
         answer["_id"],
-        answer["author"],
+        util.userlink(slug=util.strong_multiget(answer, ["user", "slug"]),
+                      username=answer["author"],
+                      display_name=util.strong_multiget(answer, ["user", "displayName"])),
         answer["postedAt"],
         answer["baseScore"],
         answer["voteCount"],
+        util.official_link(util.strong_get(answer, "pageUrl")),
+        util.gw_link(util.strong_get(answer, "pageUrl")),
         answer["htmlBody"],
     ))
 
@@ -268,7 +272,7 @@ def show_post_and_comment_thread(postid, display_format):
     else:
         comments = get_comments_for_post(postid, run_query=run_query)
         sorting_text = "top scores."
-    if (not run_query) or ("question" in post and post["question"]):
+    if (not run_query) or util.strong_get(post, "question"):
         answers = query_question_answers(postid, run_query=run_query)
 
     if display_format == "queries":
@@ -306,11 +310,8 @@ def show_post_and_comment_thread(postid, display_format):
     result += " ·\n"
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
-    if "lesswrong" in config.GRAPHQL_URL:
-        result += '''<a href="%s" title="Official LessWrong 2.0 link">LW</a> ·\n''' % post['pageUrl']
-    else:
-        result += '''<a href="%s" title="Official EA Forum link">EA</a> ·\n''' % post['pageUrl']
-    result += '''<a href="%s" title="GreaterWrong link">GW</a> ·\n''' % util.ea_forum_to_gw(post['pageUrl'])
+    result += util.official_link(post['pageUrl']) + ' ·\n'
+    result += util.gw_link(post['pageUrl']) + ' ·\n'
     if post['legacyId'] is not None:
         result += '''<a href="%s" title="Legacy link">Legacy</a> ·\n''' % util.legacy_link(post['legacyId'])
 
@@ -326,8 +327,7 @@ def show_post_and_comment_thread(postid, display_format):
         if post["tableOfContents"]["sections"]:
             result += '''<h2>Contents</h2>\n'''
             result += '<pre style="font-size: 12px;">\n'
-            # The last anchor is for comments, so skip that
-            for section in post["tableOfContents"]["sections"][:-1]:
+            for section in post["tableOfContents"]["sections"]:
                 indent = " " * (2 * section["level"])
                 result += '''%s<a href="#%s">%s</a>\n''' % (indent, section["anchor"],
                                                             section["title"])
@@ -339,7 +339,8 @@ def show_post_and_comment_thread(postid, display_format):
     else:
         result += util.cleanHtmlBody(util.substitute_alt_links(post['htmlBody']))
 
-    if "question" in post and post["question"]:
+    if util.strong_get(post, "question"):
+        result += '<h2 id="answers">Answers</h2>'
         for answer in answers:
             result += show_answer(answer)
 

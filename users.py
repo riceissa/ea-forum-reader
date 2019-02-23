@@ -109,7 +109,7 @@ def html_page_for_user(username, display_format):
                         content['baseScore'],
                         content['voteCount'],
                         official_link,
-                        util.ea_forum_to_gw(content['pageUrl'])))
+                        util.official_url_to_gw(content['pageUrl'])))
             content_body = util.cleanHtmlBody(content['htmlBody'])
             result += '''    %s\n''' % content_body
         result += "</div>\n"

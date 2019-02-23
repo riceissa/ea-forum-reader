@@ -43,7 +43,7 @@ def strong_multiget(obj, key_list, default=None):
     return strong_get(result, key_list[-1], default)
 
 
-def ea_forum_to_gw(ea_forum_link):
+def official_url_to_gw(ea_forum_link):
     if "forum.effectivealtruism.org" in config.GRAPHQL_URL:
         return ea_forum_link.replace('forum.effectivealtruism.org', 'ea.greaterwrong.com', 1)
     else:
@@ -270,6 +270,15 @@ def userlink(slug=None, username=None, display_name=None):
     else:
         return '''<b>[deleted]</b>'''
 
+def official_link(page_url):
+    if "lesswrong" in config.GRAPHQL_URL:
+        return '''<a href="%s" title="Official LessWrong 2.0 link">LW</a>''' % page_url
+    else:
+        return '''<a href="%s" title="Official EA Forum link">EA</a>''' % page_url
+
+
+def gw_link(page_url):
+    return '''<a href="%s" title="GreaterWrong link">GW</a>''' % official_url_to_gw(page_url)
 
 def substitute_alt_links(html_body):
     if not html_body:

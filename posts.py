@@ -308,7 +308,7 @@ def show_post_and_comment_thread(postid, display_format):
     """)
     run_query = False if display_format == "queries" else True
     post = get_content_for_post(postid, run_query=run_query)
-    if ("lesswrong" in config.GRAPHQL_URL and
+    if (run_query and "lesswrong" in config.GRAPHQL_URL and
         datetime.datetime.strptime(util.strong_get(post, 'postedAt',
                                                    default="2018-01-01")[:len("2018-01-01")],
                                    "%Y-%m-%d") < datetime.datetime(2009, 2, 27)):

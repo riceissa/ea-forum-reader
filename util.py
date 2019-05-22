@@ -164,6 +164,23 @@ def show_head(title, author="", date="", publisher=""):
               width: 220px;
               float: right;
             }
+
+            @media (max-width: 768px) {
+                #sidebar {
+                    width: 100%%;
+                    float: none;
+                    padding: 0 0 0 0;
+                }
+                #content {
+                    width: 97%%;
+                    float: none;
+                    padding: 0 0 0 0;
+                }
+                #wrapper {
+                    width: 100%%;
+                    overflow: auto;
+                }
+            }
         </style>
     </head>
     """ % (

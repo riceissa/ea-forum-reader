@@ -117,61 +117,6 @@ def show_daily_posts(offset, view, before, after, display_format):
         '''<a href="/?view=%s&amp;offset=%s&amp;before=%s&amp;after=%s&amp;format=queries" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % (view, offset, before, after)
         ])
     result += '''<div id="wrapper">'''
-    result += '''
-        <div id="sidebar">
-            <h2>Archive</h2>
-            <ul>
-    '''
-    start_year = 2006 if "lesswrong" in config.GRAPHQL_URL else 2011
-    for year in range(start_year, datetime.datetime.utcnow().year + 1):
-        result += "<li>\n"
-        result += '''<a href="/?view=%s&amp;before=%s&amp;after=%s">%s</a>''' % (
-            view,
-            str(year) + "-12-31",
-            str(year) + "-01-01",
-            year
-        )
-        if str(year) == after[:4] and str(year) == before[:4]:
-            # If we are here, it means we are viewing the "archive" for this
-            # year (or a month within this year), so show the months in the
-            # sidebar so that we can go inside the months.
-            result += "<ul>"
-            for month in range(1, 12 + 1):
-                if month == 12:
-                    last_day = datetime.date(year + 1, 1, 1) - datetime.timedelta(days=1)
-                else:
-                    last_day = datetime.date(year, month + 1, 1) - datetime.timedelta(days=1)
-                result += '''<li><a href="/?view=%s&amp;before=%s&amp;after=%s">%s</a></li>''' % (
-                    view,
-                    last_day.strftime("%Y-%m-%d"),
-                    str(year) + "-" + str(month).zfill(2) + "-01",
-                    datetime.date(2000, month, 1).strftime("%B")
-                )
-            result += "</ul>"
-        result += "</li>\n"
-    result += "</ul>"
-
-    result += '''<h2>Recent comments</h2>'''
-    for comment in recent_comments:
-        post = comment['post']
-        if post is None:
-            post = {'slug': comment['pageUrl'].split('/')[-1].split('#')[0], 'title': '[deleted]'}
-        result += ('''
-            <a href="%s">%s</a> on <a href="%s#%s">%s</a><br/>
-            <span style="font-size: 14px;">
-            %s
-            </span>
-        ''' % (
-                linkpath.users(userslug=util.strong_multiget(comment, ['user', 'slug'], "")),
-                util.strong_multiget(comment, ['user', 'slug'], ""),
-                linkpath.posts(postid=comment['postId'], postslug=post['slug']),
-                comment['_id'],
-                util.htmlescape(post['title']),
-                comment['htmlBody']
-            )
-        )
-
-    result += "</div>"  # sidebar
     result += '''<div id="content">'''
     result += """<h1><a href="/">%s</a></h1>""" % config.TITLE
 
@@ -250,8 +195,63 @@ def show_daily_posts(offset, view, before, after, display_format):
 
     result += '''<a href="/?view=%s&amp;offset=%s%s">next page (older posts) →</a>''' % (view, offset + 50, date_range_params)
 
+    result += """</div>"""
+    result += '''
+        <div id="sidebar">
+            <h2>Archive</h2>
+            <ul>
+    '''
+    start_year = 2006 if "lesswrong" in config.GRAPHQL_URL else 2011
+    for year in range(start_year, datetime.datetime.utcnow().year + 1):
+        result += "<li>\n"
+        result += '''<a href="/?view=%s&amp;before=%s&amp;after=%s">%s</a>''' % (
+            view,
+            str(year) + "-12-31",
+            str(year) + "-01-01",
+            year
+        )
+        if str(year) == after[:4] and str(year) == before[:4]:
+            # If we are here, it means we are viewing the "archive" for this
+            # year (or a month within this year), so show the months in the
+            # sidebar so that we can go inside the months.
+            result += "<ul>"
+            for month in range(1, 12 + 1):
+                if month == 12:
+                    last_day = datetime.date(year + 1, 1, 1) - datetime.timedelta(days=1)
+                else:
+                    last_day = datetime.date(year, month + 1, 1) - datetime.timedelta(days=1)
+                result += '''<li><a href="/?view=%s&amp;before=%s&amp;after=%s">%s</a></li>''' % (
+                    view,
+                    last_day.strftime("%Y-%m-%d"),
+                    str(year) + "-" + str(month).zfill(2) + "-01",
+                    datetime.date(2000, month, 1).strftime("%B")
+                )
+            result += "</ul>"
+        result += "</li>\n"
+    result += "</ul>"
+
+    result += '''<h2>Recent comments</h2>'''
+    for comment in recent_comments:
+        post = comment['post']
+        if post is None:
+            post = {'slug': comment['pageUrl'].split('/')[-1].split('#')[0], 'title': '[deleted]'}
+        result += ('''
+            <a href="%s">%s</a> on <a href="%s#%s">%s</a><br/>
+            <span style="font-size: 14px;">
+            %s
+            </span>
+        ''' % (
+                linkpath.users(userslug=util.strong_multiget(comment, ['user', 'slug'], "")),
+                util.strong_multiget(comment, ['user', 'slug'], ""),
+                linkpath.posts(postid=comment['postId'], postslug=post['slug']),
+                comment['_id'],
+                util.htmlescape(post['title']),
+                comment['htmlBody']
+            )
+        )
+
+    result += "</div>"  # sidebar
     result += """
-    </div>
     </div>
         </body>
     </html>

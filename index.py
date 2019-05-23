@@ -30,7 +30,7 @@ def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
           postedAt
           baseScore
           voteCount
-          commentsCount
+          commentCount
           meta
           question
           url
@@ -187,7 +187,7 @@ def show_daily_posts(offset, view, before, after, display_format):
         result += " ·\n"
         result += post['postedAt'] + " ·\n"
         result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
-        result += ('''    <a href="%s#comments">comments (%s)</a>\n''' % (post_url, post['commentsCount']))
+        result += ('''    <a href="%s#comments">comments (%s)</a>\n''' % (post_url, post['commentCount']))
         result += ("</div>")
 
     if offset - 50 >= 0:

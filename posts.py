@@ -25,7 +25,7 @@ def get_content_for_post(postid, run_query=True):
           url
           title
           slug
-          commentsCount
+          commentCount
           htmlBody
           baseScore
           voteCount
@@ -57,7 +57,7 @@ def get_content_for_post(postid, run_query=True):
         return request.json()['data']['post']['result']
     except TypeError:
         return {'title': '', 'slug': '', 'baseScore': 0, 'voteCount': 0, 'pageUrl': '',
-                'url': '', 'htmlBody': '', 'postedAt': '', 'commentsCount': 0, 'legacyId': None,
+                'url': '', 'htmlBody': '', 'postedAt': '', 'commentCount': 0, 'legacyId': None,
                 'user': {'slug': '', 'username': ''}, 'question': False,
                 'tableOfContents': {'headingsCount': 0, 'html': "", 'sections': []}
                }
@@ -360,7 +360,7 @@ def show_post_and_comment_thread(postid, display_format):
     if post['legacyId'] is not None:
         result += '''<a href="%s" title="Legacy link">Legacy</a> ·\n''' % util.legacy_link(post['legacyId'])
 
-    result += '''<a href="#comments">''' + str(post['commentsCount']) + ' comments</a>\n'
+    result += '''<a href="#comments">''' + str(post['commentCount']) + ' comments</a>\n'
 
     if post['url'] is not None:
         result += ('''
@@ -389,7 +389,7 @@ def show_post_and_comment_thread(postid, display_format):
         for answer in answers:
             result += show_answer(answer)
 
-    result += '''<h2 id="comments">''' + str(post['commentsCount']) + ' comments</h2>'
+    result += '''<h2 id="comments">''' + str(post['commentCount']) + ' comments</h2>'
     result += "<p>Comments sorted by %s</p>" % sorting_text
 
     root = build_comment_thread(comments)

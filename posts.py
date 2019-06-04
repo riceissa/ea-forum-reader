@@ -375,7 +375,7 @@ def show_post_and_comment_thread(postid, display_format):
             for section in post["tableOfContents"]["sections"]:
                 indent = " " * (2 * section["level"])
                 result += '''%s<a href="#%s">%s</a>\n''' % (indent, section["anchor"],
-                                                            section["title"])
+                                                            util.strong_get(section, "title"))
             result += '</pre>\n'
             # post['htmlBody'] is HTML without the table of contents anchors added
             # in, so we have to use a separate HTML provided by the

@@ -380,7 +380,7 @@ def show_post_and_comment_thread(postid, display_format):
             # post['htmlBody'] is HTML without the table of contents anchors added
             # in, so we have to use a separate HTML provided by the
             # tableOfContents JSON
-            result += util.cleanHtmlBody(util.substitute_alt_links(post['tableOfContents']['html']))
+            result += util.cleanHtmlBody(util.substitute_alt_links(util.strong_multiget(post, ['tableOfContents', 'html'])))
     else:
         result += util.cleanHtmlBody(util.substitute_alt_links(post['htmlBody']))
 

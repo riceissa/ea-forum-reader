@@ -181,9 +181,9 @@ def show_daily_posts(offset, view, before, after, display_format):
         result += (('''    <a href="%s">''' % post_url) +
                    util.htmlescape(post['title']) + "</a><br />\n")
 
-        result += util.userlink(slug=util.strong_multiget(post, ['user', 'slug']),
-                                username=util.strong_multiget(post, ['user', 'username']),
-                                display_name=util.strong_multiget(post, ['user', 'displayName']))
+        result += util.userlink(slug=util.safe_get(post, ['user', 'slug']),
+                                username=util.safe_get(post, ['user', 'username']),
+                                display_name=util.safe_get(post, ['user', 'displayName']))
         result += " ·\n"
         result += post['postedAt'] + " ·\n"
         result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
@@ -241,8 +241,8 @@ def show_daily_posts(offset, view, before, after, display_format):
             %s
             </span>
         ''' % (
-                linkpath.users(userslug=util.strong_multiget(comment, ['user', 'slug'], "")),
-                util.strong_multiget(comment, ['user', 'slug'], ""),
+                linkpath.users(userslug=util.safe_get(comment, ['user', 'slug'], "")),
+                util.safe_get(comment, ['user', 'slug'], ""),
                 linkpath.posts(postid=comment['postId'], postslug=post['slug']),
                 comment['_id'],
                 util.htmlescape(post['title']),

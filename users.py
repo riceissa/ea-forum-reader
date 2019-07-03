@@ -85,7 +85,7 @@ def html_page_for_user(username, display_format):
             result += '''    %s · score: %s (%s votes)\n''' % (content['postedAt'], content['baseScore'], content['voteCount'])
         else:
             if content['post'] is None:
-                postslug = util.strong_get(content, 'pageUrl', default="").split('/')[-1].split('#')[0]
+                postslug = util.safe_get(content, 'pageUrl', default="").split('/')[-1].split('#')[0]
                 result += '''    <a href="%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (linkpath.posts(postid=content['postId'], postslug=postslug), content['_id'], content['user']['username'])
                 result += '''    %s\n''' % content['postedAt']
             else:

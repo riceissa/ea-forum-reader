@@ -12,16 +12,16 @@ def htmlescape(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&#34;')
 
 
-def strong_get(obj, key, default=None):
+def _safe_get(obj, key, default=None):
     """This acts like obj.get(key, default), except that if obj[key] exists but
     is None, we still return default rather than the accessed result. Also, if
     obj happens to be None, we return default rather than raising an exception.
 
     To see the difference, suppose obj = {"a": None}. Then obj.get("a", 1) is
-    None but strong_get(obj, "a", 1) is 1.
+    None but _safe_get(obj, "a", 1) is 1.
 
-    Since obj can be None, strong_get can also be nested without checking for
-    None each time: strong_get(strong_get({}, "a"), "b", 1) is 1. Thus in some
+    Since obj can be None, _safe_get can also be nested without checking for
+    None each time: _safe_get(_safe_get({}, "a"), "b", 1) is 1. Thus in some
     cases a default need only be specified at the end."""
     if obj is None:
         return default
@@ -31,16 +31,23 @@ def strong_get(obj, key, default=None):
     return result
 
 
-def strong_multiget(obj, key_list, default=None):
-    """This acts like strong_get(strong_get(obj, key1), key2, default). The
+def _safe_multiget(obj, key_list, default=None):
+    """This acts like _safe_get(_safe_get(obj, key1), key2, default). The
     intention is something like, get each key in turn, and return default is we
     get a None at any point."""
     if len(key_list) < 1:
         return obj
     result = obj
     for key in key_list[:-1]:
-        result = strong_get(result, key)
-    return strong_get(result, key_list[-1], default)
+        result = _safe_get(result, key)
+    return _safe_get(result, key_list[-1], default)
+
+
+def safe_get(obj, keys, default=None):
+    if isinstance(keys, list):
+        return _safe_multiget(obj, keys, default)
+    else:
+        return _safe_get(obj, keys, default)
 
 
 def official_url_to_gw(ea_forum_link):

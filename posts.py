@@ -252,9 +252,9 @@ def show_comment(comment_node):
         commentid = comment['_id']
         result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
         result += "comment by "
-        result += util.userlink(slug=util.strong_multiget(comment, ['user', 'slug']),
-                                username=util.strong_multiget(comment, ['user', 'username']),
-                                display_name=util.strong_multiget(comment, ['user', 'displayName']))
+        result += util.userlink(slug=util.safe_get(comment, ['user', 'slug']),
+                                username=util.safe_get(comment, ['user', 'username']),
+                                display_name=util.safe_get(comment, ['user', 'displayName']))
         result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes) · ")
@@ -283,18 +283,18 @@ def show_answer(answer):
         %s
     """ % (
         answer["_id"],
-        util.userlink(slug=util.strong_multiget(answer, ["user", "slug"]),
+        util.userlink(slug=util.safe_get(answer, ["user", "slug"]),
                       username=answer["author"],
-                      display_name=util.strong_multiget(answer, ["user", "displayName"])),
+                      display_name=util.safe_get(answer, ["user", "displayName"])),
         answer["_id"],
         answer["postedAt"],
         answer["baseScore"],
         answer["voteCount"],
-        util.official_link(util.strong_get(answer, "pageUrl")),
-        util.gw_link(util.strong_get(answer, "pageUrl")),
+        util.official_link(util.safe_get(answer, "pageUrl")),
+        util.gw_link(util.safe_get(answer, "pageUrl")),
         util.cleanHtmlBody(answer["htmlBody"]),
     ))
-    replies = query_replies_to_answer(util.strong_get(answer, "_id"))
+    replies = query_replies_to_answer(util.safe_get(answer, "_id"))
     root = build_comment_thread(replies)
     result += show_comment(root)
     result += "</div>"
@@ -309,7 +309,7 @@ def show_post_and_comment_thread(postid, display_format):
     run_query = False if display_format == "queries" else True
     post = get_content_for_post(postid, run_query=run_query)
     if (run_query and "lesswrong" in config.GRAPHQL_URL and
-        datetime.datetime.strptime(util.strong_get(post, 'postedAt',
+        datetime.datetime.strptime(util.safe_get(post, 'postedAt',
                                                    default="2018-01-01")[:len("2018-01-01")],
                                    "%Y-%m-%d") < datetime.datetime(2009, 2, 27)):
         comments = get_comments_for_post(postid, view="postCommentsOld", run_query=run_query)
@@ -317,7 +317,7 @@ def show_post_and_comment_thread(postid, display_format):
     else:
         comments = get_comments_for_post(postid, run_query=run_query)
         sorting_text = "top scores."
-    if (not run_query) or util.strong_get(post, "question"):
+    if (not run_query) or util.safe_get(post, "question"):
         answers = query_question_answers(postid, run_query=run_query)
 
     if display_format == "queries":
@@ -348,10 +348,10 @@ def show_post_and_comment_thread(postid, display_format):
     result += util.userlink(slug=post.get("user", {}).get("slug", None),
                             username=post.get("user", {}).get("username", None),
                             display_name=post.get("user", {}).get("displayName", None))
-    for coauthor in util.strong_get(post, "coauthors", []):
-        result += ", " + util.userlink(slug=util.strong_get(coauthor, "slug"),
-                                       username=util.strong_get(coauthor, "username"),
-                                       display_name=util.strong_get(coauthor, "displayName"))
+    for coauthor in util.safe_get(post, "coauthors", []):
+        result += ", " + util.userlink(slug=util.safe_get(coauthor, "slug"),
+                                       username=util.safe_get(coauthor, "username"),
+                                       display_name=util.safe_get(coauthor, "displayName"))
     result += " ·\n"
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
@@ -375,16 +375,16 @@ def show_post_and_comment_thread(postid, display_format):
             for section in post["tableOfContents"]["sections"]:
                 indent = " " * (2 * section["level"])
                 result += '''%s<a href="#%s">%s</a>\n''' % (indent, section["anchor"],
-                                                            util.strong_get(section, "title"))
+                                                            util.safe_get(section, "title"))
             result += '</pre>\n'
             # post['htmlBody'] is HTML without the table of contents anchors added
             # in, so we have to use a separate HTML provided by the
             # tableOfContents JSON
-            result += util.cleanHtmlBody(util.substitute_alt_links(util.strong_multiget(post, ['tableOfContents', 'html'])))
+            result += util.cleanHtmlBody(util.substitute_alt_links(util.safe_get(post, ['tableOfContents', 'html'])))
     else:
         result += util.cleanHtmlBody(util.substitute_alt_links(post['htmlBody']))
 
-    if util.strong_get(post, "question"):
+    if util.safe_get(post, "question"):
         result += '<h2 id="answers">Answers</h2>'
         for answer in answers:
             result += show_answer(answer)

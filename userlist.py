@@ -7,6 +7,55 @@ import config
 import util
 import linkpath
 
+def small_vote_power(karma):
+    """See
+    https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/modules/voting/new_vote_types.js
+    for the vote power implementation. See also the blog post at
+    https://lw2.issarice.com/posts/7Sx3CJXA7JHxY2yDG/strong-votes-update-deployed#Vote_Power_by_Karma"""
+    if karma >= 25000:
+        return 3
+    if karma >= 1000:
+        return 2
+    return 1
+
+
+def big_vote_power(karma):
+    """See
+    https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/modules/voting/new_vote_types.js
+    for the vote power implementation. See also the blog post at
+    https://lw2.issarice.com/posts/7Sx3CJXA7JHxY2yDG/strong-votes-update-deployed#Vote_Power_by_Karma"""
+    if karma >= 500000:
+        return 16
+    if karma >= 250000:
+        return 15
+    if karma >= 175000:
+        return 14
+    if karma >= 100000:
+        return 13
+    if karma >= 75000:
+        return 12
+    if karma >= 50000:
+        return 11
+    if karma >= 25000:
+        return 10
+    if karma >= 10000:
+        return 9
+    if karma >= 5000:
+        return 8
+    if karma >= 2500:
+        return 7
+    if karma >= 1000:
+        return 6
+    if karma >= 500:
+        return 5
+    if karma >= 250:
+        return 4
+    if karma >= 100:
+        return 3
+    if karma >= 10:
+        return 2
+    return 1
+
 def users_list_query(sort_by="karma", run_query=True):
     sort_line = ""
     if sort_by == "postCount":
@@ -67,6 +116,8 @@ def show_users_list(sort_by, display_format):
                 <th>Username</th>
                 <th>User ID</th>
                 <th><a href="%s">Karma</a></th>
+                <th>Small vote power</th>
+                <th>Big vote power</th>
                 <th><a href="%s">Post count</a></th>
                 <th><a href="%s">Comment count</a></th>
             </tr>
@@ -89,11 +140,15 @@ def show_users_list(sort_by, display_format):
                 <td style="text-align: right;">%s</td>
                 <td style="text-align: right;">%s</td>
                 <td style="text-align: right;">%s</td>
+                <td style="text-align: right;">%s</td>
+                <td style="text-align: right;">%s</td>
             </tr>
         ''' % (
                 linked_user,
                 user['_id'],
                 user['karma'],
+                small_vote_power(user['karma']),
+                big_vote_power(user['karma']),
                 user['postCount'],
                 user['commentCount']
             )

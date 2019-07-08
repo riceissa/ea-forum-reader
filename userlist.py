@@ -12,6 +12,8 @@ def small_vote_power(karma):
     https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/modules/voting/new_vote_types.js
     for the vote power implementation. See also the blog post at
     https://lw2.issarice.com/posts/7Sx3CJXA7JHxY2yDG/strong-votes-update-deployed#Vote_Power_by_Karma"""
+    if karma is None:
+        return 1
     if karma >= 25000:
         return 3
     if karma >= 1000:
@@ -24,6 +26,8 @@ def big_vote_power(karma):
     https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/modules/voting/new_vote_types.js
     for the vote power implementation. See also the blog post at
     https://lw2.issarice.com/posts/7Sx3CJXA7JHxY2yDG/strong-votes-update-deployed#Vote_Power_by_Karma"""
+    if karma is None:
+        return 1
     if karma >= 500000:
         return 16
     if karma >= 250000:

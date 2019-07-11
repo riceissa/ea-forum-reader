@@ -56,6 +56,11 @@ def official_url_to_gw(ea_forum_link):
     else:
         return ea_forum_link.replace('www.lesswrong.com', 'www.greaterwrong.com', 1)
 
+def official_url_to_reader(ea_forum_link):
+    if "forum.effectivealtruism.org" in config.GRAPHQL_URL:
+        return ea_forum_link.replace('forum.effectivealtruism.org', 'eaforum.issarice.com', 1)
+    else:
+        return ea_forum_link.replace('www.lesswrong.com', 'lw2.issarice.com', 1)
 
 def int_to_base36(number):
     alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'

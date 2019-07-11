@@ -149,7 +149,7 @@ def feed_for_user(username):
                 result += "    <title>Comment by %s on [deleted post]</title>\n" % (content['user']['username'])
             else:
                 result += "    <title>Comment by %s on %s</title>\n" % (content['user']['username'], util.htmlescape(content['post']['title']))
-        result += '''    <link>%s</link>\n''' % content['pageUrl']
+        result += '''    <link>%s</link>\n''' % util.official_url_to_reader(content['pageUrl'])
         content_body = util.htmlescape(util.cleanHtmlBody(content['htmlBody']))
         result += '''    <description>%s</description>\n''' % content_body
         result += '''    <author>%s</author>\n''' % username

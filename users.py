@@ -72,46 +72,51 @@ def html_page_for_user(username, display_format):
 
     result += '''<div id="content">'''
 
-    all_content = []
-    all_content.extend(comments)
-    all_content.extend(posts)
-    all_content = sorted(all_content, key=lambda x: x['postedAt'], reverse=True)
+    result += '''
+        <ul>
+            <li><a href="#posts">Posts</a></li>
+            <li><a href="#comments">Comments</a></li>
+        </ul>
+    '''
 
-    for content in all_content:
-        content_type = "post" if "title" in content else "comment"
+    result += '''<h2 id="posts">Posts</h2>'''
+    for post in posts:
         result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: %s;">\n''' % config.COMMENT_COLOR
-        if content_type == "post":
-            result += '''    <h2><a href="%s">%s</a></h2>\n''' % (linkpath.posts(postid=content['_id'], postslug=content['slug']), util.htmlescape(content['title']))
-            result += '''    %s · score: %s (%s votes)\n''' % (content['postedAt'], content['baseScore'], content['voteCount'])
+        result += '''    <a href="%s">%s</a>\n''' % (linkpath.posts(postid=util.safe_get(post, '_id'), postslug=util.safe_get(post, 'slug')), util.htmlescape(util.safe_get(post, 'title')))
+        result += '''    %s · score: %s (%s votes)\n''' % (util.safe_get(post, 'postedAt'), util.safe_get(post, 'baseScore'), util.safe_get(post, 'voteCount'))
+        result += "</div>\n"
+
+    result += '''<h2 id="comments">Comments</h2>'''
+    for comment in comments:
+        result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: %s;">\n''' % config.COMMENT_COLOR
+        if comment['post'] is None:
+            postslug = util.safe_get(comment, 'pageUrl', default="").split('/')[-1].split('#')[0]
+            result += '''    <a href="%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (linkpath.posts(postid=comment['postId'], postslug=postslug), comment['_id'], util.safe_get(comment, ['user', 'username']))
+            result += '''    %s\n''' % comment['postedAt']
         else:
-            if content['post'] is None:
-                postslug = util.safe_get(content, 'pageUrl', default="").split('/')[-1].split('#')[0]
-                result += '''    <a href="%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (linkpath.posts(postid=content['postId'], postslug=postslug), content['_id'], content['user']['username'])
-                result += '''    %s\n''' % content['postedAt']
+            if "lesswrong" in config.GRAPHQL_URL:
+                official_link = '''<a href="%s" title="Official LessWrong 2.0 link">LW</a>''' % comment['pageUrl']
             else:
-                if "lesswrong" in config.GRAPHQL_URL:
-                    official_link = '''<a href="%s" title="Official LessWrong 2.0 link">LW</a>''' % content['pageUrl']
-                else:
-                    official_link = '''<a href="%s" title="Official EA Forum link">EA</a>''' % content['pageUrl']
-                result += ('''    Comment by
-                    <b>%s</b> on
-                    <a href="%s">%s</a></b> ·
-                    <a href="%s#%s">%s</a> ·
-                    score: %s (%s votes) ·
-                    %s ·
-                    <a href="%s" title="GreaterWrong link">GW</a>''' % (
-                        username,
-                        linkpath.posts(postid=content['postId'], postslug=content['post']['slug']),
-                        util.htmlescape(content['post']['title']),
-                        linkpath.posts(postid=content['postId'], postslug=content['post']['slug']),
-                        content['_id'],
-                        content['postedAt'],
-                        content['baseScore'],
-                        content['voteCount'],
-                        official_link,
-                        util.official_url_to_gw(content['pageUrl'])))
-            content_body = util.cleanHtmlBody(content['htmlBody'])
-            result += '''    %s\n''' % content_body
+                official_link = '''<a href="%s" title="Official EA Forum link">EA</a>''' % comment['pageUrl']
+            result += ('''    Comment by
+                <b>%s</b> on
+                <a href="%s">%s</a></b> ·
+                <a href="%s#%s">%s</a> ·
+                score: %s (%s votes) ·
+                %s ·
+                <a href="%s" title="GreaterWrong link">GW</a>''' % (
+                    username,
+                    linkpath.posts(postid=comment['postId'], postslug=util.safe_get(comment, ['post', 'slug'])),
+                    util.htmlescape(comment['post']['title']),
+                    linkpath.posts(postid=comment['postId'], postslug=util.safe_get(comment, ['post', 'slug'])),
+                    comment['_id'],
+                    comment['postedAt'],
+                    comment['baseScore'],
+                    comment['voteCount'],
+                    official_link,
+                    util.official_url_to_gw(comment['pageUrl'])))
+        comment_body = util.cleanHtmlBody(comment['htmlBody'])
+        result += '''    %s\n''' % comment_body
         result += "</div>\n"
 
     result += '''

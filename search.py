@@ -13,11 +13,21 @@ ALGOLIA_URL = ""
 
 
 def highlighted_search_string(body, string):
-    # body is already html escaped, so we need string to be on the same level
-    esc_str = util.htmlescape(string)
+    # Body is already html escaped, so we need string to be on the same level.
+    # Also, we need to escape and then highlight, because if we highlight and
+    # then escape, the highlighting tag will also be escaped.
+    search_terms = set(map(util.htmlescape, string.lower().split()))
 
-    highlighted = r'''<span style="background-color: #ffff00;">\1</span>'''
-    return re.sub("(" + re.escape(esc_str) + ")", highlighted, body, flags=re.IGNORECASE)
+    result = ""
+    pat = re.compile(r'\w+|\W')
+
+    for word in pat.findall(body):
+        if word.lower() in search_terms:
+            result += '<span style="background-color: #ffff00;">' + word + '</span>'
+        else:
+            result += word
+
+    return result
 
 
 def search_posts(string):
@@ -77,7 +87,13 @@ def show_post(post, string, seen):
            user,
            post['postedAt'],
            post['baseScore']))
-    if 'body' in post and string.lower() in post['body'].lower():
+    matched_in_body = False
+    if 'body' in post:
+        for term in string.split():
+            # Check if any of the search terms is in the body
+            if term.lower() in util.safe_get(post, 'body', default="").lower():
+                matched_in_body = True
+    if matched_in_body:
         result += '''<pre style="font-family: Lato, Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % highlighted_search_string(util.htmlescape(post['body']), string)
     else:
         if post['_id'] in seen:

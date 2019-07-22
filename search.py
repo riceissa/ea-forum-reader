@@ -46,11 +46,11 @@ def search_comments(string):
 
 def show_comment(comment, string):
     if 'authorUserName' in comment:
-        user = comment['authorUserName']
+        user = util.safe_get(comment, 'authorUserName')
     elif 'authorSlug' in comment:
-        user = comment['authorSlug']
+        user = util.safe_get(comment, 'authorSlug')
     else:
-        user = comment['authorDisplayName']
+        user = util.safe_get(comment, 'authorDisplayName')
     result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: %s;">comment by <a href="./users.php?userid=%s">%s</a>
         on <a href="./posts.php?id=%s">%s</a>
         · <a href="./posts.php?id=%s#%s">%s</a>

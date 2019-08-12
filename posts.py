@@ -308,9 +308,12 @@ def show_post_and_comment_thread(postid, display_format):
     """)
     run_query = False if display_format == "queries" else True
     post = get_content_for_post(postid, run_query=run_query)
+    post_date = util.safe_get(post, 'postedAt', default="2018-01-01")
+    # Apparently post_date is sometimes the empty string, so we have to check again
+    if not post_date:
+        post_date = "2018-01-01"
     if (run_query and "lesswrong" in config.GRAPHQL_URL and
-        datetime.datetime.strptime(util.safe_get(post, 'postedAt',
-                                                   default="2018-01-01")[:len("2018-01-01")],
+        datetime.datetime.strptime(post_date[:len("2018-01-01")],
                                    "%Y-%m-%d") < datetime.datetime(2009, 2, 27)):
         comments = get_comments_for_post(postid, view="postCommentsOld", run_query=run_query)
         sorting_text = "oldest first, as this post is from before comment nesting was available (around 2009-02-27)."

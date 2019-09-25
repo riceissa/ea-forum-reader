@@ -187,7 +187,10 @@ def show_daily_posts(offset, view, before, after, display_format):
         result += " ·\n"
         result += post['postedAt'] + " ·\n"
         result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
-        result += ('''    <a href="%s#comments">comments (%s)</a>\n''' % (post_url, post['commentCount']))
+        if util.safe_get(post, "question"):
+            result += ('''    <a href="%s#answers">answers+comments (%s)</a>\n''' % (post_url, post['commentCount']))
+        else:
+            result += ('''    <a href="%s#comments">comments (%s)</a>\n''' % (post_url, post['commentCount']))
         result += ("</div>")
 
     if offset - 50 >= 0:

@@ -398,7 +398,10 @@ def show_post_and_comment_thread(postid, display_format):
         for answer in answers:
             result += show_answer(answer)
 
-    result += '''<h2 id="comments">''' + str(post['commentCount']) + ' comments</h2>'
+    if util.safe_get(post, "question") and util.safe_get(post, ["tableOfContents", "sections"]):
+        result += '''<h2 id="comments">''' + util.safe_get(post, ["tableOfContents", "sections"])[-1]["title"] + '</h2>\n'
+    else:
+        result += '''<h2 id="comments">''' + str(post['commentCount']) + ' comments</h2>'
     result += "<p>Comments sorted by %s</p>" % sorting_text
 
     root = build_comment_thread(comments)

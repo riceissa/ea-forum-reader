@@ -308,7 +308,10 @@ def show_post_and_comment_thread(postid, display_format):
     """)
     run_query = False if display_format == "queries" else True
     post = get_content_for_post(postid, run_query=run_query)
-    post_date = util.safe_get(post, 'postedAt', default="2018-01-01")
+    if run_query:
+        post_date = util.safe_get(post, 'postedAt', default="2018-01-01")
+    else:
+        post_date = "2018-01-01"
     # Apparently post_date is sometimes the empty string, so we have to check again
     if not post_date:
         post_date = "2018-01-01"
@@ -363,7 +366,10 @@ def show_post_and_comment_thread(postid, display_format):
     if post['legacyId'] is not None:
         result += '''<a href="%s" title="Legacy link">Legacy</a> ·\n''' % util.legacy_link(post['legacyId'])
 
-    result += '''<a href="#comments">''' + str(post['commentCount']) + ' comments</a>\n'
+    if util.safe_get(post, "question") and util.safe_get(post, ["tableOfContents", "sections"]):
+        result += '''<a href="#comments">''' + util.safe_get(post, ["tableOfContents", "sections"])[-1]["title"] + '</a>\n'
+    else:
+        result += '''<a href="#comments">''' + str(post['commentCount']) + ' comments</a>\n'
 
     if post['url'] is not None:
         result += ('''

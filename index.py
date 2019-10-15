@@ -249,7 +249,7 @@ def show_daily_posts(offset, view, before, after, display_format):
                 linkpath.posts(postid=comment['postId'], postslug=post['slug']),
                 comment['_id'],
                 util.htmlescape(post['title']),
-                comment['htmlBody']
+                util.substitute_alt_links(comment['htmlBody'])
             )
         )
 

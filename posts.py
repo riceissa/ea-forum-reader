@@ -292,7 +292,7 @@ def show_answer(answer):
         answer["voteCount"],
         util.official_link(util.safe_get(answer, "pageUrl")),
         util.gw_link(util.safe_get(answer, "pageUrl")),
-        util.cleanHtmlBody(answer["htmlBody"]),
+        util.cleanHtmlBody(util.substitute_alt_links(answer["htmlBody"])),
     ))
     replies = query_replies_to_answer(util.safe_get(answer, "_id"))
     root = build_comment_thread(replies)

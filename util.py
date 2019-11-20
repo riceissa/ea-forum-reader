@@ -289,13 +289,16 @@ def userslug_to_userid(userslug, run_query=True):
     return request.json()['data']['user']['result']['_id']
 
 
-def userlink(slug=None, username=None, display_name=None):
+def userlink(slug=None, username=None, display_name=None, bio=None):
     if slug:
         displayed = username if username else slug
         if display_name and display_name != displayed:
             displayed = display_name + " (" + displayed + ")"
         url = linkpath.users(userslug=slug)
-        return '''<a href="%s">%s</a>''' % (url, displayed)
+        if bio:
+            return '''<a href="%s" title="%s">%s</a>''' % (url, htmlescape(bio), displayed)
+        else:
+            return '''<a href="%s">%s</a>''' % (url, displayed)
     else:
         return '''<b>[deleted]</b>'''
 

@@ -37,6 +37,7 @@ def get_content_for_post(postid, run_query=True):
             username
             displayName
             slug
+            bio
           }
           coauthors {
             _id
@@ -79,6 +80,7 @@ def get_comments_for_post(postid, view="postCommentsTop", run_query=True):
             username
             displayName
             slug
+            bio
           }
           userId
           author
@@ -120,6 +122,7 @@ def query_question_answers(postid, run_query=True):
             username
             displayName
             slug
+            bio
           }
           userId
           author
@@ -254,7 +257,8 @@ def show_comment(comment_node):
         result += "comment by "
         result += util.userlink(slug=util.safe_get(comment, ['user', 'slug']),
                                 username=util.safe_get(comment, ['user', 'username']),
-                                display_name=util.safe_get(comment, ['user', 'displayName']))
+                                display_name=util.safe_get(comment, ['user', 'displayName']),
+                                bio=util.safe_get(comment, ['user', 'bio']))
         result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes) · ")
@@ -285,7 +289,8 @@ def show_answer(answer):
         answer["_id"],
         util.userlink(slug=util.safe_get(answer, ["user", "slug"]),
                       username=answer["author"],
-                      display_name=util.safe_get(answer, ["user", "displayName"])),
+                      display_name=util.safe_get(answer, ["user", "displayName"]),
+                      bio=util.safe_get(answer, ["user", "bio"])),
         answer["_id"],
         answer["postedAt"],
         answer["baseScore"],
@@ -353,7 +358,8 @@ def show_post_and_comment_thread(postid, display_format):
     result += "post by "
     result += util.userlink(slug=post.get("user", {}).get("slug", None),
                             username=post.get("user", {}).get("username", None),
-                            display_name=post.get("user", {}).get("displayName", None))
+                            display_name=post.get("user", {}).get("displayName", None),
+                            bio=util.safe_get(post, ['user', 'bio']))
     for coauthor in util.safe_get(post, "coauthors", []):
         result += ", " + util.userlink(slug=util.safe_get(coauthor, "slug"),
                                        username=util.safe_get(coauthor, "username"),

@@ -1,5 +1,10 @@
 <?php
 
+if ($_REQUEST['commentId'] ?? '') {
+  header('Location: /posts.php?id=' . ($_REQUEST['id'] ?? '') . '#' . $_REQUEST['commentId']);
+  exit;
+}
+
 if ($_REQUEST['id'] ?? '') {
   $post_id = $_REQUEST['id'];
   $post_id = preg_replace('/[^a-zA-Z0-9_-]/', '', $post_id);

@@ -1,6 +1,12 @@
 <?php
 
 if ($_REQUEST['commentId'] ?? '') {
+  // Not a very satisfying fix. This redirect works, but it removes the post
+  // title (if a title was present in the URL). For instance,
+  // /posts/7cAsBPGh98pGyrhz9/decoupling-vs-contextualising-norms?commentId=EuYu7C7sfqyWcQtue
+  // becomes /posts.php?id=7cAsBPGh98pGyrhz9#EuYu7C7sfqyWcQtue
+  // Ideally, the redirect would remove just the "commentId" part, converting
+  // it to an anchor, without touching anything else in the URL.
   header('Location: /posts.php?id=' . ($_REQUEST['id'] ?? '') . '#' . $_REQUEST['commentId']);
   exit;
 }

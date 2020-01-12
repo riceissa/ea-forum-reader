@@ -50,7 +50,6 @@ def show_post_and_comment_thread(postid, display_format):
     result += "<h1>" + util.htmlescape(post['title']) + "</h1>\n"
     result += " ·\n"
     result += '''%s ·\n''' % post['postedAt']
-    result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
     result += util.official_link(post['pageUrl']) + ' ·\n'
     result += util.gw_link(post['pageUrl']) + ' ·\n'
 
@@ -109,7 +108,6 @@ def show_post_and_comment_thread(postid, display_format):
         result += '<span style="color: #117743; font-weight: 700;">Anonymous</span> '
         result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
-        result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes) · ")
         if "lesswrong" in config.GRAPHQL_URL:
             result += ('<a title="Official LessWrong 2.0 link" href="' + comment['pageUrl'] + '">LW</a> · ')
         else:

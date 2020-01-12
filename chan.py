@@ -106,7 +106,7 @@ def show_post_and_comment_thread(postid, display_format):
         color = config.COMMENT_COLOR
         commentid = comment['_id']
         result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
-        result += "Anonymous "
+        result += '<span style="color: #117743; font-weight: 700;">Anonymous</span> '
         result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes) · ")
@@ -118,10 +118,13 @@ def show_post_and_comment_thread(postid, display_format):
         # This comment has replies, so show their IDs
         if commentid in reply_graph:
             for reply in reply_graph[commentid]:
-                result += ''' <a href="#%s">&gt;&gt;%s</a>''' % (reply, reply)
+                result += ''' <a href="#%s" onmouseover="showComment(this, '%s')" onmouseout="removeComment('%s')">&gt;&gt;%s</a>''' % (reply, reply, reply, reply)
         result += '<br/>'
         if util.safe_get(comment, ['parentCommentId']):
-            result += '''<br/><a href="#%s" class="reply-parent">&gt;&gt;%s</a><br/>''' % (
+            result += '''<br/><a href="#%s" id="%s" class="reply-parent" onmouseover="showComment(this, '%s')" onmouseout="removeComment('%s')">&gt;&gt;%s</a><br/>''' % (
+                    util.safe_get(comment, ['parentCommentId']),
+                    util.safe_get(comment, ['parentCommentId']),
+                    util.safe_get(comment, ['parentCommentId']),
                     util.safe_get(comment, ['parentCommentId']),
                     util.safe_get(comment, ['parentCommentId'])
                     )
@@ -133,6 +136,25 @@ def show_post_and_comment_thread(postid, display_format):
     </div>
 
         <script>
+            function showComment(pointer, commentid) {
+                var comment = document.getElementById(commentid);
+                var clone = comment.cloneNode(true);
+                var rect = pointer.getBoundingClientRect();
+
+                clone.id = "cloned-" + commentid;
+                clone.style.position = 'absolute';
+                clone.style.top = (window.pageYOffset + rect.top) + 'px';
+                if (window.innerWidth - rect.right < 100) {
+                    clone.style.right = rect.left + 'px';
+                } else {
+                    clone.style.left = rect.right + 'px';
+                }
+                document.body.appendChild(clone);
+            }
+            function removeComment(commentid) {
+                var clone = document.getElementById("cloned-" + commentid);
+                clone.parentNode.removeChild(clone);
+            }
         </script>
 
         </body>

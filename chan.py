@@ -104,7 +104,8 @@ def show_post_and_comment_thread(postid, display_format):
     for comment in comments:
         color = config.COMMENT_COLOR
         commentid = comment['_id']
-        result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
+        result += "<div>"  # this extra outer div will ensure that two very short comments aren't displayed side-by-side
+        result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 15px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s; display: inline-block;">''' % (commentid, color))
         result += '<span style="color: #117743; font-weight: 700;">Anonymous</span> '
         result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
@@ -127,7 +128,7 @@ def show_post_and_comment_thread(postid, display_format):
                     util.safe_get(comment, ['parentCommentId'])
                     )
         result += util.cleanHtmlBody(util.substitute_alt_links(comment['htmlBody']))
-        result += "</div>"
+        result += "</div></div>"
 
     result += ("""
     </div>

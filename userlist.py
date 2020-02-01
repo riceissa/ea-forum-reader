@@ -66,6 +66,12 @@ def users_list_query(sort_by="karma", run_query=True):
         sort_line = 'sort: {postCount: -1}'
     elif sort_by == "commentCount":
         sort_line = 'sort: {commentCount: -1}'
+    elif sort_by == "afKarma":
+        sort_line = 'sort: {afKarma: -1}'
+    elif sort_by == "afPostCount":
+        sort_line = 'sort: {afPostCount: -1}'
+    elif sort_by == "afCommentCount":
+        sort_line = 'sort: {afCommentCount: -1}'
     else:
         sort_line = 'sort: {karma: -1}'
     query = ("""
@@ -83,6 +89,9 @@ def users_list_query(sort_by="karma", run_query=True):
               karma
               postCount
               commentCount
+              afKarma
+              afPostCount
+              afCommentCount
             }
           }
         }
@@ -115,7 +124,7 @@ def show_users_list(sort_by, display_format):
     result += '''<div id="content">'''
 
     result += ('''
-        <table>
+        <table style="font-size: 14px;">
             <tr>
                 <th>Username</th>
                 <th>User ID</th>
@@ -124,11 +133,17 @@ def show_users_list(sort_by, display_format):
                 <th>Big vote power</th>
                 <th><a href="%s">Post count</a></th>
                 <th><a href="%s">Comment count</a></th>
+                <th><a href="%s">AF karma</a></th>
+                <th><a href="%s">AF post count</a></th>
+                <th><a href="%s">AF comment count</a></th>
             </tr>
     ''' % (
             linkpath.userlist(sort="karma"),
             linkpath.userlist(sort="postCount"),
-            linkpath.userlist(sort="commentCount")
+            linkpath.userlist(sort="commentCount"),
+            linkpath.userlist(sort="afKarma"),
+            linkpath.userlist(sort="afPostCount"),
+            linkpath.userlist(sort="afCommentCount")
         )
     )
 
@@ -146,6 +161,9 @@ def show_users_list(sort_by, display_format):
                 <td style="text-align: right;">%s</td>
                 <td style="text-align: right;">%s</td>
                 <td style="text-align: right;">%s</td>
+                <td style="text-align: right;">%s</td>
+                <td style="text-align: right;">%s</td>
+                <td style="text-align: right;">%s</td>
             </tr>
         ''' % (
                 linked_user,
@@ -154,7 +172,10 @@ def show_users_list(sort_by, display_format):
                 small_vote_power(user['karma']),
                 big_vote_power(user['karma']),
                 user['postCount'],
-                user['commentCount']
+                user['commentCount'],
+                util.safe_get(user, 'afKarma'),
+                util.safe_get(user, 'afPostCount'),
+                util.safe_get(user, 'afCommentCount')
             )
         )
 

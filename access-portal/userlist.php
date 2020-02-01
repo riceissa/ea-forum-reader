@@ -15,6 +15,12 @@ if ($_REQUEST['sort'] ?? '') {
     $sort = "postCount";
   } else if ($_REQUEST['sort'] === "commentCount") {
     $sort = "commentCount";
+  } else if ($_REQUEST['sort'] === "afKarma") {
+    $sort = "afKarma";
+  } else if ($_REQUEST['sort'] === "afPostCount") {
+    $sort = "afPostCount";
+  } else if ($_REQUEST['sort'] === "afCommentCount") {
+    $sort = "afCommentCount";
   } else {
     $sort = "karma";
   }

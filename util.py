@@ -151,10 +151,10 @@ def show_head(title, author="", date="", publisher=""):
             }
 
             /* See https://stackoverflow.com/a/34259648/3422337 */
-            .spoiler { border: 1px solid black; }
-            .spoiler, .spoiler > * { transition: color 0.5s, opacity 0.5s; }
-            .spoiler:not(:hover) { color: transparent; }
-            .spoiler:not(:hover) > * { opacity: 0; }
+            .spoilers { border: 1px solid black; }
+            .spoilers, .spoilers > * { transition: color 0.5s, opacity 0.5s; }
+            .spoilers:not(:hover) { color: transparent; }
+            .spoilers:not(:hover) > * { opacity: 0; }
 
             #wrapper {
               border-left: 1px solid #d2d2d2;

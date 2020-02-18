@@ -97,7 +97,7 @@ def show_head(title, author="", date="", publisher=""):
         <style type="text/css">
             body {
                 font-family: Lato, Helvetica, sans-serif;
-                font-size: 16px;
+                font-size: 15.4px;
                 line-height: 1.4;
                 background-color: whitesmoke;
             }

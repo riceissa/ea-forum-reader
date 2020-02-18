@@ -262,11 +262,29 @@ def show_comment(comment_node):
         result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes) · ")
-        if "lesswrong" in config.GRAPHQL_URL:
-            result += ('<a title="Official LessWrong 2.0 link" href="' + comment['pageUrl'] + '">LW</a> · ')
+
+        if "#" in comment['pageUrl']:
+            # For example, "http://example.com/page#blah" becomes ("http://example.com/page", "blah")
+            anchor_idx = comment['pageUrl'].rfind('#')
+            base_url = comment['pageUrl'][:anchor_idx]
+            anchor_text = comment['pageUrl'][anchor_idx+1:]
         else:
-            result += ('<a title="Official EA Forum link" href="' + comment['pageUrl'] + '">EA</a> · ')
-        result += '<a title="GreaterWrong link" href="' + util.official_url_to_gw(comment['pageUrl']) + '">GW</a>'
+            base_url = comment['pageUrl']
+            anchor_text = ""
+        if "lesswrong" in config.GRAPHQL_URL:
+            result += ('<a title="Official LessWrong 2.0 link" href="' + comment['pageUrl'] + '">LW</a>')
+            if "#" in comment['pageUrl']:
+                result += '''(<a title="Official LessWrong 2.0 permalink" href="%s?commentId=%s">p</a>)''' % (base_url, anchor_text)
+        else:
+            result += ('<a title="Official EA Forum link" href="' + comment['pageUrl'] + '">EA</a>')
+            if "#" in comment['pageUrl']:
+                result += '''(<a title="Official EA Forum permalink" href="%s?commentId=%s">p</a>)''' % (base_url, anchor_text)
+        result += ' · '
+        if "#" in comment['pageUrl']:
+            result += '<a title="GreaterWrong link" href="' + util.official_url_to_gw(base_url) + "#comment-" + anchor_text + '">GW</a>'
+            result += '''(<a title="GreaterWrong permalink" href="%s/comment/%s">p</a>)''' % (util.official_url_to_gw(base_url), anchor_text)
+        else:
+            result += '<a title="GreaterWrong link" href="' + util.official_url_to_gw(comment['pageUrl']) + '">GW</a>'
         result += util.cleanHtmlBody(util.substitute_alt_links(comment['htmlBody']))
 
     if comment_node.children:

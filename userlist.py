@@ -9,13 +9,11 @@ import linkpath
 
 def small_vote_power(karma):
     """See
-    https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/modules/voting/new_vote_types.js
+    https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/voting/new_vote_types.ts
     for the vote power implementation. See also the blog post at
     https://lw2.issarice.com/posts/7Sx3CJXA7JHxY2yDG/strong-votes-update-deployed#Vote_Power_by_Karma"""
     if karma is None:
         return 1
-    if karma >= 25000:
-        return 3
     if karma >= 1000:
         return 2
     return 1
@@ -23,7 +21,7 @@ def small_vote_power(karma):
 
 def big_vote_power(karma):
     """See
-    https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/modules/voting/new_vote_types.js
+    https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/voting/new_vote_types.ts
     for the vote power implementation. See also the blog post at
     https://lw2.issarice.com/posts/7Sx3CJXA7JHxY2yDG/strong-votes-update-deployed#Vote_Power_by_Karma"""
     if karma is None:

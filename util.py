@@ -420,16 +420,4 @@ def substitute_alt_links(html_body):
     result = re.sub(r'(<a[^>]+href=")(https?://(?:www\.|forum\.)(?:lesswrong\.com|greaterwrong\.com|effectivealtruism\.org|alignmentforum\.org)/[^"]+)("[^>]*>.*?</a>)',
                     convert_url,
                     result)
-    # result = re.sub(r'(<a[^>]+href=)"https?://(?:www\.)lesswrong\.com/([^"]+)"([^>]*>)(.*?</a>)',
-    #                 r'\1"https://lw2.issarice.com/\2"\3\4 [<a href="https://www.lesswrong.com/\2">LW</a> · <a href="https://www.greaterwrong.com/\2">GW</a>]',
-    #                 result)
-    # result = re.sub(r'(<a[^>]+href=)"https?://(?:www\.)lesserwrong\.com/([^"]+)"([^>]*>)(.*?</a>)',
-    #                 r'\1"https://lw2.issarice.com/\2"\3\4 [<a href="https://www.lesserwrong.com/\2">LW</a> · <a href="https://www.greaterwrong.com/\2">GW</a>]',
-    #                 result)
-    # result = re.sub(r'(<a[^>]+href=)"https?://forum\.effectivealtruism\.org/([^"]+)"([^>]*>)(.*?</a>)',
-    #                 r'\1"https://eaforum.issarice.com/\2"\3\4 [<a href="https://forum.effectivealtruism.org/\2">EA</a> · <a href="https://ea.greaterwrong.com/\2">GW</a>]',
-    #                 result)
-    # result = re.sub(r'(<a[^>]+href=)"https?://(?:www\.)alignmentforum\.org/([^"]+)"([^>]*>)(.*?</a>)',
-    #                 r'\1"https://lw2.issarice.com/\2"\3\4 [<a href="https://www.alignmentforum.org/\2">AF</a> · <a href="https://www.greaterwrong.com/\2">GW</a>]',
-    #                 result)
     return result

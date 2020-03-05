@@ -4,6 +4,7 @@ import requests
 import datetime
 import re
 from urllib.parse import quote
+import sys
 
 import linkpath
 import config
@@ -325,15 +326,61 @@ def alt_urls(original_url, is_answer=False):
     {
         "official": "https://www.lesswrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories#9zAikCfT78BhyT8Aj",
         "official_permalink": "https://www.lesswrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories?commentId=9zAikCfT78BhyT8Aj",
-        "gw": "https://www.greaterwrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories#comment-9zAikCfT78BhyT8Aj"
+        "gw": "https://www.greaterwrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories#comment-9zAikCfT78BhyT8Aj",
         "gw_permalink": "https://www.greaterwrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories/comment/9zAikCfT78BhyT8Aj",
         "reader": "https://lw2.issarice.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories#9zAikCfT78BhyT8Aj"
     }
     For post URLs, the permalink keys will not exist.
 
     """
-    result = {}
-    for official in ["lesswrong.com", "forum.effectivealtruism.org", "alignmentforum.org"]:
+    try:
+        domain, post_location, comment_id = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com))(/posts/[a-zA-Z0-9]+/[^/]+)(?:/comment/|/answer/|#|#comment-|\?commentId=)([a-zA-Z0-9]+)$', original_url).groups()
+    except AttributeError:
+        try:
+            domain, post_location = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com))(/posts/[a-zA-Z0-9]+/[^/]+)$', s).groups()
+            commend_id = None
+        except:
+            print("We don't know how to deal with this URL: ", original_url, file=sys.stderr)
+            return {"official": "?", "gw": "?", "reader": "?"}
+    if domain in ["www.lesswrong.com", "forum.effectivealtruism.org", "www.alignmentforum.org"]:
+        official_domain = domain
+    elif domain == "www.greaterwrong.com":
+        official_domain = "www.lesswrong.com"
+    elif domain == "ea.greaterwrong.com":
+        official_domain = "forum.effectivealtruism.org"
+
+    if domain in ["forum.effectivealtruism.org", "ea.greaterwrong.com"]:
+        gw_domain = "ea.greaterwrong.com"
+        reader_domain = "eaforum.issarice.com"
+    else:
+        gw_domain = "www.greaterwrong.com"
+        reader_domain = "lw2.issarice.com"
+
+    if comment_id:
+        # GW is the only weird one which distinguishes between comment vs
+        # answer URL structure, but it only does this for the permalink, so the
+        # anchor version still uses "#comment-" even for answers
+        if is_answer:
+            gw_permalink = "https://" + gw_domain + post_location + "/answer/" + comment_id
+        else:
+            gw_permalink = "https://" + gw_domain + post_location + "/comment/" + comment_id
+        result = {
+            "official": "https://" + official_domain + post_location + "#" + comment_id,
+            "official_permalink": "https://" + official_domain + post_location + "?commentId=" + comment_id,
+            "gw": "https://" + gw_domain + post_location + "#comment-" + comment_id,
+            "gw_permalink": gw_permalink,
+            "reader": "https://" + reader_domain + post_location + "#" + comment_id
+        }
+    else:
+        result = {
+            "official": "https://" + official_domain + post_location,
+            "gw": "https://" + gw_domain + post_location,
+            "reader": "https://" + reader_domain + post_location
+        }
+    return result
+
+
+    for official in :
         gw_subdomain = {"lesswrong.com": "www",
                         "forum.effectivealtruism.org": "ea",
                         "alignmentforum.org": "www"}[official]
@@ -342,6 +389,7 @@ def alt_urls(original_url, is_answer=False):
                              "alignmentforum.org": "lw2"}[official]
         if official in original_url:
             result['official'] = original_url
+            result['reader'] = original_url.replace(official, reader_subdomain + '.issarice.com', 1)
             if "#" in original_url:
                 # For example, "http://example.com/page#blah" becomes
                 # ("http://example.com/page", "blah")
@@ -359,7 +407,6 @@ def alt_urls(original_url, is_answer=False):
                 base_url = original_url
                 anchor_text = ""
                 result['gw'] = original_url.replace(official, gw_subdomain + '.greaterwrong.com', 1)
-                result['reader'] = original_url.replace(official, gw_subdomain + '.issarice.com', 1)
     if "greaterwrong.com" in original_url:
         pass
 

@@ -379,25 +379,31 @@ def alt_urls(original_url, is_answer=False):
         }
     return result
 
-
-def _alt_links(original_url):
-    if "lesswrong.com" in original_url or "www.greaterwrong.com" in original_url:
+def grouped_links(url_dict):
+    if "lesswrong.com" in url_dict["official"]:
         official_variant = "LW"
         official_title = "Official LessWrong 2.0"
-    elif "forum.effectivealtruism.org" in original_url or "ea.greaterwrong.com" in original_url:
+    elif "forum.effectivealtruism.org" in url_dict["official"]:
         official_variant = "EA"
         official_title = "Official EA Forum"
-    elif "alignmentforum.org" in original_url:
+    elif "alignmentforum.org" in url_dict["official"]:
         official_variant = "AF"
         official_title = "Official Alignment Forum"
     else:
         official_variant = "?"
         official_title = "?"
 
-    if ???:
-        result = '''<a title="%s link" href="%s">%s</a> · <a title="GreaterWrong link" href="%s">GW</a>''' % (official_title, official_url, official_variant, gw_url)
+    if "official_permalink" in url_dict:
+        result = '''<a title="%s link" href="%s">%s</a>(<a title="%s permalink" href="%s">p</a>) · <a title="GreaterWrong link" href="%s">GW</a>(<a title="GreaterWrong permalink" href="%s">p</a>)''' % (
+                official_title, url_dict["official"], official_variant,
+                official_title, url_dict["official_permalink"], url_dict["gw"],
+                url_dict["gw_permalink"])
     else:
-        result = '''<a title="%s link" href="%s">%s</a>(<a title="%s permalink" href="%s">p</a>) · <a title="GreaterWrong link" href="%s">GW</a>(<a title="GreaterWrong permalink" href="%s">p</a>)''' % ()
+        result = '''<a title="%s link" href="%s">%s</a> · <a title="GreaterWrong link" href="%s">GW</a>''' % (
+                official_title, url_dict["official"], official_variant, url_dict["gw"])
+
+    return result
+
 
 def convert_url(match):
     begin = match.group(1)

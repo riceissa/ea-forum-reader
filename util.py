@@ -330,9 +330,7 @@ def alt_urls(original_url, is_answer=False):
         "gw_permalink": "https://www.greaterwrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories/comment/9zAikCfT78BhyT8Aj",
         "reader": "https://lw2.issarice.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories#9zAikCfT78BhyT8Aj"
     }
-    For post URLs, the permalink keys will not exist.
-
-    """
+    For post URLs, the permalink keys will not exist."""
     anchor = None
     try:
         domain, post_location, comment_id = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com|alignmentforum\.org))(/posts/[a-zA-Z0-9]+/[^/]+)(?:/comment/|/answer/|#|#comment-|\?commentId=)([a-zA-Z0-9]+)$', original_url).groups()

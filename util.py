@@ -380,37 +380,6 @@ def alt_urls(original_url, is_answer=False):
     return result
 
 
-    for official in :
-        gw_subdomain = {"lesswrong.com": "www",
-                        "forum.effectivealtruism.org": "ea",
-                        "alignmentforum.org": "www"}[official]
-        reader_subdomain  = {"lesswrong.com": "lw2",
-                             "forum.effectivealtruism.org": "eaforum",
-                             "alignmentforum.org": "lw2"}[official]
-        if official in original_url:
-            result['official'] = original_url
-            result['reader'] = original_url.replace(official, reader_subdomain + '.issarice.com', 1)
-            if "#" in original_url:
-                # For example, "http://example.com/page#blah" becomes
-                # ("http://example.com/page", "blah")
-                anchor_idx = original_url.rfind('#')
-                base_url = original_url[:anchor_idx]
-                anchor_text = original_url[anchor_idx+1:]
-                result['official_permalink'] = base_url + '?commentId=' + anchor_text
-                if official in original_url:
-                    result['gw'] = base_url.replace(official, gw_subdomain + '.greaterwrong.com', 1) + "#comment-" + anchor_text
-                    if is_answer:
-                        result['gw_permalink'] = base_url.replace(official, gw_subdomain + '.greaterwrong.com', 1) + "/answer/" + anchor_text
-                    else:
-                        result['gw_permalink'] = base_url.replace(official, gw_subdomain + '.greaterwrong.com', 1) + "/comment/" + anchor_text
-            else:
-                base_url = original_url
-                anchor_text = ""
-                result['gw'] = original_url.replace(official, gw_subdomain + '.greaterwrong.com', 1)
-    if "greaterwrong.com" in original_url:
-        pass
-
-
 def _alt_links(original_url):
     if "lesswrong.com" in original_url or "www.greaterwrong.com" in original_url:
         official_variant = "LW"

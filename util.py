@@ -337,8 +337,8 @@ def alt_urls(original_url, is_answer=False):
         domain, post_location, comment_id = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com))(/posts/[a-zA-Z0-9]+/[^/]+)(?:/comment/|/answer/|#|#comment-|\?commentId=)([a-zA-Z0-9]+)$', original_url).groups()
     except AttributeError:
         try:
-            domain, post_location = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com))(/posts/[a-zA-Z0-9]+/[^/]+)$', s).groups()
-            commend_id = None
+            domain, post_location = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com))(/posts/[a-zA-Z0-9]+/[^/]+)$', original_url).groups()
+            comment_id = None
         except:
             print("We don't know how to deal with this URL: ", original_url, file=sys.stderr)
             return {"official": "?", "gw": "?", "reader": "?"}

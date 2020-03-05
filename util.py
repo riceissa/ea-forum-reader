@@ -407,13 +407,10 @@ def grouped_links(url_dict):
 
 def convert_url(match):
     begin = match.group(1)
-    url = match.group(2)
+    original_url = match.group(2)
     end = match.group(3)
-    # TODO the problem is if this url is a greaterwrong one, especially a /comment/ one. then we can't just run a simple .replace() over it.
-    # also the problem is that for links in the navbar (e.g. for posts and comments) there is no reader link, but for links that appear in thebody of a post/comment, then we do want to have a reader link.
-    reader_url = official_url_to_reader(url)
-    gw_url = official_url_to_gw(url)
-    html = begin + reader_url + end + " [" + alt_links(url) + "]"
+    url_dict = alt_urls(original_url)
+    html = begin + url_dict["reader"] + end + " [" + grouped_links(url_dict) + "]"
     return html
 
 def substitute_alt_links(html_body):

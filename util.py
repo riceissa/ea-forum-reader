@@ -333,8 +333,13 @@ def alt_urls(original_url, is_answer=False):
     For post URLs, the permalink keys will not exist.
 
     """
+    anchor = None
     try:
         domain, post_location, comment_id = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com|alignmentforum\.org))(/posts/[a-zA-Z0-9]+/[^/]+)(?:/comment/|/answer/|#|#comment-|\?commentId=)([a-zA-Z0-9]+)$', original_url).groups()
+        # Keep track of a list of common anchors that are not comment anchors
+        if comment_id in ["comments"]:
+            anchor = comment_id
+            comment_id = None
     except AttributeError:
         try:
             domain, post_location = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com|alignmentforum\.org))(/posts/[a-zA-Z0-9]+/[^/]+)$', original_url).groups()
@@ -373,9 +378,9 @@ def alt_urls(original_url, is_answer=False):
         }
     else:
         result = {
-            "official": "https://" + official_domain + post_location,
-            "gw": "https://" + gw_domain + post_location,
-            "reader": "https://" + reader_domain + post_location
+            "official": "https://" + official_domain + post_location + ("#" + anchor if anchor else ""),
+            "gw": "https://" + gw_domain + post_location + ("#" + anchor if anchor else ""),
+            "reader": "https://" + reader_domain + post_location + ("#" + anchor if anchor else "")
         }
     return result
 

@@ -262,29 +262,7 @@ def show_comment(comment_node):
         result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += ("score: " + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes) · ")
-
-        if "#" in comment['pageUrl']:
-            # For example, "http://example.com/page#blah" becomes ("http://example.com/page", "blah")
-            anchor_idx = comment['pageUrl'].rfind('#')
-            base_url = comment['pageUrl'][:anchor_idx]
-            anchor_text = comment['pageUrl'][anchor_idx+1:]
-        else:
-            base_url = comment['pageUrl']
-            anchor_text = ""
-        if "lesswrong" in config.GRAPHQL_URL:
-            result += ('<a title="Official LessWrong 2.0 link" href="' + comment['pageUrl'] + '">LW</a>')
-            if "#" in comment['pageUrl']:
-                result += '''(<a title="Official LessWrong 2.0 permalink" href="%s?commentId=%s">p</a>)''' % (base_url, anchor_text)
-        else:
-            result += ('<a title="Official EA Forum link" href="' + comment['pageUrl'] + '">EA</a>')
-            if "#" in comment['pageUrl']:
-                result += '''(<a title="Official EA Forum permalink" href="%s?commentId=%s">p</a>)''' % (base_url, anchor_text)
-        result += ' · '
-        if "#" in comment['pageUrl']:
-            result += '<a title="GreaterWrong link" href="' + util.official_url_to_gw(base_url) + "#comment-" + anchor_text + '">GW</a>'
-            result += '''(<a title="GreaterWrong permalink" href="%s/comment/%s">p</a>)''' % (util.official_url_to_gw(base_url), anchor_text)
-        else:
-            result += '<a title="GreaterWrong link" href="' + util.official_url_to_gw(comment['pageUrl']) + '">GW</a>'
+        result += util.grouped_links(util.alt_urls(comment['pageUrl']))
         result += util.cleanHtmlBody(util.substitute_alt_links(comment['htmlBody']))
 
     if comment_node.children:
@@ -300,7 +278,7 @@ def show_comment(comment_node):
 def show_answer(answer):
     result = ("""
     <div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px;">
-        answer by %s · <a href="#%s">%s</a> · score: %s (%s votes) · %s · %s
+        answer by %s · <a href="#%s">%s</a> · score: %s (%s votes) · %s
         <br>
         %s
     """ % (
@@ -313,8 +291,7 @@ def show_answer(answer):
         answer["postedAt"],
         answer["baseScore"],
         answer["voteCount"],
-        util.official_link(util.safe_get(answer, "pageUrl")),
-        util.gw_link(util.safe_get(answer, "pageUrl")),
+        util.grouped_links(util.alt_urls(util.safe_get(answer, "pageUrl"), is_answer=True)),
         util.cleanHtmlBody(util.substitute_alt_links(answer["htmlBody"])),
     ))
     replies = query_replies_to_answer(util.safe_get(answer, "_id"))
@@ -385,8 +362,7 @@ def show_post_and_comment_thread(postid, display_format):
     result += " ·\n"
     result += '''%s ·\n''' % post['postedAt']
     result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
-    result += util.official_link(post['pageUrl']) + ' ·\n'
-    result += util.gw_link(post['pageUrl']) + ' ·\n'
+    result += util.grouped_links(util.alt_urls(post['pageUrl'])) + " ·\n"
     if post['legacyId'] is not None:
         result += '''<a href="%s" title="Legacy link">Legacy</a> ·\n''' % util.legacy_link(post['legacyId'])
 

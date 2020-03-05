@@ -316,20 +316,101 @@ def official_link(page_url):
 def gw_link(page_url):
     return '''<a href="%s" title="GreaterWrong link">GW</a>''' % official_url_to_gw(page_url)
 
+def alt_urls(original_url, is_answer=False):
+    """Return a dictionary of URLs for all the alternative services (official,
+    GW, my reader). Supported keys are: official, official_permalink, gw,
+    gw_permalink, reader.
+
+    For example, if the URL is "https://www.lesswrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories#9zAikCfT78BhyT8Aj" then the result is
+    {
+        "official": "https://www.lesswrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories#9zAikCfT78BhyT8Aj",
+        "official_permalink": "https://www.lesswrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories?commentId=9zAikCfT78BhyT8Aj",
+        "gw": "https://www.greaterwrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories#comment-9zAikCfT78BhyT8Aj"
+        "gw_permalink": "https://www.greaterwrong.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories/comment/9zAikCfT78BhyT8Aj",
+        "reader": "https://lw2.issarice.com/posts/bnY3L48TtDrKTzGRb/ai-safety-success-stories#9zAikCfT78BhyT8Aj"
+    }
+    For post URLs, the permalink keys will not exist.
+
+    """
+    result = {}
+    for official in ["lesswrong.com", "forum.effectivealtruism.org", "alignmentforum.org"]:
+        gw_subdomain = {"lesswrong.com": "www",
+                        "forum.effectivealtruism.org": "ea",
+                        "alignmentforum.org": "www"}[official]
+        reader_subdomain  = {"lesswrong.com": "lw2",
+                             "forum.effectivealtruism.org": "eaforum",
+                             "alignmentforum.org": "lw2"}[official]
+        if official in original_url:
+            result['official'] = original_url
+            if "#" in original_url:
+                # For example, "http://example.com/page#blah" becomes
+                # ("http://example.com/page", "blah")
+                anchor_idx = original_url.rfind('#')
+                base_url = original_url[:anchor_idx]
+                anchor_text = original_url[anchor_idx+1:]
+                result['official_permalink'] = base_url + '?commentId=' + anchor_text
+                if official in original_url:
+                    result['gw'] = base_url.replace(official, gw_subdomain + '.greaterwrong.com', 1) + "#comment-" + anchor_text
+                    if is_answer:
+                        result['gw_permalink'] = base_url.replace(official, gw_subdomain + '.greaterwrong.com', 1) + "/answer/" + anchor_text
+                    else:
+                        result['gw_permalink'] = base_url.replace(official, gw_subdomain + '.greaterwrong.com', 1) + "/comment/" + anchor_text
+            else:
+                base_url = original_url
+                anchor_text = ""
+                result['gw'] = original_url.replace(official, gw_subdomain + '.greaterwrong.com', 1)
+                result['reader'] = original_url.replace(official, gw_subdomain + '.issarice.com', 1)
+    if "greaterwrong.com" in original_url:
+        pass
+
+
+def _alt_links(original_url):
+    if "lesswrong.com" in original_url or "www.greaterwrong.com" in original_url:
+        official_variant = "LW"
+        official_title = "Official LessWrong 2.0"
+    elif "forum.effectivealtruism.org" in original_url or "ea.greaterwrong.com" in original_url:
+        official_variant = "EA"
+        official_title = "Official EA Forum"
+    elif "alignmentforum.org" in original_url:
+        official_variant = "AF"
+        official_title = "Official Alignment Forum"
+    else:
+        official_variant = "?"
+        official_title = "?"
+
+    if ???:
+        result = '''<a title="%s link" href="%s">%s</a> · <a title="GreaterWrong link" href="%s">GW</a>''' % (official_title, official_url, official_variant, gw_url)
+    else:
+        result = '''<a title="%s link" href="%s">%s</a>(<a title="%s permalink" href="%s">p</a>) · <a title="GreaterWrong link" href="%s">GW</a>(<a title="GreaterWrong permalink" href="%s">p</a>)''' % ()
+
+def convert_url(match):
+    begin = match.group(1)
+    url = match.group(2)
+    end = match.group(3)
+    # TODO the problem is if this url is a greaterwrong one, especially a /comment/ one. then we can't just run a simple .replace() over it.
+    # also the problem is that for links in the navbar (e.g. for posts and comments) there is no reader link, but for links that appear in thebody of a post/comment, then we do want to have a reader link.
+    reader_url = official_url_to_reader(url)
+    gw_url = official_url_to_gw(url)
+    html = begin + reader_url + end + " [" + alt_links(url) + "]"
+    return html
+
 def substitute_alt_links(html_body):
     if not html_body:
         return ""
     result = html_body
-    result = re.sub(r'(<a[^>]+href=)"https?://(?:www\.)lesswrong\.com/([^"]+)"([^>]*>)(.*?</a>)',
-                    r'\1"https://lw2.issarice.com/\2"\3\4 [<a href="https://www.lesswrong.com/\2">LW</a> · <a href="https://www.greaterwrong.com/\2">GW</a>]',
+    result = re.sub(r'(<a[^>]+href=")(https?://(?:www\.|forum\.)(?:lesswrong\.com|greaterwrong\.com|effectivealtruism\.org|alignmentforum\.org)/[^"]+)("[^>]*>.*?</a>)',
+                    convert_url,
                     result)
-    result = re.sub(r'(<a[^>]+href=)"https?://(?:www\.)lesserwrong\.com/([^"]+)"([^>]*>)(.*?</a>)',
-                    r'\1"https://lw2.issarice.com/\2"\3\4 [<a href="https://www.lesserwrong.com/\2">LW</a> · <a href="https://www.greaterwrong.com/\2">GW</a>]',
-                    result)
-    result = re.sub(r'(<a[^>]+href=)"https?://forum\.effectivealtruism\.org/([^"]+)"([^>]*>)(.*?</a>)',
-                    r'\1"https://eaforum.issarice.com/\2"\3\4 [<a href="https://forum.effectivealtruism.org/\2">EA</a> · <a href="https://ea.greaterwrong.com/\2">GW</a>]',
-                    result)
-    result = re.sub(r'(<a[^>]+href=)"https?://(?:www\.)alignmentforum\.org/([^"]+)"([^>]*>)(.*?</a>)',
-                    r'\1"https://lw2.issarice.com/\2"\3\4 [<a href="https://www.alignmentforum.org/\2">AF</a> · <a href="https://www.greaterwrong.com/\2">GW</a>]',
-                    result)
+    # result = re.sub(r'(<a[^>]+href=)"https?://(?:www\.)lesswrong\.com/([^"]+)"([^>]*>)(.*?</a>)',
+    #                 r'\1"https://lw2.issarice.com/\2"\3\4 [<a href="https://www.lesswrong.com/\2">LW</a> · <a href="https://www.greaterwrong.com/\2">GW</a>]',
+    #                 result)
+    # result = re.sub(r'(<a[^>]+href=)"https?://(?:www\.)lesserwrong\.com/([^"]+)"([^>]*>)(.*?</a>)',
+    #                 r'\1"https://lw2.issarice.com/\2"\3\4 [<a href="https://www.lesserwrong.com/\2">LW</a> · <a href="https://www.greaterwrong.com/\2">GW</a>]',
+    #                 result)
+    # result = re.sub(r'(<a[^>]+href=)"https?://forum\.effectivealtruism\.org/([^"]+)"([^>]*>)(.*?</a>)',
+    #                 r'\1"https://eaforum.issarice.com/\2"\3\4 [<a href="https://forum.effectivealtruism.org/\2">EA</a> · <a href="https://ea.greaterwrong.com/\2">GW</a>]',
+    #                 result)
+    # result = re.sub(r'(<a[^>]+href=)"https?://(?:www\.)alignmentforum\.org/([^"]+)"([^>]*>)(.*?</a>)',
+    #                 r'\1"https://lw2.issarice.com/\2"\3\4 [<a href="https://www.alignmentforum.org/\2">AF</a> · <a href="https://www.greaterwrong.com/\2">GW</a>]',
+    #                 result)
     return result

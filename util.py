@@ -413,7 +413,10 @@ def convert_url(match):
     original_url = match.group(2)
     end = match.group(3)
     url_dict = alt_urls(original_url)
-    html = begin + url_dict["reader"] + end + " [" + grouped_links(url_dict) + "]"
+    if url_dict["official"] != "?":
+        html = begin + url_dict["reader"] + end + " [" + grouped_links(url_dict) + "]"
+    else:
+        html = begin + original_url + end + " [" + grouped_links(url_dict) + "]"
     return html
 
 def substitute_alt_links(html_body):

@@ -333,14 +333,14 @@ def alt_urls(original_url, is_answer=False):
     For post URLs, the permalink keys will not exist."""
     anchor = None
     try:
-        domain, post_location, comment_id = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com|alignmentforum\.org))(/posts/[a-zA-Z0-9]+/[^/]+)(?:/comment/|/answer/|#|#comment-|\?commentId=)([a-zA-Z0-9]+)$', original_url).groups()
+        domain, path, comment_id = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com|alignmentforum\.org))(/posts/[a-zA-Z0-9]+/[^/]+)(?:/comment/|/answer/|#|#comment-|\?commentId=)([a-zA-Z0-9]+)$', original_url).groups()
         # Keep track of a list of common anchors that are not comment anchors
         if comment_id in ["comments"]:
             anchor = comment_id
             comment_id = None
     except AttributeError:
         try:
-            domain, post_location = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com|alignmentforum\.org))(/posts/[a-zA-Z0-9]+/[^/]+)$', original_url).groups()
+            domain, path = re.match(r'https?://((?:www|ea|forum)\.(?:greaterwrong\.com|effectivealtruism\.org|lesswrong\.com|alignmentforum\.org))(/posts/[a-zA-Z0-9]+/[^/]+|/users/[^/#]+)$', original_url).groups()
             comment_id = None
         except:
             print("We don't know how to deal with this URL: ", original_url, file=sys.stderr)
@@ -364,21 +364,21 @@ def alt_urls(original_url, is_answer=False):
         # answer URL structure, but it only does this for the permalink, so the
         # anchor version still uses "#comment-" even for answers
         if is_answer:
-            gw_permalink = "https://" + gw_domain + post_location + "/answer/" + comment_id
+            gw_permalink = "https://" + gw_domain + path + "/answer/" + comment_id
         else:
-            gw_permalink = "https://" + gw_domain + post_location + "/comment/" + comment_id
+            gw_permalink = "https://" + gw_domain + path + "/comment/" + comment_id
         result = {
-            "official": "https://" + official_domain + post_location + "#" + comment_id,
-            "official_permalink": "https://" + official_domain + post_location + "?commentId=" + comment_id,
-            "gw": "https://" + gw_domain + post_location + "#comment-" + comment_id,
+            "official": "https://" + official_domain + path + "#" + comment_id,
+            "official_permalink": "https://" + official_domain + path + "?commentId=" + comment_id,
+            "gw": "https://" + gw_domain + path + "#comment-" + comment_id,
             "gw_permalink": gw_permalink,
-            "reader": "https://" + reader_domain + post_location + "#" + comment_id
+            "reader": "https://" + reader_domain + path + "#" + comment_id
         }
     else:
         result = {
-            "official": "https://" + official_domain + post_location + ("#" + anchor if anchor else ""),
-            "gw": "https://" + gw_domain + post_location + ("#" + anchor if anchor else ""),
-            "reader": "https://" + reader_domain + post_location + ("#" + anchor if anchor else "")
+            "official": "https://" + official_domain + path + ("#" + anchor if anchor else ""),
+            "gw": "https://" + gw_domain + path + ("#" + anchor if anchor else ""),
+            "reader": "https://" + reader_domain + path + ("#" + anchor if anchor else "")
         }
     return result
 

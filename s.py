@@ -90,14 +90,42 @@ def get_chapter(chapterid, run_query=True):
 
 
 def show_sequence(sequenceid, display_format):
-    print("""<!DOCTYPE html>
+    result = ("""<!DOCTYPE html>
     <html>
     """)
     run_query = False if display_format == "queries" else True
     sequence = get_sequence(sequenceid)
+    result = util.show_head(title=util.safe_get(sequence, "title"),
+                             author=util.safe_get(sequence, ["user", "username"]),
+                             date=util.safe_get(sequence, "createdAt"),
+                             publisher="LessWrong 2.0" if "lesswrong" in config.GRAPHQL_URL
+                                       else "Effective Altruism Forum")
+    result += "<body>\n"
+    # result += util.show_navbar(navlinks=[
+    #         '''<a href="%s" title="Show all the GraphQL queries used to generate this page">Queries</a>''' % linkpath.posts(postid=util.htmlescape(postid), postslug=post['slug'], display_format="queries")
+    #     ])
+    result += '''<div id="wrapper">'''
+    result += '''<div id="content">'''
+    result += "<h1>" + util.safe_get(sequence, "title") + "</h1>\n"
     for chapterdict in util.safe_get(sequence, "chapters"):
         chapterid = chapterdict["_id"]
         chapter = get_chapter(chapterid)
-        print("Chapter:", util.safe_get(chapterdict, "title"))
+        result += "<h2>" + util.safe_get(chapterdict, "title") + "</h2>"
+        result += "<ul>\n"
         for postdict in util.safe_get(chapter, "posts"):
-            print("  post:", util.safe_get(postdict, "title"))
+            result += "  <li>" + util.safe_get(postdict, "title") + "</li>\n"
+        result += "</ul>\n"
+    result += ("""
+    </div>
+    </div>
+        </body>
+        </html>
+    """)
+    return result
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2 + 1:
+        print("Please enter a sequence ID and display format as argument")
+    else:
+        print(show_sequence(sequenceid=sys.argv[1], display_format=sys.argv[2]))
+

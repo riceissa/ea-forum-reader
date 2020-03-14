@@ -113,7 +113,11 @@ def show_sequence(sequenceid, display_format):
         result += "<h2>" + util.safe_get(chapterdict, "title") + "</h2>"
         result += "<ul>\n"
         for postdict in util.safe_get(chapter, "posts"):
-            result += "  <li>" + util.safe_get(postdict, "title") + "</li>\n"
+            alt_urls = util.alt_urls(util.safe_get(postdict, "pageUrl"))
+            result += '''  <li><a href="%s">%s</a></li>\n''' % (
+                    alt_urls['reader'],
+                    util.safe_get(postdict, "title")
+                    )
         result += "</ul>\n"
     result += ("""
     </div>

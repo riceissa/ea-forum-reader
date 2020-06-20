@@ -110,7 +110,7 @@ def show_sequence(sequenceid, display_format):
     for chapterdict in util.safe_get(sequence, "chapters"):
         chapterid = chapterdict["_id"]
         chapter = get_chapter(chapterid)
-        result += "<h2>" + util.safe_get(chapterdict, "title") + "</h2>"
+        result += "<h2>" + util.safe_get(chapterdict, "title", default="") + "</h2>"
         result += "<ul>\n"
         for postdict in util.safe_get(chapter, "posts"):
             alt_urls = util.alt_urls(util.safe_get(postdict, "pageUrl"))

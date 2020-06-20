@@ -237,7 +237,7 @@ def show_daily_posts(offset, view, before, after, display_format):
     for comment in recent_comments:
         post = comment['post']
         if post is None:
-            post = {'slug': comment['pageUrl'].split('/')[-1].split('#')[0], 'title': '[deleted]'}
+            post = {'slug': util.safe_get(comment, 'pageUrl', default="").split('/')[-1].split('#')[0], 'title': '[deleted]'}
         result += ('''
             <a href="%s">%s</a> on <a href="%s#%s">%s</a><br/>
             <span style="font-size: 14px;">
@@ -246,7 +246,7 @@ def show_daily_posts(offset, view, before, after, display_format):
         ''' % (
                 linkpath.users(userslug=util.safe_get(comment, ['user', 'slug'], "")),
                 util.safe_get(comment, ['user', 'slug'], ""),
-                linkpath.posts(postid=comment['postId'], postslug=post['slug']),
+                linkpath.posts(postid=util.safe_get(comment, 'postId', default=""), postslug=post['slug']),
                 comment['_id'],
                 util.htmlescape(post['title']),
                 util.substitute_alt_links(comment['htmlBody'])

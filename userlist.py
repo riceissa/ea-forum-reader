@@ -76,7 +76,7 @@ def users_list_query(sort_by="karma", run_query=True):
         {
           users(input: {
             terms: {
-              view: "allUsers"
+              view: "LWUsersAdmin"
               limit: 500
               %s
             }

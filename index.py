@@ -186,7 +186,7 @@ def show_daily_posts(offset, view, before, after, display_format):
                                 display_name=util.safe_get(post, ['user', 'displayName']))
         result += " ·\n"
         result += post['postedAt'] + " ·\n"
-        result += '''score: %s (%s votes) ·\n''' % (post['baseScore'], post['voteCount'])
+        result += '''<span style="color: white;">score: %s (%s votes)</span> ·\n''' % (post['baseScore'], post['voteCount'])
         if util.safe_get(post, "question"):
             result += ('''    <a href="%s#answers">answers+comments (%s)</a>\n''' % (post_url, post['commentCount']))
         else:

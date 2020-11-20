@@ -54,7 +54,6 @@ def show_comment(comment, string):
     result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: %s;">comment by <a href="./users.php?userid=%s">%s</a>
         on <a href="./posts.php?id=%s">%s</a>
         · <a href="./posts.php?id=%s#%s">%s</a>
-        · score: %s
         ''' % (config.COMMENT_COLOR,
                comment['userId'],
                user,
@@ -62,8 +61,7 @@ def show_comment(comment, string):
                util.htmlescape(comment['postTitle']),
                comment['postId'],
                comment['_id'],
-               comment['postedAt'],
-               comment['baseScore']))
+               comment['postedAt']))
 
     result += '''<pre style="font-family: Lato, Helvetica, sans-serif; word-wrap: break-word; white-space: pre-wrap; white-space: -moz-pre-wrap;">%s</pre>\n''' % highlighted_search_string(util.htmlescape(comment['body']), string)
     result += "</div>"
@@ -79,14 +77,13 @@ def show_post(post, string, seen):
     else:
         user = post['authorDisplayName']
     result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: %s;"><a href="./posts.php?id=%s">%s</a>
-    by <a href="./users.php?userid=%s">%s</a> · %s · score: %s
+    by <a href="./users.php?userid=%s">%s</a> · %s
     ''' % (config.COMMENT_COLOR,
            post['_id'],
            util.htmlescape(post['title']),
            post['userId'],
            user,
-           post['postedAt'],
-           post['baseScore']))
+           post['postedAt']))
     matched_in_body = False
     if 'body' in post:
         for term in string.split():

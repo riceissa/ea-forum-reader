@@ -83,7 +83,7 @@ def html_page_for_user(username, display_format):
     for post in posts:
         result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: %s;">\n''' % config.COMMENT_COLOR
         result += '''    <a href="%s">%s</a>\n''' % (linkpath.posts(postid=util.safe_get(post, '_id'), postslug=util.safe_get(post, 'slug')), util.htmlescape(util.safe_get(post, 'title')))
-        result += '''    %s · <span style="color: %s">score: %s (%s votes)</span>\n''' % (util.safe_get(post, 'postedAt'), config.COMMENT_COLOR, util.safe_get(post, 'baseScore'), util.safe_get(post, 'voteCount'))
+        result += '''    %s\n''' % (util.safe_get(post, 'postedAt'))
         result += "</div>\n"
 
     result += '''<h2 id="comments">Comments</h2>'''
@@ -102,7 +102,6 @@ def html_page_for_user(username, display_format):
                 <b>%s</b> on
                 <a href="%s">%s</a></b> ·
                 <a href="%s#%s">%s</a> ·
-                <span style="color: %s">score: %s (%s votes)</span> ·
                 %s ·
                 <a href="%s" title="GreaterWrong link">GW</a>''' % (
                     username,
@@ -111,9 +110,6 @@ def html_page_for_user(username, display_format):
                     linkpath.posts(postid=comment['postId'], postslug=util.safe_get(comment, ['post', 'slug'])),
                     comment['_id'],
                     comment['postedAt'],
-                    config.COMMENT_COLOR,
-                    comment['baseScore'],
-                    comment['voteCount'],
                     official_link,
                     util.official_url_to_gw(comment['pageUrl'])))
         comment_body = util.cleanHtmlBody(comment['htmlBody'])

@@ -261,7 +261,6 @@ def show_comment(comment_node):
                                 bio=util.safe_get(comment, ['user', 'bio']))
         result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
-        result += (('<span style="color: %s;">score: ' % (color,)) + str(comment['baseScore']) + " (" + str(comment['voteCount']) + " votes)</span> · ")
         result += util.grouped_links(util.alt_urls(comment['pageUrl']))
         result += util.cleanHtmlBody(util.substitute_alt_links(comment['htmlBody']))
 
@@ -278,7 +277,7 @@ def show_comment(comment_node):
 def show_answer(answer):
     result = ("""
     <div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px;">
-        answer by %s · <a href="#%s">%s</a> · <span style="color: white;">score: %s (%s votes)</span> · %s
+        answer by %s · <a href="#%s">%s</a> · %s
         <br>
         %s
     """ % (
@@ -289,8 +288,6 @@ def show_answer(answer):
                       bio=util.safe_get(answer, ["user", "bio"])),
         answer["_id"],
         answer["postedAt"],
-        answer["baseScore"],
-        answer["voteCount"],
         util.grouped_links(util.alt_urls(util.safe_get(answer, "pageUrl"), is_answer=True)),
         util.cleanHtmlBody(util.substitute_alt_links(answer["htmlBody"])),
     ))
@@ -361,7 +358,6 @@ def show_post_and_comment_thread(postid, display_format):
                                        display_name=util.safe_get(coauthor, "displayName"))
     result += " ·\n"
     result += '''%s ·\n''' % post['postedAt']
-    result += '''<span style="color: white;">score: %s (%s votes)</span> ·\n''' % (post['baseScore'], post['voteCount'])
     result += util.grouped_links(util.alt_urls(post['pageUrl'])) + " ·\n"
     if post['legacyId'] is not None:
         result += '''<a href="%s" title="Legacy link">Legacy</a> ·\n''' % util.legacy_link(post['legacyId'])
@@ -382,9 +378,12 @@ def show_post_and_comment_thread(postid, display_format):
             result += '''<h2>Contents</h2>\n'''
             result += '<pre style="font-size: 12px;">\n'
             for section in post["tableOfContents"]["sections"]:
+                ans_title = util.safe_get(section, "title")
+                if ans_title and section["level"] == 2:
+                    ans_title = " ".join(ans_title.split()[1:])
                 indent = " " * (2 * section["level"])
                 result += '''%s<a href="#%s">%s</a>\n''' % (indent, section["anchor"],
-                                                            util.safe_get(section, "title"))
+                                                            ans_title)
             result += '</pre>\n'
             # post['htmlBody'] is HTML without the table of contents anchors added
             # in, so we have to use a separate HTML provided by the

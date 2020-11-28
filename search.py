@@ -79,12 +79,14 @@ def show_post(post, string, seen):
         user = post['authorDisplayName']
     url = linkpath.posts(util.safe_get(post, ['_id']), util.safe_get(post, ['slug']))
     result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: %s;"><a href="%s">%s</a>
-    by <a href="./users.php?userid=%s">%s</a> · %s
+    by %s · %s
     ''' % (config.COMMENT_COLOR,
            url,
            util.htmlescape(post['title']),
-           post['userId'],
-           user,
+           util.userlink(
+               slug=util.safe_get(post, ['authorSlug']),
+               display_name=util.safe_get(post, ['authorDisplayName'])
+           ),
            post['postedAt']))
     matched_in_body = False
     if 'body' in post:

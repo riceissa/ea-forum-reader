@@ -7,6 +7,7 @@ import requests
 from urllib.parse import quote
 
 import util
+import linkpath
 import config
 
 ALGOLIA_URL = ""
@@ -76,10 +77,11 @@ def show_post(post, string, seen):
         user = post['authorSlug']
     else:
         user = post['authorDisplayName']
-    result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: %s;"><a href="./posts.php?id=%s">%s</a>
+    url = linkpath.posts(util.safe_get(post, ['_id']), util.safe_get(post, ['slug']))
+    result = ('''<div style="border: 1px solid #B3B3B3; margin: 10px; padding: 10px; background-color: %s;"><a href="%s">%s</a>
     by <a href="./users.php?userid=%s">%s</a> · %s
     ''' % (config.COMMENT_COLOR,
-           post['_id'],
+           url,
            util.htmlescape(post['title']),
            post['userId'],
            user,

@@ -254,6 +254,8 @@ def show_comment(comment_node):
     if comment:
         commentid = comment['_id']
         result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
+        result += "<details open>"
+        result += "<summary>"
         result += "comment by "
         result += util.userlink(slug=util.safe_get(comment, ['user', 'slug']),
                                 username=util.safe_get(comment, ['user', 'username']),
@@ -262,6 +264,7 @@ def show_comment(comment_node):
         result += " ·\n"
         result += (('''<a href="#%s">''' % commentid) + comment['postedAt'] + "</a> · ")
         result += util.grouped_links(util.alt_urls(comment['pageUrl']))
+        result += "</summary>"
         result += util.cleanHtmlBody(util.substitute_alt_links(comment['htmlBody']))
 
     if comment_node.children:
@@ -269,6 +272,7 @@ def show_comment(comment_node):
             result += show_comment(child)
 
     if comment:
+        result += "</details>"
         result += "</div>"
 
     return result

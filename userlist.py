@@ -7,6 +7,19 @@ import config
 import util
 import linkpath
 
+
+def comments_to_posts_ratio(comment_count, post_count):
+    if not comment_count:
+        comment_count = 0
+    if not post_count:
+        post_count = 0
+    if post_count == 0 and comment_count == 0:
+        return "n.a."
+    elif post_count == 0:
+        return "∞"
+    else:
+        return round(int(comment_count) / int(post_count), 1)
+
 def small_vote_power(karma):
     """See
     https://github.com/LessWrong2/Lesswrong2/blob/devel/packages/lesswrong/lib/voting/new_vote_types.ts
@@ -122,7 +135,7 @@ def show_users_list(sort_by, display_format):
     result += '''<div id="content">'''
 
     result += ('''
-        <table style="font-size: 14px;">
+        <table style="font-size: 13px;">
             <tr>
                 <th>Username</th>
                 <th>User ID</th>
@@ -131,6 +144,7 @@ def show_users_list(sort_by, display_format):
                 <th>Big vote power</th>
                 <th><a href="%s">Post count</a></th>
                 <th><a href="%s">Comment count</a></th>
+                <th>Comments:posts ratio</th>
                 <th><a href="%s">AF karma</a></th>
                 <th><a href="%s">AF post count</a></th>
                 <th><a href="%s">AF comment count</a></th>
@@ -162,6 +176,7 @@ def show_users_list(sort_by, display_format):
                 <td style="text-align: right;">%s</td>
                 <td style="text-align: right;">%s</td>
                 <td style="text-align: right;">%s</td>
+                <td style="text-align: right;">%s</td>
             </tr>
         ''' % (
                 linked_user,
@@ -171,6 +186,7 @@ def show_users_list(sort_by, display_format):
                 big_vote_power(user['karma']),
                 user['postCount'],
                 user['commentCount'],
+                comments_to_posts_ratio(user['commentCount'], user['postCount']),
                 util.safe_get(user, 'afKarma'),
                 util.safe_get(user, 'afPostCount'),
                 util.safe_get(user, 'afCommentCount')

@@ -256,6 +256,8 @@ def show_comment(comment_node):
         result += ('''<div id="%s" style="border: 1px solid #B3B3B3; padding-left: 15px; padding-right: 0px; padding-bottom: 10px; padding-top: 10px; margin-left: 0px; margin-right: -1px; margin-bottom: 0px; margin-top: 10px; background-color: %s">''' % (commentid, color))
         result += "<details open>"
         result += "<summary>"
+        if util.safe_get(comment, 'parentCommentId'):
+            result += '''<a href="#%s" title="Go to parent comment">↑</a> ''' % util.safe_get(comment, 'parentCommentId')
         result += "comment by "
         result += util.userlink(slug=util.safe_get(comment, ['user', 'slug']),
                                 username=util.safe_get(comment, ['user', 'username']),
@@ -266,6 +268,13 @@ def show_comment(comment_node):
         result += util.grouped_links(util.alt_urls(comment['pageUrl']))
         result += "</summary>"
         result += util.cleanHtmlBody(util.substitute_alt_links(comment['htmlBody']))
+        if comment_node.children:
+            result += '<span style="font-size: 14px;">Replies from: '
+            replies = ['<a href="#%s">%s</a>' %
+                       (child.commentid, util.safe_get(child.data, ['user', 'username']))
+                       for child in comment_node.children]
+            result += ", ".join(replies)
+            result += '</span>'
 
     if comment_node.children:
         for child in comment_node.children:
@@ -422,7 +431,7 @@ def show_post_and_comment_thread(postid, display_format):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2 + 1:
-        print("Please enter a post ID as argument")
+        print("Please enter a post ID and display format as argument")
     else:
         print(show_post_and_comment_thread(postid=sys.argv[1], display_format=sys.argv[2]))
 

@@ -91,7 +91,7 @@ def html_page_for_user(username, display_format):
         result += '''<div style="border: 1px solid #B3B3B3; margin-bottom: 15px; padding: 10px; background-color: %s;">\n''' % config.COMMENT_COLOR
         if comment['post'] is None:
             postslug = util.safe_get(comment, 'pageUrl', default="").split('/')[-1].split('#')[0]
-            result += '''    <a href="%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (linkpath.posts(postid=comment['postId'], postslug=postslug), comment['_id'], util.safe_get(comment, ['user', 'username']))
+            result += '''    <a href="%s#%s">Comment</a> by <b>%s</b> on [deleted post]</b>\n''' % (linkpath.posts(postid=comment['postId'], postslug=postslug), util.safe_get(comment, '_id'), util.safe_get(comment, ['user', 'username']))
             result += '''    %s\n''' % comment['postedAt']
         else:
             if "lesswrong" in config.GRAPHQL_URL:
@@ -104,7 +104,9 @@ def html_page_for_user(username, display_format):
                 <a href="%s#%s">%s</a> ·
                 %s ·
                 <a href="%s" title="GreaterWrong link">GW</a>''' % (
-                    username,
+                    util.userlink(slug=util.safe_get(user_info, 'slug'),
+                                  username=util.safe_get(user_info, 'username'),
+                                  display_name=util.safe_get(user_info, 'displayName')),
                     linkpath.posts(postid=comment['postId'], postslug=util.safe_get(comment, ['post', 'slug'])),
                     util.htmlescape(comment['post']['title']),
                     linkpath.posts(postid=comment['postId'], postslug=util.safe_get(comment, ['post', 'slug'])),

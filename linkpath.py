@@ -6,6 +6,8 @@ PATH_STYLE = config.PATH_STYLE
 
 
 def posts(postid, postslug="", display_format="html"):
+    if postid is None:
+        postid = ""
     if PATH_STYLE == "localhost":
         if display_format == "html":
             return "./posts.php?id=" + postid

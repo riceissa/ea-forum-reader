@@ -80,7 +80,7 @@ def legacy_link(legacy_slug):
         return 'https://web.archive.org/web/*/http://lesswrong.com/lw/%s/*' % slug
 
 
-def show_head(title, author="", date="", publisher=""):
+def show_head(title, author="", date="", publisher="", widepage=False):
     result = ("""
     <head>
         <meta charset="utf-8">
@@ -160,25 +160,35 @@ def show_head(title, author="", date="", publisher=""):
             .spoiler, .spoiler > * { transition: color 0.5s, opacity 0.5s; }
             .spoiler:not(:hover) { color: transparent; }
             .spoiler:not(:hover) > * { opacity: 0; }
+    """ % (
+            '''<meta name="author" content="%s">''' % htmlescape(author) if author else "",
+            '''<meta name="dcterms.date" content="%s">''' % htmlescape(date) if date else "",
+            htmlescape(title),
+            htmlescape(title),
+            '''<meta name="citation_author" content="%s">''' % htmlescape(author) if author else "",
+            '''<meta name="citation_publication_date" content="%s">''' % htmlescape(date) if date else "",
+            htmlescape(title),
+            config.LINK_COLOR,
+            config.LINK_COLOR
+        )
+    )
 
+    result += ("""
             #wrapper {
               border-left: 1px solid #d2d2d2;
               border-right: 1px solid #d2d2d2;
               margin: 0 auto;
-              width: 1024px;
               overflow: hidden;
               background-color: #fff;
             }
             #content {
               padding: 30px 0 0 32px;
               background-color: #fff;
-              width: 710px;
               float: left;
             }
             #sidebar {
               padding: 30px 32px 0 0;
               background-color: #fff;
-              width: 220px;
               float: right;
             }
 
@@ -198,20 +208,36 @@ def show_head(title, author="", date="", publisher=""):
                     overflow: auto;
                 }
             }
+    """)
+
+    if widepage:
+        result += """
+            #wrapper {
+                max-width: 1500px;
+            }
+            #content {
+            }
+            #sidebar {
+              width: 0px;
+            }
+        """
+    else:
+        result += """
+            #wrapper {
+              width: 1024px;
+            }
+            #content {
+              width: 710px;
+            }
+            #sidebar {
+              width: 220px;
+            }
+        """
+
+    result += """
         </style>
     </head>
-    """ % (
-            '''<meta name="author" content="%s">''' % htmlescape(author) if author else "",
-            '''<meta name="dcterms.date" content="%s">''' % htmlescape(date) if date else "",
-            htmlescape(title),
-            htmlescape(title),
-            '''<meta name="citation_author" content="%s">''' % htmlescape(author) if author else "",
-            '''<meta name="citation_publication_date" content="%s">''' % htmlescape(date) if date else "",
-            htmlescape(title),
-            config.LINK_COLOR,
-            config.LINK_COLOR
-        )
-    )
+    """
 
     return result
 

@@ -80,11 +80,12 @@ def legacy_link(legacy_slug):
         return 'https://web.archive.org/web/*/http://lesswrong.com/lw/%s/*' % slug
 
 
-def show_head(title, author="", date="", publisher="", widepage=False):
+def show_head(title, author="", date="", publisher="", widepage=False, canonical_url=""):
     result = ("""
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+        %s
         %s
         %s
         <meta property="og:title" content="%s" />
@@ -163,6 +164,7 @@ def show_head(title, author="", date="", publisher="", widepage=False):
     """ % (
             '''<meta name="author" content="%s">''' % htmlescape(author) if author else "",
             '''<meta name="dcterms.date" content="%s">''' % htmlescape(date) if date else "",
+            '''<link rel="canonical" href="%s">''' % htmlescape(canonical_url) if canonical_url else "",
             htmlescape(title),
             htmlescape(title),
             '''<meta name="citation_author" content="%s">''' % htmlescape(author) if author else "",

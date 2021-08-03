@@ -23,6 +23,7 @@ def get_content_for_post(postid, run_query=True):
           _id
           postedAt
           url
+          canonicalSource
           title
           slug
           commentCount
@@ -348,10 +349,14 @@ def show_post_and_comment_thread(postid, display_format):
         author = post['user']['slug']
     else:
         author = None
+    canonical_url = util.safe_get(post, 'pageUrl')
+    if util.safe_get(post, 'canonicalSource'):
+        canonical_url = util.safe_get(post, 'canonicalSource')
     result = util.show_head(title=post['title'],
-                             author=author if author is not None else "[deleted]",
-                             date=post['postedAt'],
-                             publisher="LessWrong 2.0" if "lesswrong" in config.GRAPHQL_URL
+                            canonical_url=canonical_url,
+                            author=author if author is not None else "[deleted]",
+                            date=post['postedAt'],
+                            publisher="LessWrong 2.0" if "lesswrong" in config.GRAPHQL_URL
                                        else "Effective Altruism Forum")
     result += "<body>\n"
     result += util.show_navbar(navlinks=[

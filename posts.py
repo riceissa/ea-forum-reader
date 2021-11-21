@@ -396,9 +396,16 @@ def show_post_and_comment_thread(postid, display_format):
             result += '''<h2>Contents</h2>\n'''
             result += '<pre style="font-size: 12px;">\n'
             for section in post["tableOfContents"]["sections"]:
+                # I think I was using this to get rid of the score (which
+                # always appeared as the first word of level 2 headings on
+                # question posts). But doing so without checking that a post is
+                # a question post results in erroneously removing the first
+                # word of standard level 2 headings. As I write this
+                # (2021-11-21), question posts don't even seem to come with
+                # answer TOCs anymore, so this is kind of useless.
                 ans_title = util.safe_get(section, "title")
-                if ans_title and section["level"] == 2:
-                    ans_title = " ".join(ans_title.split()[1:])
+                # if ans_title and section["level"] == 2:
+                #     ans_title = " ".join(ans_title.split()[1:])
                 indent = " " * (2 * section["level"])
                 result += '''%s<a href="#%s">%s</a>\n''' % (indent, section["anchor"],
                                                             ans_title)

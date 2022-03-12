@@ -196,17 +196,17 @@ def show_head(title, author="", date="", publisher="", widepage=False, canonical
 
             @media (max-width: 768px) {
                 #sidebar {
-                    width: 100%%;
+                    width: 100%;
                     float: none;
                     padding: 0 0 0 0;
                 }
                 #content {
-                    width: 97%%;
+                    width: 100%;
                     float: none;
                     padding: 0 0 0 0;
                 }
                 #wrapper {
-                    width: 100%%;
+                    width: 100%;
                     overflow: auto;
                 }
             }
@@ -225,6 +225,7 @@ def show_head(title, author="", date="", publisher="", widepage=False, canonical
         """
     else:
         result += """
+        @media (min-width: 768px) {
             #wrapper {
               width: 1024px;
             }
@@ -234,6 +235,7 @@ def show_head(title, author="", date="", publisher="", widepage=False, canonical
             #sidebar {
               width: 220px;
             }
+        }
         """
 
     result += """

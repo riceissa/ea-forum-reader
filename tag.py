@@ -31,7 +31,7 @@ def get_content_for_tag(tagslug, run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="get_content_for_tag")
     try:
         return request.json()['data']['tag']['result']
     except TypeError:

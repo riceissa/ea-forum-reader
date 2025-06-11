@@ -58,7 +58,7 @@ def get_sequence(sequenceid, run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="get_sequence")
     return util.safe_get(request.json(), ['data', 'sequence', 'result'])
 
 
@@ -85,7 +85,7 @@ def get_chapter(chapterid, run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="get_chapter")
     return util.safe_get(request.json(), ['data', 'chapter', 'result'])
 
 

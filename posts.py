@@ -54,7 +54,7 @@ def get_content_for_post(postid, run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="get_content_for_post")
     try:
         return request.json()['data']['post']['result']
     except TypeError:
@@ -99,7 +99,7 @@ def get_comments_for_post(postid, view="postCommentsTop", run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="get_comments_for_post")
     result = []
     for comment in request.json()['data']['comments']['results']:
         result.append(comment)
@@ -143,7 +143,7 @@ def query_question_answers(postid, run_query=True):
         query_url = config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % query_url)
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="query_question_answers")
     result = []
     for answer in request.json()['data']['comments']['results']:
         result.append(answer)
@@ -184,7 +184,7 @@ def query_replies_to_answer(answer_id, run_query=True):
         query_url = config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % query_url)
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="query_replies_to_answer")
     result = []
     for comment in request.json()['data']['comments']['results']:
         result.append(comment)

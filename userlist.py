@@ -110,7 +110,7 @@ def users_list_query(sort_by="karma", run_query=True):
 
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="users_list_query")
     return request.json()['data']['users']['results']
 
 

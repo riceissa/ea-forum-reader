@@ -53,7 +53,7 @@ def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="posts_list_query")
     return request.json()['data']['posts']['results']
 
 
@@ -90,7 +90,7 @@ def recent_comments_query(run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="recent_comments_query")
     return request.json()['data']['comments']['results']
 
 
@@ -204,7 +204,7 @@ def show_daily_posts(offset, view, before, after, display_format):
             <ul>
     '''
     start_year = 2006 if "lesswrong" in config.GRAPHQL_URL else 2011
-    for year in range(start_year, datetime.datetime.utcnow().year + 1):
+    for year in range(start_year, datetime.datetime.now(datetime.UTC).year + 1):
         result += "<li>\n"
         result += '''<a href="/?view=%s&amp;before=%s&amp;after=%s">%s</a>''' % (
             view,

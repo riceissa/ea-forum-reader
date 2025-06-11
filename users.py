@@ -192,7 +192,7 @@ def query_user_info(userslug, run_query=True):
         query_url = config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % query_url)
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="query_user_info")
     return request.json()['data']['user']['result']
 
 
@@ -233,7 +233,7 @@ def get_comments_for_user(username, run_query=True):
     if not run_query:
         return util.userslug_to_userid(username, run_query=False) + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="get_comments_for_user")
     result = []
     for comment in request.json()['data']['comments']['results']:
         result.append(comment)
@@ -269,7 +269,7 @@ def get_posts_for_user(username, run_query=True):
     if not run_query:
         return util.userslug_to_userid(username, run_query=False) + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
-    request = util.send_query(query)
+    request = util.send_query(query, operation_name="get_posts_for_user")
     result = []
     for post in request.json()['data']['posts']['results']:
         result.append(post)

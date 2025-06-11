@@ -272,8 +272,23 @@ def show_navbar(navlinks=None, search_value=""):
     return result
 
 
-def send_query(query):
-    return requests.get(config.GRAPHQL_URL, params={'query': query})
+def send_query(query, operation_name=None):
+    email = config.EMAIL
+    headers = {'User-Agent': f'LW and EA Forum Reader (https://github.com/riceissa/ea-forum-reader; contact: {email})'}
+
+    # The documentation
+    # https://www.apollographql.com/docs/graphos/routing/security/csrf#configuring-csrf-prevention-in-the-router
+    # does not say what the X-Apollo-Operation-Name value should be,
+    # other than that it be non-empty. One of the LW devs suggested to me that
+    # it would be good if the value somehow corresponded to the query, so for
+    # now I've changed all calls to send_query to use the function name as the
+    # operation_name.
+    if operation_name:
+        headers['X-Apollo-Operation-Name'] = operation_name
+    else:
+        headers['X-Apollo-Operation-Name'] = "default_operation"
+
+    return requests.get(config.GRAPHQL_URL, params={'query': query}, headers=headers)
 
 
 def cleanHtmlBody(htmlBody):
@@ -301,7 +316,7 @@ def userid_to_userslug(userid):
     }
     """ % userid)
 
-    request = send_query(query)
+    request = send_query(query, operation_name="userid_to_userslug")
     return request.json()['data']['user']['result']['slug']
 
 

@@ -1,5 +1,7 @@
 <?php
 
+include_once("cookiecheck.inc");
+
 if ($_REQUEST['format'] ?? '') {
   if ($_REQUEST['format'] === "queries") {
     $format = "queries";

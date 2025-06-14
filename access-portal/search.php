@@ -1,5 +1,7 @@
 <?php
 
+include_once("cookiecheck.inc");
+
 if ($_REQUEST['q'] ?? '') {
   $query = $_REQUEST['q'];
   $query = preg_replace('/[^a-zA-Z0-9_" -]/', '', $query);

@@ -1,5 +1,7 @@
 <?php
 
+include_once("cookiecheck.inc");
+
 if ($_REQUEST['slug'] ?? '') {
   $tagslug = $_REQUEST['slug'];
   $tagslug = preg_replace('/[^a-zA-Z0-9_-]/', '', $tagslug);

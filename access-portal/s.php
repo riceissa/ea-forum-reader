@@ -1,5 +1,7 @@
 <?php
 
+include_once("cookiecheck.inc");
+
 if ($_REQUEST['id'] ?? '') {
   $sequence_id = $_REQUEST['id'];
   $sequence_id = preg_replace('/[^a-zA-Z0-9_-]/', '', $sequence_id);

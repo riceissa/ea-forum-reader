@@ -1,5 +1,7 @@
 <?php
 
+include_once("cookiecheck.inc");
+
 if ($_REQUEST['commentId'] ?? '') {
   // Not a very satisfying fix. This redirect works, but it removes the post
   // title (if a title was present in the URL). For instance,

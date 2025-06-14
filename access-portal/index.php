@@ -1,5 +1,7 @@
 <?php
 
+include_once("cookiecheck.inc");
+
 if ($_REQUEST['offset'] ?? '') {
   $offset = $_REQUEST['offset'];
   $offset = intval(preg_replace('/[^0-9]/', '', $offset));

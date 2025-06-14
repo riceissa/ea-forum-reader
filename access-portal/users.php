@@ -1,5 +1,7 @@
 <?php
 
+include_once("cookiecheck.inc");
+
 if ($_REQUEST['userid'] ?? '') {
   $userid = $_REQUEST['userid'];
   $userid = preg_replace('/[^a-zA-Z0-9_-]/', '', $userid);

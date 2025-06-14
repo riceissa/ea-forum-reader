@@ -2,7 +2,7 @@
 
 setcookie("humancheck", "is_human", time()+60*60*24*365*10, "", "", true, true);
 if (count($_COOKIE) === 0) {
-    http_response_code(201);
+    http_response_code(202);
     echo <<<END
 <html>
     <head>

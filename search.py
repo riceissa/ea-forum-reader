@@ -35,14 +35,14 @@ def search_posts(string):
     data = '''{"requests":[{"indexName":"test_posts","params":"query=%s&hitsPerPage=30&page=0"}]}''' % quote(string)
     r = requests.post(ALGOLIA_URL, data=data)
 
-    return r.json()['results'][0]['hits']
+    return util.get_from_request(r, ['results', 0, 'hits'])
 
 
 def search_comments(string):
     data = '''{"requests":[{"indexName":"test_comments","params":"query=%s&hitsPerPage=30&page=0"}]}''' % quote(string)
     r = requests.post(ALGOLIA_URL, data=data)
 
-    return r.json()['results'][0]['hits']
+    return util.get_from_request(r, ['results', 0, 'hits'])
 
 
 def show_comment(comment, string):

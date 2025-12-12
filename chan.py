@@ -9,15 +9,20 @@ import util
 import linkpath
 import posts
 
-def show_post_and_comment_thread(postid, display_format):
+def show_post_and_comment_thread(postid: str, display_format: str) -> str:
     print("""<!DOCTYPE html>
     <html>
     """)
     run_query = False if display_format == "queries" else True
-    post = posts.get_content_for_post(postid, run_query=run_query)
+    post_and_status_code = posts.get_content_for_post(postid, run_query=run_query)
+    if isinstance(post_and_status_code, str):
+        return "Returning since only want to display the queries."
+    post, status_code = post_and_status_code
+    if status_code != 200:
+        return f"Received status code of {status_code} from API endpoint."
     comments = posts.get_comments_for_post(postid, view="postCommentsOld", run_query=run_query)
     if (not run_query) or util.safe_get(post, "question"):
-        answers = query_question_answers(postid, run_query=run_query)
+        answers = posts.query_question_answers(postid, run_query=run_query)
 
     print("""
     <head>
@@ -83,7 +88,7 @@ def show_post_and_comment_thread(postid, display_format):
     if util.safe_get(post, "question"):
         result += '<h2 id="answers">Answers</h2>'
         for answer in answers:
-            result += show_answer(answer)
+            result += posts.show_answer(answer)
 
     if util.safe_get(post, "question") and util.safe_get(post, ["tableOfContents", "sections"]):
         result += '''<h2 id="comments">''' + util.safe_get(post, ["tableOfContents", "sections"])[-1]["title"] + '</h2>\n'
@@ -91,7 +96,7 @@ def show_post_and_comment_thread(postid, display_format):
         result += '''<h2 id="comments">''' + str(post['commentCount']) + ' comments</h2>'
 
     # map of commentId -> list of commentIds that have replied
-    reply_graph = {}
+    reply_graph: dict[str, list[str]] = {}
     for comment in comments:
         commentid = util.safe_get(comment, ['_id'])
         parentid = util.safe_get(comment, ['parentCommentId'])

@@ -5,9 +5,11 @@ import datetime
 import re
 from urllib.parse import quote
 import sys
+from typing import Any
 
 import linkpath
 import config
+import util
 
 def htmlescape(string):
     return string.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&#34;')
@@ -49,6 +51,13 @@ def safe_get(obj, keys, default=None):
         return _safe_multiget(obj, keys, default)
     else:
         return _safe_get(obj, keys, default)
+
+def get_from_request(request, keys, default=None) -> tuple[Any, int]:
+    try:
+        j = request.json()
+        return (safe_get(j, keys, default=default), request.status_code)
+    except:
+        return (None, request.status_code)
 
 
 def official_url_to_gw(ea_forum_link):
@@ -304,7 +313,7 @@ def cleanHtmlBody(htmlBody):
                     .replace("</head>", ""))
 
 
-def userid_to_userslug(userid):
+def userid_to_userslug(userid: str) -> tuple[str, int]:
     query = ("""
     {
       user(input: {selector: {documentId: "%s"}}) {
@@ -317,7 +326,7 @@ def userid_to_userslug(userid):
     """ % userid)
 
     request = send_query(query, operation_name="userid_to_userslug")
-    return request.json()['data']['user']['result']['slug']
+    return util.get_from_request(request, ['data', 'user', 'result', 'slug'])
 
 
 def userslug_to_userid(userslug, run_query=True):
@@ -336,7 +345,7 @@ def userslug_to_userid(userslug, run_query=True):
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = send_query(query)
-    return request.json()['data']['user']['result']['_id']
+    return util.get_from_request(request, ['data', 'user', 'result', '_id'])
 
 
 def userlink(slug=None, username=None, display_name=None, bio=None):

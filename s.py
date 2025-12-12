@@ -59,7 +59,7 @@ def get_sequence(sequenceid, run_query=True):
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = util.send_query(query, operation_name="get_sequence")
-    return util.safe_get(request.json(), ['data', 'sequence', 'result'])
+    return util.get_from_request(request, ['data', 'sequence', 'result'])
 
 
 def get_chapter(chapterid, run_query=True):
@@ -86,7 +86,7 @@ def get_chapter(chapterid, run_query=True):
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = util.send_query(query, operation_name="get_chapter")
-    return util.safe_get(request.json(), ['data', 'chapter', 'result'])
+    return util.get_from_request(request, ['data', 'chapter', 'result'])
 
 
 def show_sequence(sequenceid, display_format):
@@ -94,7 +94,9 @@ def show_sequence(sequenceid, display_format):
     <html>
     """)
     run_query = False if display_format == "queries" else True
-    sequence = get_sequence(sequenceid)
+    sequence, status_code = get_sequence(sequenceid)
+    if status_code != 200:
+        return f"Received status code {status_code} from API endpoint."
     result = util.show_head(title=util.safe_get(sequence, "title"),
                              author=util.safe_get(sequence, ["user", "username"]),
                              date=util.safe_get(sequence, "createdAt"),
@@ -109,7 +111,9 @@ def show_sequence(sequenceid, display_format):
     result += "<h1>" + util.safe_get(sequence, "title") + "</h1>\n"
     for chapterdict in util.safe_get(sequence, "chapters"):
         chapterid = chapterdict["_id"]
-        chapter = get_chapter(chapterid)
+        chapter, status_code = get_chapter(chapterid)
+        if status_code != 200:
+            return f"Received status code {status_code} from API endpoint."
         result += "<h2>" + util.safe_get(chapterdict, "title", default="") + "</h2>"
         result += "<ul>\n"
         for postdict in util.safe_get(chapter, "posts"):

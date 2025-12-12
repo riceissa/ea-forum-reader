@@ -12,7 +12,9 @@ def html_page_for_user(username, display_format):
     run_query = False if display_format == "queries" else True
     comments = get_comments_for_user(username, run_query=run_query)
     posts = get_posts_for_user(username, run_query=run_query)
-    user_info = query_user_info(username, run_query=run_query)
+    user_info, status_code = query_user_info(username, run_query=run_query)
+    if status_code != 200:
+        return f"Received status code of {status_code} from API endpoint."
 
     if display_format == "queries":
         result = "<pre>"
@@ -193,11 +195,13 @@ def query_user_info(userslug, run_query=True):
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % query_url)
 
     request = util.send_query(query, operation_name="query_user_info")
-    return request.json()['data']['user']['result']
+    return util.get_from_request(request, ['data', 'user', 'result'])
 
 
 def get_comments_for_user(username, run_query=True):
-    userid = util.userslug_to_userid(username, run_query=True)
+    userid, status_code = util.userslug_to_userid(username, run_query=True)
+    if status_code != 200:
+        return f"Received status code of {status_code} from API endpoint."
     query = ("""
     {
       comments(input: {
@@ -231,17 +235,25 @@ def get_comments_for_user(username, run_query=True):
     """ % userid)
 
     if not run_query:
-        return util.userslug_to_userid(username, run_query=False) + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
+        r, status_code = util.userslug_to_userid(username, run_query=False)
+        if status_code != 200:
+            return f"Received status code of {status_code} from API endpoint."
+        return r + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = util.send_query(query, operation_name="get_comments_for_user")
     result = []
-    for comment in request.json()['data']['comments']['results']:
+    comments, status_code = util.get_from_request(request, ['data', 'comments', 'results'])
+    if status_code != 200:
+        return f"Received status code of {status_code} from API endpoint."
+    for comment in comments:
         result.append(comment)
     return result
 
 
 def get_posts_for_user(username, run_query=True):
-    userid = util.userslug_to_userid(username, run_query=True)
+    userid, status_code = util.userslug_to_userid(username, run_query=True)
+    if status_code != 200:
+        return f"Received status code of {status_code} from API endpoint."
     query = ("""
     {
       posts(input: {
@@ -267,11 +279,17 @@ def get_posts_for_user(username, run_query=True):
     """ % userid)
 
     if not run_query:
-        return util.userslug_to_userid(username, run_query=False) + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
+        r, status_code = util.userslug_to_userid(username, run_query=False)
+        if status_code != 200:
+            return f"Received status code of {status_code} from API endpoint."
+        return r + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = util.send_query(query, operation_name="get_posts_for_user")
     result = []
-    for post in request.json()['data']['posts']['results']:
+    posts, status_code = util.get_from_request(request, ['data', 'posts', 'results'])
+    if status_code != 200:
+        return f"Received status code of {status_code} from API endpoint."
+    for post in posts:
         result.append(post)
     return result
 

@@ -54,7 +54,7 @@ def posts_list_query(view="new", offset=0, before="", after="", run_query=True):
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = util.send_query(query, operation_name="posts_list_query")
-    return request.json()['data']['posts']['results']
+    return util.get_from_request(request, ['data', 'posts', 'results'])
 
 
 def recent_comments_query(run_query=True):
@@ -91,13 +91,17 @@ def recent_comments_query(run_query=True):
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = util.send_query(query, operation_name="recent_comments_query")
-    return request.json()['data']['comments']['results']
+    return util.get_from_request(request, ['data', 'comments', 'results'])
 
 
 def show_daily_posts(offset, view, before, after, display_format):
-    posts = posts_list_query(offset=offset, view=view, before=before, after=after,
-                             run_query=(False if display_format == "queries" else True))
-    recent_comments = recent_comments_query(run_query=(False if display_format == "queries" else True))
+    posts, status_code = posts_list_query(offset=offset, view=view, before=before, after=after,
+                                          run_query=(False if display_format == "queries" else True))
+    if status_code != 200:
+        return f"Received status code {status_code} from API endpoint."
+    recent_comments, status_code = recent_comments_query(run_query=(False if display_format == "queries" else True))
+    if status_code != 200:
+        return f"Received status code {status_code} from API endpoint."
 
     if display_format == "queries":
         result = "<pre>"

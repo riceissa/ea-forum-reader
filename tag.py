@@ -3,13 +3,14 @@
 import sys
 from urllib.parse import quote
 import datetime
+from typing import Any
 
 import config
 import util
 import linkpath
 
 
-def get_content_for_tag(tagslug, run_query=True):
+def get_content_for_tag(tagslug, run_query=True) -> tuple[Any, int] | str:
     query = ("""
     {
       tag(
@@ -32,10 +33,7 @@ def get_content_for_tag(tagslug, run_query=True):
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = util.send_query(query, operation_name="get_content_for_tag")
-    try:
-        return request.json()['data']['tag']['result']
-    except TypeError:
-        return {}
+    return util.get_from_request(request, ['data', 'tag', 'result'])
 
 def show_tag(tagslug, display_format):
     print("""<!DOCTYPE html>

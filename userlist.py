@@ -2,6 +2,7 @@
 
 import sys
 from urllib.parse import quote
+from typing import Any
 
 import config
 import util
@@ -71,7 +72,7 @@ def big_vote_power(karma):
         return 2
     return 1
 
-def users_list_query(sort_by="karma", run_query=True):
+def users_list_query(sort_by: str = "karma", run_query : bool = True) -> tuple[Any, int] | str:
     sort_line = ""
     if sort_by == "postCount":
         sort_line = 'sort: {postCount: -1}'
@@ -111,11 +112,17 @@ def users_list_query(sort_by="karma", run_query=True):
     if not run_query:
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
     request = util.send_query(query, operation_name="users_list_query")
-    return request.json()['data']['users']['results']
+    return util.get_from_request(request, ['data', 'users', 'results'])
 
 
 def show_users_list(sort_by, display_format):
-    users = users_list_query(sort_by=sort_by, run_query=(False if display_format == "queries" else True))
+    users_and_status_code = users_list_query(sort_by=sort_by, run_query=(False if display_format == "queries" else True))
+    if isinstance(users_and_status_code, str):
+        users = users_and_status_code
+    else:
+        users, status_code = users_and_status_code
+        if status_code != 200:
+            return f"Received status code of {status_code} from API endpoint."
 
     if display_format == "queries":
         result = "<pre>"

@@ -3,13 +3,14 @@
 import sys
 from urllib.parse import quote
 import datetime
+from typing import Any
 
 import config
 import util
 import linkpath
 
 
-def get_content_for_post(postid, run_query=True):
+def get_content_for_post(postid, run_query=True) -> tuple[Any, int] | str:
     query = ("""
     {
       post(
@@ -55,14 +56,7 @@ def get_content_for_post(postid, run_query=True):
         return query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = util.send_query(query, operation_name="get_content_for_post")
-    try:
-        return request.json()['data']['post']['result']
-    except TypeError:
-        return {'title': '', 'slug': '', 'baseScore': 0, 'voteCount': 0, 'pageUrl': '',
-                'url': '', 'htmlBody': '', 'postedAt': '', 'commentCount': 0, 'legacyId': None,
-                'user': {'slug': '', 'username': ''}, 'question': False,
-                'tableOfContents': {'headingsCount': 0, 'html': "", 'sections': []}
-               }
+    return util.get_from_request(request, ['data', 'post', 'result'])
 
 
 def get_comments_for_post(postid, view="postCommentsTop", run_query=True):
@@ -101,7 +95,10 @@ def get_comments_for_post(postid, view="postCommentsTop", run_query=True):
 
     request = util.send_query(query, operation_name="get_comments_for_post")
     result = []
-    for comment in request.json()['data']['comments']['results']:
+    comments, status_code = util.get_from_request(request, ['data', 'comments', 'results'])
+    if status_code != 200:
+        return f"Received status code of {status_code} from API endpoint."
+    for comment in comments:
         result.append(comment)
 
     return result
@@ -145,7 +142,10 @@ def query_question_answers(postid, run_query=True):
 
     request = util.send_query(query, operation_name="query_question_answers")
     result = []
-    for answer in request.json()['data']['comments']['results']:
+    answers, status_code = util.get_from_request(request, ['data', 'comments', 'results'])
+    if status_code != 200:
+        return f"Received status code of {status_code} from API endpoint."
+    for answer in answers:
         result.append(answer)
     return result
 
@@ -186,7 +186,10 @@ def query_replies_to_answer(answer_id, run_query=True):
 
     request = util.send_query(query, operation_name="query_replies_to_answer")
     result = []
-    for comment in request.json()['data']['comments']['results']:
+    comments, status_code = util.get_from_request(request, ['data', 'comments', 'results'])
+    if status_code != 200:
+        return f"Received status code of {status_code} from API endpoint."
+    for comment in comments:
         result.append(comment)
     return result
 
@@ -318,7 +321,9 @@ def show_post_and_comment_thread(postid, display_format):
     <html>
     """)
     run_query = False if display_format == "queries" else True
-    post = get_content_for_post(postid, run_query=run_query)
+    post, status_code = get_content_for_post(postid, run_query=run_query)
+    if status_code != 200:
+        return f"Received status code of {status_code} from API endpoint."
     if run_query:
         post_date = util.safe_get(post, 'postedAt', default="2018-01-01")
     else:

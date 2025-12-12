@@ -321,9 +321,15 @@ def show_post_and_comment_thread(postid, display_format):
     <html>
     """)
     run_query = False if display_format == "queries" else True
-    post, status_code = get_content_for_post(postid, run_query=run_query)
-    if status_code != 200:
-        return util.error_message_string("posts", postid, status_code)
+
+    post_and_status_code = get_content_for_post(postid, run_query=run_query)
+    if isinstance(post_and_status_code, str):
+        post = post_and_status_code
+    else:
+        post, status_code = post_and_status_code
+        if status_code != 200:
+            return util.error_message_string("posts", postid, status_code)
+
     if run_query:
         post_date = util.safe_get(post, 'postedAt', default="2018-01-01")
     else:

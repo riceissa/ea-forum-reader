@@ -12,9 +12,13 @@ def html_page_for_user(username, display_format):
     run_query = False if display_format == "queries" else True
     comments = get_comments_for_user(username, run_query=run_query)
     posts = get_posts_for_user(username, run_query=run_query)
-    user_info, status_code = query_user_info(username, run_query=run_query)
-    if status_code != 200:
-        return f"Received status code of {status_code} from API endpoint."
+    user_info_and_status_code = query_user_info(username, run_query=run_query)
+    if isinstance(user_info_and_status_code, str):
+        user_info = user_info_and_status_code
+    else:
+        user_info, status_code = user_info_and_status_code
+        if status_code != 200:
+            return util.error_message_string("users", username, status_code)
 
     if display_format == "queries":
         result = "<pre>"
@@ -235,16 +239,20 @@ def get_comments_for_user(username, run_query=True):
     """ % userid)
 
     if not run_query:
-        r, status_code = util.userslug_to_userid(username, run_query=False)
-        if status_code != 200:
-            return f"Received status code of {status_code} from API endpoint."
+        r_and_status_code = util.userslug_to_userid(username, run_query=False)
+        assert isinstance(r_and_status_code, str)
+        r = r_and_status_code
         return r + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = util.send_query(query, operation_name="get_comments_for_user")
     result = []
-    comments, status_code = util.get_from_request(request, ['data', 'comments', 'results'])
-    if status_code != 200:
-        return f"Received status code of {status_code} from API endpoint."
+    comments_and_status_code = util.get_from_request(request, ['data', 'comments', 'results'])
+    if isinstance(comments_and_status_code, str):
+        comments = comments_and_status_code
+    else:
+        comments, status_code = comments_and_status_code
+        if status_code != 200:
+            return f"Received status code of {status_code} from API endpoint."
     for comment in comments:
         result.append(comment)
     return result
@@ -279,9 +287,9 @@ def get_posts_for_user(username, run_query=True):
     """ % userid)
 
     if not run_query:
-        r, status_code = util.userslug_to_userid(username, run_query=False)
-        if status_code != 200:
-            return f"Received status code of {status_code} from API endpoint."
+        r_and_status_code = util.userslug_to_userid(username, run_query=False)
+        assert isinstance(r_and_status_code, str)
+        r = r_and_status_code
         return r + "\n\n" + query + ('''\n<a href="%s">Run this query</a>\n\n''' % (config.GRAPHQL_URL.replace("graphql", "graphiql") + "?query=" + quote(query)))
 
     request = util.send_query(query, operation_name="get_posts_for_user")

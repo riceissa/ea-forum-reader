@@ -98,10 +98,10 @@ def show_daily_posts(offset, view, before, after, display_format):
     posts, status_code = posts_list_query(offset=offset, view=view, before=before, after=after,
                                           run_query=(False if display_format == "queries" else True))
     if status_code != 200:
-        return error_message_string("index", "", status_code)
+        return util.error_message_string("index", "", status_code)
     recent_comments, status_code = recent_comments_query(run_query=(False if display_format == "queries" else True))
     if status_code != 200:
-        return error_message_string("index", "", status_code)
+        return util.error_message_string("index", "", status_code)
 
     if display_format == "queries":
         result = "<pre>"

@@ -19,7 +19,7 @@ def show_post_and_comment_thread(postid: str, display_format: str) -> str:
         return "Returning since only want to display the queries."
     post, status_code = post_and_status_code
     if status_code != 200:
-        return error_message_string("posts", postid, status_code)
+        return util.error_message_string("posts", postid, status_code)
     comments = posts.get_comments_for_post(postid, view="postCommentsOld", run_query=run_query)
     if (not run_query) or util.safe_get(post, "question"):
         answers = posts.query_question_answers(postid, run_query=run_query)

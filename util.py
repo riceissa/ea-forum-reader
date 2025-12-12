@@ -306,10 +306,16 @@ def error_message_string(content_type, content_id, status_code):
         service = "LessWrong" if "lesswrong" in config.GRAPHQL_URL else "the Effective Altruism Forum"
         result += f"This probably means that Issa's server is being blocked by {service}.\n"
     result += "You can view the content instead at:\n"
-    if "lesswrong" in config.GRAPHQL_URL:
-        url = f"https://www.lesswrong.com/{content_type}/{content_id}"
+    if content_type == "posts":
+        if "lesswrong" in config.GRAPHQL_URL:
+            url = f"https://www.lesswrong.com/{content_type}/{content_id}"
+        else:
+            url = f"https://forum.effectivealtruism.org/{content_type}/{content_id}"
     else:
-        url = f"https://forum.effectivealtruism.org/{content_type}/{content_id}"
+        if "lesswrong" in config.GRAPHQL_URL:
+            url = "https://www.lesswrong.com/"
+        else:
+            url = "https://forum.effectivealtruism.org/"
     result += f'<a href="{url}">{url}</a>'
     result += "</pre>\n"
     return result

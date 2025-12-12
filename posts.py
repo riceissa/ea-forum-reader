@@ -95,9 +95,10 @@ def get_comments_for_post(postid, view="postCommentsTop", run_query=True):
 
     request = util.send_query(query, operation_name="get_comments_for_post")
     result = []
+    assert run_query
     comments, status_code = util.get_from_request(request, ['data', 'comments', 'results'])
     if status_code != 200:
-        return f"Received status code of {status_code} from API endpoint."
+        return util.error_message_string("posts", postid, status_code)
     for comment in comments:
         result.append(comment)
 
@@ -144,7 +145,7 @@ def query_question_answers(postid, run_query=True):
     result = []
     answers, status_code = util.get_from_request(request, ['data', 'comments', 'results'])
     if status_code != 200:
-        return f"Received status code of {status_code} from API endpoint."
+        return util.error_message_string("posts", postid, status_code)
     for answer in answers:
         result.append(answer)
     return result
@@ -188,7 +189,7 @@ def query_replies_to_answer(answer_id, run_query=True):
     result = []
     comments, status_code = util.get_from_request(request, ['data', 'comments', 'results'])
     if status_code != 200:
-        return f"Received status code of {status_code} from API endpoint."
+        return util.error_message_string("posts", answer_id, status_code)
     for comment in comments:
         result.append(comment)
     return result

@@ -94,9 +94,9 @@ def show_sequence(sequenceid, display_format):
     <html>
     """)
     run_query = False if display_format == "queries" else True
-    sequence, status_code = get_sequence(sequenceid)
+    sequence_and_status_code = get_sequence(sequenceid)
     if status_code != 200:
-        return f"Received status code {status_code} from API endpoint."
+        return util.error_message_string("sequence", sequenceid, status_code)
     result = util.show_head(title=util.safe_get(sequence, "title"),
                              author=util.safe_get(sequence, ["user", "username"]),
                              date=util.safe_get(sequence, "createdAt"),
@@ -113,7 +113,7 @@ def show_sequence(sequenceid, display_format):
         chapterid = chapterdict["_id"]
         chapter, status_code = get_chapter(chapterid)
         if status_code != 200:
-            return f"Received status code {status_code} from API endpoint."
+            return util.error_message_string("chapter", chapterid, status_code)
         result += "<h2>" + util.safe_get(chapterdict, "title", default="") + "</h2>"
         result += "<ul>\n"
         for postdict in util.safe_get(chapter, "posts"):

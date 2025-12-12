@@ -203,9 +203,13 @@ def query_user_info(userslug, run_query=True):
 
 
 def get_comments_for_user(username, run_query=True):
-    userid, status_code = util.userslug_to_userid(username, run_query=True)
-    if status_code != 200:
-        return f"Received status code of {status_code} from API endpoint."
+    userid_and_status_code = util.userslug_to_userid(username, run_query=True)
+    if isinstance(userid_and_status_code, str):
+        userid = userid_and_status_code
+    else:
+        userid, status_code = userid_and_status_code
+        if status_code != 200:
+            return util.error_message_string("users", username, status_code)
     query = ("""
     {
       comments(input: {

@@ -311,6 +311,11 @@ def error_message_string(content_type, content_id, status_code):
             url = f"https://www.lesswrong.com/{content_type}/{content_id}"
         else:
             url = f"https://forum.effectivealtruism.org/{content_type}/{content_id}"
+    elif content_type == "userlist":
+        if "lesswrong" in config.GRAPHQL_URL:
+            url = f"https://www.lesswrong.com/leaderboard"
+        else:
+            url = "https://forum.effectivealtruism.org/people-directory"
     else:
         if "lesswrong" in config.GRAPHQL_URL:
             url = "https://www.lesswrong.com/"

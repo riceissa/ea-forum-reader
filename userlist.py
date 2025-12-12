@@ -122,7 +122,7 @@ def show_users_list(sort_by, display_format):
     else:
         users, status_code = users_and_status_code
         if status_code != 200:
-            return f"Received status code of {status_code} from API endpoint."
+            util.error_message_string("userlist", "", status_code)
 
     if display_format == "queries":
         result = "<pre>"

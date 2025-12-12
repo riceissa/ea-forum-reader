@@ -299,6 +299,20 @@ def send_query(query, operation_name=None):
 
     return requests.get(config.GRAPHQL_URL, params={'query': query}, headers=headers)
 
+def error_message_string(content_type, content_id, status_code):
+    result = "<pre>"
+    result += f"Received a status code of {status_code} from the API endpoint.\n"
+    if status_code == 403:
+        service = "LessWrong" if "lesswrong" in config.GRAPHQL_URL else "the Effective Altruism Forum"
+        result += f"This probably means that Issa's server is being blocked by {service}.\n"
+    result += "You can view the content instead at:\n"
+    if "lesswrong" in config.GRAPHQL_URL:
+        url = f"https://www.lesswrong.com/{content_type}/{content_id}"
+    else:
+        url = f"https://forum.effectivealtruism.org/{content_type}/{content_id}"
+    result += f'<a href="{url}">{url}</a>'
+    result += "</pre>\n"
+    return result
 
 def cleanHtmlBody(htmlBody):
     """For some reason htmlBody values often have the following tags that

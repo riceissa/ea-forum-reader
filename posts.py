@@ -323,7 +323,7 @@ def show_post_and_comment_thread(postid, display_format):
     run_query = False if display_format == "queries" else True
     post, status_code = get_content_for_post(postid, run_query=run_query)
     if status_code != 200:
-        return f"Received status code of {status_code} from API endpoint."
+        return util.error_message_string("posts", postid, status_code)
     if run_query:
         post_date = util.safe_get(post, 'postedAt', default="2018-01-01")
     else:

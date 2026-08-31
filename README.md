@@ -4,7 +4,7 @@
 
 As of 2026-08-31, I have stopped hosting both lw2.issarice.com and eaforum.issarice.com.
 
-I am redirecting traffic to minimize the amount of existing links that break. Direct links to the home pages (<https://lw2.issarice.com/> and <https://eaforum.issarice.com/> will redirect to the GitHub repo so people can understand what the sites were about), and all content pages (e.g. blog posts, user profile pages) will redirect to [GreaterWrong](https://www.greaterwrong.com/) ([example](https://lw2.issarice.com/users/wei-dai)). If anyone thinks this redirect scheme is a bad idea, please let me know (you can open an issue on this repo or email me at riceissa@gmail.com).
+I am redirecting traffic to minimize the amount of existing links that break. Direct links to the home pages (<https://lw2.issarice.com/> and <https://eaforum.issarice.com/>) will redirect to the GitHub repo so people can understand what the sites were about, and all content pages (e.g. blog posts, user profile pages) will redirect to [GreaterWrong](https://www.greaterwrong.com/) ([example](https://lw2.issarice.com/users/wei-dai)). If anyone thinks this redirect scheme is a bad idea, please let me know (you can open an issue on this repo or email me at riceissa@gmail.com).
 
 If anyone was actually using these readers and misses them, please let me know; I may decide to host them again if enough (let's say at least five) people were using it. They were kind of a burden to maintain and I expect hosting will only become more annoying in the future as LLM-assisted attacks become common. My own interest in both LessWrong and EA Forum has also declined massively in the last few years, so I hadn't even been using the readers myself.
 
